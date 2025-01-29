@@ -6,7 +6,7 @@
 | ----------- | ------ | --------------- |
 | Ayaan Mallick | mallick | AyaanMallick     |
 | Ibrahim Sherwani | isherwan | ibrahimsherwani10     |
-| [Full Name] | [CCID] | [@username]     |
+| Samridhi Khosla | skhosla1 | samridhikhosla     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
