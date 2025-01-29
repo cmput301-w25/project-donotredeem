@@ -8,7 +8,7 @@
 | Ibrahim Sherwani | isherwan | ibrahimsherwani10     |
 | Samridhi Khosla | skhosla1 | samridhikhosla     |
 | Jayesh Kumar Goyal | jgoyal | jayeshkg     |
-| [Full Name] | [CCID] | [@username]     |
+| Heer Kumari Perchani | perchani | Heer-Perchani     |
 | [Full Name] | [CCID] | [@username]     |
 
 ## Project Description
