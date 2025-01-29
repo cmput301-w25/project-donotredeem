@@ -7,7 +7,7 @@
 | Ayaan Mallick | mallick1 | AyaanMallick     |
 | Ibrahim Sherwani | isherwan | ibrahimsherwani10     |
 | Samridhi Khosla | skhosla1 | samridhikhosla     |
-| [Full Name] | [CCID] | [@username]     |
+| Jayesh Kumar Goyal | jgoyal | jayeshkg     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
 
