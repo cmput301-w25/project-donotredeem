@@ -1,15 +1,15 @@
-# CMPUT 301 W25 - Team [Team Name]
+# CMPUT 301 W25 - Team DoNotRedeem
 
 ## Team Members
 
 | Name        | CCID   | GitHub Username |
 | ----------- | ------ | --------------- |
-| Ayaan Mallick | mallick1 | AyaanMallick     |
-| Ibrahim Sherwani | isherwan | ibrahimsherwani10     |
-| Samridhi Khosla | skhosla1 | samridhikhosla     |
-| Jayesh Kumar Goyal | jgoyal | jayeshkg     |
-| Heer Kumari Perchani | perchani | Heer-Perchani     |
-| [Full Name] | [CCID] | [@username]     |
+| Ayaan Mallick | mallick1 | @AyaanMallick     |
+| Ibrahim Sherwani | isherwan | @ibrahimsherwani10     |
+| Samridhi Khosla | skhosla1 | @samridhikhosla     |
+| Jayesh Kumar Goyal | jgoyal | @jayeshkg     |
+| Heer Kumari Perchani | perchani | @Heer-Perchani     |
+| Aditya Gupta | agupta11 | @aditya-gupta05     |
 
 ## Project Description
 
