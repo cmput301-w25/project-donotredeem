@@ -4,7 +4,7 @@
 
 | Name        | CCID   | GitHub Username |
 | ----------- | ------ | --------------- |
-| Ayaan Mallick | mallick | AyaanMallick     |
+| Ayaan Mallick | mallick1 | AyaanMallick     |
 | Ibrahim Sherwani | isherwan | ibrahimsherwani10     |
 | Samridhi Khosla | skhosla1 | samridhikhosla     |
 | [Full Name] | [CCID] | [@username]     |
