@@ -5,7 +5,7 @@
 | Name        | CCID   | GitHub Username |
 | ----------- | ------ | --------------- |
 | Ayaan Mallick | mallick | AyaanMallick     |
-| [Full Name] | [CCID] | [@username]     |
+| Ibrahim Sherwani | isherwan | ibrahimsherwani10     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
 | [Full Name] | [CCID] | [@username]     |
