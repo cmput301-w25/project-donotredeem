@@ -13,7 +13,7 @@
 
 ## Project Description
 
-[Brief description of the project in your own words]
+This Android application allows users to log, track, and share their moods. Users can record mood events with details like emotional state, triggers, and social context. The app provides features for viewing, editing, and filtering mood history, as well as following other users’ mood updates.
 
 ## Key Features
 
