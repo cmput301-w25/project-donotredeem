@@ -29,7 +29,12 @@
 
 ## Documentation
 
-- [Wiki Link]
-- [Scrum Board]
-- [UI Mockups]
+- [Wiki Link] - https://github.com/cmput301-w25/project-donotredeem/wiki
+- [Scrum Board] - https://github.com/orgs/cmput301-w25/projects/13/views/8
+- [UI Mockups] -
+- [CRC CARDS] - https://github.com/cmput301-w25/project-donotredeem/blob/main/Project_Documents/CRC_CARDS_DoNotRedeem.pdf
 - [UML]
+
+## Project Part 3 user stories:
+
+
