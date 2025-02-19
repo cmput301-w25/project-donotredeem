@@ -27,4 +27,5 @@
     <string name="sign_up_continue">Continue</string>
     <string name="sign_up_phone_number">Phone Number</string>
     <string name="sign_up_email">Email</string>
+    <string name="mood_recur_how_often_would_you_like_to_reflect_on_your_mood">How often would you like to reflect on your mood?</string>
 </resources>
