@@ -7,61 +7,42 @@
     android:background="#222121">
 
     <Button
-        android:id="@+id/sign_up_phone_number_button"
-        android:layout_width="296dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="50dp"
-        android:backgroundTint="#FFFFFF"
-        app:iconTint="#000000"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_phone_number" />
-
-    <Button
         android:id="@+id/sign_up_done"
         android:layout_width="110dp"
         android:layout_height="41dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="70dp"
         android:backgroundTint="#FFFFFF"
         android:text="@string/sign_up_continue"
         android:textColor="@color/black"
         app:iconTint="#000000"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_phone_number_button" />
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_phone_number_text" />
 
     <TextView
         android:id="@+id/sign_up_phone_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="45dp"
         android:text="@string/sign_up_phone_number"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_email_button" />
-
-    <Button
-        android:id="@+id/sign_up_email_button"
-        android:layout_width="296dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="50dp"
-        android:backgroundTint="#FFFFFF"
-        app:iconTint="#000000"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_password" />
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_email_text" />
 
     <TextView
         android:id="@+id/sign_up_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="33dp"
+        android:layout_marginTop="45dp"
         android:text="@string/sign_up_email"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_username_button" />
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_name_text" />
 
     <ImageView
         android:id="@+id/sign_up_img"
@@ -92,50 +73,48 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="45dp"
         android:text="@string/sign_up_name"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up" />
 
-    <Button
-        android:id="@+id/sign_up_username_button"
-        android:layout_width="296dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="50dp"
-        android:backgroundTint="#FFFFFF"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sign_up_choose_username" />
-
     <EditText
         android:id="@+id/sign_up_name_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/custom_edittext"
         android:ems="10"
-        android:hint="Name"
+        android:textColorHint="@color/white"
         android:inputType="text"
-        tools:layout_editor_absoluteX="51dp"
-        tools:layout_editor_absoluteY="304dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_choose_username" />
 
     <EditText
         android:id="@+id/sign_up_email_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/custom_edittext"
         android:ems="10"
-        android:hint="Email"
         android:inputType="text"
-        tools:layout_editor_absoluteX="51dp"
-        tools:layout_editor_absoluteY="402dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_password" />
 
     <EditText
         android:id="@+id/sign_up_phone_number_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/custom_edittext"
         android:ems="10"
-        android:hint="Phone Number"
         android:inputType="text"
-        tools:layout_editor_absoluteX="51dp"
-        tools:layout_editor_absoluteY="498dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_phone_number" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
