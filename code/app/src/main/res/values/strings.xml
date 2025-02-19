@@ -1,3 +1,22 @@
 <resources>
     <string name="app_name">DoNotRedeem</string>
+    <string name="forgot_password"><u>Forgot password?</u></string>
+    <string name="don_t_have_an_account_sign_up"><u>Don’t have an account? Sign Up</u></string>
+    <string name="log_in">Log In</string>
+    <string name="user_name">User Name</string>
+    <string name="password">Password</string>
+    <string name="user_name_text">User Name</string>
+    <string name="password_text">Password</string>
+    <string name="log_in_text">Log In</string>
+    <string name="or">OR</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_facebook">Continue with Facebook</string>
+    <string name="how_do_you_feel_today">HOW DO YOU FEEL TODAY ?</string>
+    <string name="skip">Skip</string>
+    <string name="next"><![CDATA[NEXT >]]></string>
+    <string name="angry">Angry</string>
+    <string name="confused">Confused</string>
+    <string name="fear">Fear</string>
+    <string name="disgusted">Disgusted</string>
+    <string name="shameful">Shameful</string>
 </resources>
