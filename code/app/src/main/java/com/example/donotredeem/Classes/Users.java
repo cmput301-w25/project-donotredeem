@@ -16,7 +16,7 @@ public class Users {
     private String birthdayDate; // yyyy-mm-dd
     private List<String> helpYouDown;
     private String frequency;
-    private Boolean remember;
+//    private Boolean remember;
     private String picture;
     private  List<String> Events;
     private Boolean isAdmin;
