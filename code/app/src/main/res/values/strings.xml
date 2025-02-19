@@ -21,4 +21,10 @@
     <string name="shameful">Shameful</string>
     <string name="sign_up_name">Name</string>
     <string name="sign_up_sign_up">SIGN UP</string>
+    <string name="sign_up_done">DONE</string>
+    <string name="sign_up_password">Password</string>
+    <string name="sign_up_username">Choose a username</string>
+    <string name="sign_up_continue">Continue</string>
+    <string name="sign_up_phone_number">Phone Number</string>
+    <string name="sign_up_email">Email</string>
 </resources>
