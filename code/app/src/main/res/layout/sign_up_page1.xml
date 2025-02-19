@@ -107,4 +107,35 @@
         android:backgroundTint="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_choose_username" />
+
+    <EditText
+        android:id="@+id/sign_up_name_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Name"
+        android:inputType="text"
+        tools:layout_editor_absoluteX="51dp"
+        tools:layout_editor_absoluteY="304dp" />
+
+    <EditText
+        android:id="@+id/sign_up_email_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Email"
+        android:inputType="text"
+        tools:layout_editor_absoluteX="51dp"
+        tools:layout_editor_absoluteY="402dp" />
+
+    <EditText
+        android:id="@+id/sign_up_phone_number_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Phone Number"
+        android:inputType="text"
+        tools:layout_editor_absoluteX="51dp"
+        tools:layout_editor_absoluteY="498dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

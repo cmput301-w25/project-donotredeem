@@ -72,4 +72,24 @@
         android:backgroundTint="#FFFFFF"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_choose_username" />
+
+    <EditText
+        android:id="@+id/sign_up_username_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Username"
+        android:inputType="text"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="305dp" />
+
+    <EditText
+        android:id="@+id/sign_up_password_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Password"
+        android:inputType="textPassword"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="401dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
