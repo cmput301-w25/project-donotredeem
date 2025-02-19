@@ -21,7 +21,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
     private ArrayList<MoodEvent> Events;
 
     public MoodEventAdapter(Context context, ArrayList<MoodEvent> Events){
-        super(context,0,MoodEvent);
+        super(context,0,Events);
         this.context = context;
         this.Events = Events;
     }
@@ -43,6 +43,8 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         TextView ThisTime = MainView.findViewById();
         TextView ThisDate = MainView.findViewById();
         TextView ThisLocation = MainView.findViewById();
+        TextView ThisSituation = MainView.findViewById();
+        TextView ThisTrigger = MainView.findViewById();
         TextView ThisTextDescription = MainView.findViewById();
         ImageView ThisPictureDescription = MainView.findViewById();
 
@@ -53,6 +55,8 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             ThisTextDescription.setText("placeholder");
             ThisTime.setText("placeholder");
             ThisEmoState.setText("placeholder");
+            ThisSituation.setText("placeholder");
+            ThisTrigger.setText("placeholder");
             ThisPictureDescription.setImageDrawable();
         }
 
