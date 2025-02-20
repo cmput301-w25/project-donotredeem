@@ -54,14 +54,15 @@
         app:layout_constraintVertical_bias="0.168" />
 
     <EditText
-        android:id="@+id/editTextDescriptionAddMood"
+        android:id="@+id/desc"
         android:layout_width="385dp"
         android:layout_height="48dp"
         android:layout_marginHorizontal="30dp"
         android:background="@android:drawable/editbox_background"
         android:hint="Description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="10dp"
         tools:layout_editor_absoluteY="175dp" />
 
     <TextView
@@ -142,7 +143,7 @@
         app:layout_constraintVertical_bias="0.853" />
 
     <EditText
-        android:id="@+id/editTextDateAddMood"
+        android:id="@+id/date"
         android:layout_width="385dp"
         android:layout_height="48dp"
         android:autofillHints="date"
@@ -154,13 +155,13 @@
         android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.692"
+        app:layout_constraintHorizontal_bias="0.615"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.524" />
+        app:layout_constraintVertical_bias="0.527" />
 
     <EditText
-        android:id="@+id/editTextLocationAddMood"
+        android:id="@+id/loc"
         android:layout_width="385dp"
         android:layout_height="48dp"
         android:background="#F0EBEB"
@@ -192,7 +193,7 @@
         app:layout_constraintVertical_bias="0.708" />
 
     <EditText
-        android:id="@+id/editTextTriggerAddMood"
+        android:id="@+id/trigger"
         android:layout_width="385dp"
         android:layout_height="48dp"
         android:background="#F0EBEB"
@@ -208,7 +209,7 @@
         app:layout_constraintVertical_bias="0.811" />
 
     <EditText
-        android:id="@+id/editTextSocialSituationAddMood"
+        android:id="@+id/social"
         android:layout_width="385dp"
         android:layout_height="48dp"
         android:background="#F0EBEB"
@@ -240,6 +241,7 @@
         app:layout_constraintVertical_bias="0.981" />
 
     <LinearLayout
+        android:id="@+id/upload"
         android:layout_width="385dp"
         android:layout_height="129dp"
         android:background="#F6F3F3"
