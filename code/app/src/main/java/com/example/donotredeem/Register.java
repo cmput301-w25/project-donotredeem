@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class Register extends AppCompatActivity {
-    EditText editTextUsername, editTextPassword;
+    EditText editTextemail, editTextPassword;
     Button buttonReg;
     FirebaseAuth mAuth;
 
@@ -42,18 +42,18 @@ public class Register extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sign_up_page2);
         mAuth = FirebaseAuth.getInstance();
-        editTextUsername = findViewById(R.id.sign_up_username_text);
+        editTextemail = findViewById(R.id.sign_up_username_text);
         editTextPassword = findViewById(R.id.sign_up_password_text);
         buttonReg = findViewById(R.id.sign_up_done);
 
         buttonReg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username, password;
-                username =  String.valueOf(editTextUsername.getText().toString());
+                String email, password;
+                email =  String.valueOf(editTextemail.getText().toString());
                 password = String.valueOf(editTextPassword.getText().toString());
 
-                if (TextUtils.isEmpty(username)){
+                if (TextUtils.isEmpty(email)){
                     Toast.makeText(Register.this, "Enter username", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -62,24 +62,24 @@ public class Register extends AppCompatActivity {
                     Toast.makeText(Register.this, "Enter password", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                mAuth.createUserWithEmailAndPassword(username, password)
+                mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener( new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
 
-                                    Log.d(TAG, "createUserWithUsername:success");
+                                    Log.d(TAG, "createUserWithEmail:success");
                                     Toast.makeText(Register.this, "Authentication successful.", Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getApplicationContext(), LogIn.class);
                                     startActivity(intent);
                                     finish();
                                 } else {
                                     // If sign in fails, display a message to the user.
-                                    Log.w(TAG, "createUserWithUsername:failure", task.getException());
+                                    Log.w(TAG, "createUserWithEmail:failure", task.getException());
                                     Toast.makeText(Register.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                                 }
                             }
-                        }
+                        });
             }
 
 
