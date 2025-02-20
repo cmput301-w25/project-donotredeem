@@ -82,38 +82,38 @@
 
     <EditText
         android:id="@+id/sign_up_name_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
+        android:layout_width="311dp"
+        android:layout_height="32dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/custom_edittext"
+        android:background="@android:drawable/editbox_background"
         android:ems="10"
-        android:textColorHint="@color/white"
         android:inputType="text"
+        android:textColorHint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_choose_username" />
 
     <EditText
         android:id="@+id/sign_up_email_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
+        android:layout_width="308dp"
+        android:layout_height="35dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/custom_edittext"
+        android:background="@android:drawable/editbox_background"
         android:ems="10"
         android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_password" />
 
     <EditText
         android:id="@+id/sign_up_phone_number_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
+        android:layout_width="311dp"
+        android:layout_height="32dp"
         android:layout_marginTop="5dp"
-        android:background="@drawable/custom_edittext"
+        android:background="@android:drawable/editbox_background"
         android:ems="10"
         android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_phone_number" />
 
