@@ -34,11 +34,12 @@
 
     <Spinner
         android:id="@+id/mood_frequency"
-        android:layout_width="118dp"
-        android:layout_height="22dp"
-        android:layout_marginTop="44dp"
+        android:layout_width="252dp"
+        android:layout_height="27dp"
+        android:layout_marginTop="56dp"
+        android:background="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mood_recur_text" />
 </androidx.constraintlayout.widget.ConstraintLayout>
