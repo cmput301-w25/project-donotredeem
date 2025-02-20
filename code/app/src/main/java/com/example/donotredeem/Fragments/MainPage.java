@@ -24,13 +24,13 @@ public class MainPage extends AppCompatActivity {
         profilePage = findViewById(R.id.profilepage);
 
 
-        addEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainPage.this, AddMoodEvent.class);
-                startActivity(intent);
-            }
-        });
+//        addEvent.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MainPage.this, AddMoodEvent.class);
+//                startActivity(intent);
+//            }
+//        });
 
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override

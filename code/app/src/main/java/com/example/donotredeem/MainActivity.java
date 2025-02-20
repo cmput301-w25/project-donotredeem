@@ -14,7 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.example.donotredeem.Fragments.AddMoodEvent;
+//import com.example.donotredeem.Fragments.AddMoodEvent;
 import com.example.donotredeem.Fragments.Analytics;
 import com.example.donotredeem.Fragments.MainPage;
 import com.example.donotredeem.Fragments.Map;
@@ -66,13 +66,13 @@ public class MainActivity extends AppCompatActivity {
         profilePage = findViewById(R.id.profilepage);
 
 
-        addEvent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, AddMoodEvent.class);
-                startActivity(intent);
-            }
-        });
+//        addEvent.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MainActivity.this, AddMoodEvent.class);
+//                startActivity(intent);
+//            }
+//        });
 
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
