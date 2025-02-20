@@ -22,7 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class LogIn extends AppCompatActivity {
-    EditText editTextUsername, editTextPassword;
+    EditText editTextemail, editTextPassword;
     Button buttonLogIn;
     FirebaseAuth mAuth;
     TextView textview;
@@ -44,7 +44,7 @@ public class LogIn extends AppCompatActivity {
         setContentView(R.layout.login_page);
 
         mAuth = FirebaseAuth.getInstance();
-        editTextUsername = findViewById(R.id.etUsername);
+        editTextemail = findViewById(R.id.etUsername);
         editTextPassword = findViewById(R.id.etPassword);
         buttonLogIn = findViewById(R.id.btnLogin);
         textview = findViewById(R.id.button4);
@@ -60,11 +60,11 @@ public class LogIn extends AppCompatActivity {
         buttonLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username, password;
-                username = String.valueOf(editTextUsername.getText().toString());
+                String email, password;
+                email = String.valueOf(editTextemail.getText().toString());
                 password = String.valueOf(editTextPassword.getText().toString());
 
-                if (TextUtils.isEmpty(username)) {
+                if (TextUtils.isEmpty(email)) {
                     Toast.makeText(LogIn.this, "Enter username", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -74,23 +74,25 @@ public class LogIn extends AppCompatActivity {
                     return;
                 }
 
-                mAuth.signInWithEmailAndPassword(username, password)
+                mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            Log.d(TAG, "signInWithUsername: success");
+                            Log.d(TAG, "signInWithEmail: success");
                             Toast.makeText(LogIn.this, "Authentication Successful.", Toast.LENGTH_SHORT). show();
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                             finish();
                         }else {
-                            Log.w(TAG, "signInWithUsername: failure", task.getException());
+                            Log.w(TAG, "signInWithEmail: failure", task.getException());
                             Toast.makeText(LogIn.this, "Authentication failed.", Toast.LENGTH_SHORT). show();
-
-
+                        }
+                    }
+                        });
             }
-        }
+        });
 
     }
+
 }
