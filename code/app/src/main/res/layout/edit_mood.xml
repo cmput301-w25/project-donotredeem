@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/inter"
-        android:text="Add Mood"
+        android:text="Edit Mood"
         android:textColor="#F8F4F4"
         android:textSize="36sp"
         android:textStyle="bold"
