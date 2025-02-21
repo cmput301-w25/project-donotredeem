@@ -2,6 +2,7 @@ package com.example.donotredeem;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -78,15 +79,18 @@ public class MainActivity extends AppCompatActivity {
 //            }
 //        });
 
+
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //Log.d("MainActivity", "Add button clicked");
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new AddMoodEvent())
-                        .addToBackStack(null)
                         .commit();
+
             }
         });
+
 
 
         mapButton.setOnClickListener(new View.OnClickListener() {
