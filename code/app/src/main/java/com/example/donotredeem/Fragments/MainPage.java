@@ -2,67 +2,27 @@ package com.example.donotredeem.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
+import com.example.donotredeem.LogIn;
 import com.example.donotredeem.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
-public class MainPage extends AppCompatActivity {
-    private ImageButton addEvent, mapButton, gridButton, heartButton, profilePage;
-
+public class MainPage extends Fragment {
+    @Nullable
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_page);
-        addEvent = findViewById(R.id.add_button);
-        mapButton = findViewById(R.id.map_button);
-        gridButton = findViewById(R.id.grid_button);
-        heartButton = findViewById(R.id.heart_button);
-        profilePage = findViewById(R.id.profilepage);
-
-
-//        addEvent.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainPage.this, AddMoodEvent.class);
-//                startActivity(intent);
-//            }
-//        });
-
-        mapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainPage.this, Map.class);
-                startActivity(intent);
-            }
-        });
-
-        gridButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainPage.this, Analytics.class);
-                startActivity(intent);
-            }
-        });
-
-        heartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainPage.this, Requests.class);
-                startActivity(intent);
-            }
-        });
-
-        profilePage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainPage.this, ProfilePage.class);
-                startActivity(intent);
-            }
-        });
-
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.main_page, container, false);
+        return view;
     }
 }

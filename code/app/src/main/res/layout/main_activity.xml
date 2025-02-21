@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#222121">
+
+
+    <ImageButton
+        android:id="@+id/grid_button"
+        android:layout_width="69dp"
+        android:layout_height="55dp"
+        android:adjustViewBounds="true"
+        android:backgroundTint="#222121"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/grid"
+        android:contentDescription="See statistics"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.274"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.979"
+        app:tint="#FAF6F6" />
+
+    <ImageButton
+        android:id="@+id/map_button"
+        android:layout_width="69dp"
+        android:layout_height="55dp"
+        android:adjustViewBounds="true"
+        android:backgroundTint="#222121"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/map_icon"
+        android:contentDescription="Open mood map"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.043"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.98"
+        app:tint="#FAF9F9" />
+
+    <ImageButton
+        android:id="@+id/heart_button"
+        android:layout_width="69dp"
+        android:layout_height="55dp"
+        android:adjustViewBounds="true"
+        android:backgroundTint="#222121"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/heart"
+        android:contentDescription="Open follow requests"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.73"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.979"
+        app:tint="#F8F5F5" />
+
+    <ImageButton
+        android:id="@+id/profilepage"
+        android:layout_width="69dp"
+        android:layout_height="55dp"
+        android:adjustViewBounds="true"
+        android:backgroundTint="#222121"
+        android:contentDescription="Open Profile Page"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/map_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/heart_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.979"
+        app:tint="#FAF9F9" />
+
+    <ImageButton
+        android:id="@+id/add_button"
+        android:layout_width="69dp"
+        android:layout_height="55dp"
+        android:adjustViewBounds="true"
+        android:backgroundTint="#222121"
+        android:padding="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/add_icon"
+        android:contentDescription="Add mood event"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.979"
+        app:tint="#F8F5F5" />
+
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="410dp"
+        android:layout_height="646dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.682">
+
+
+    </ListView>
+
+    <Button
+        android:id="@+id/temp_sign_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SIGN OUT"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/white"
+        tools:layout_editor_absoluteX="270dp"
+        tools:layout_editor_absoluteY="10dp"
+        tools:ignore="MissingConstraints" />
+
+
+    <TextView
+        android:id="@+id/user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        tools:layout_editor_absoluteX="297dp"
+        tools:layout_editor_absoluteY="97dp" />
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="70dp"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

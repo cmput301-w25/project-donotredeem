@@ -1,4 +1,6 @@
 package com.example.donotredeem.Fragments;
 
-public class Analytics {
+import androidx.fragment.app.Fragment;
+
+public class Analytics extends Fragment {
 }

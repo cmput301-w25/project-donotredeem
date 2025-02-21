@@ -1,5 +1,6 @@
 package com.example.donotredeem;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -40,7 +41,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_page);
+        setContentView(R.layout.main_activity);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, new MainPage())
+                .addToBackStack(null)
+                .commit();
 
 
         auth = FirebaseAuth.getInstance();
@@ -70,58 +75,56 @@ public class MainActivity extends AppCompatActivity {
         heartButton = findViewById(R.id.heart_button);
         profilePage = findViewById(R.id.profilepage);
 
-
-//        addEvent.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(MainActivity.this, AddMoodEvent.class);
-//                startActivity(intent);
-//            }
-//        });
-
-
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Log.d("MainActivity", "Add button clicked");
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new AddMoodEvent())
+                        .addToBackStack(null)
                         .commit();
 
             }
         });
 
-
-
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Map.class);
-                startActivity(intent);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, new Map())
+                        .addToBackStack(null) // Adds this transaction to the back stack
+                        .commit();
             }
         });
 
         gridButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Analytics.class);
-                startActivity(intent);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, new Analytics())
+                        .addToBackStack(null) // Adds this transaction to the back stack
+                        .commit();
             }
         });
 
         heartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Requests.class);
-                startActivity(intent);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, new Requests())
+                        .addToBackStack(null) // Adds this transaction to the back stack
+                        .commit();
             }
         });
 
         profilePage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, ProfilePage.class);
-                startActivity(intent);
+                getSupportFragmentManager().beginTransaction()
+                        .add(R.id.fragment_container, new ProfilePage())
+                        .addToBackStack(null) // Adds this transaction to the back stack
+                        .commit();
+
             }
         });
 
