@@ -17,19 +17,15 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class AddMoodEvent extends Fragment {
 
@@ -37,12 +33,11 @@ public class AddMoodEvent extends Fragment {
     //private Uri imageUri = null; //path to image from camera or gallery
     private ImageView image;
 
-   //when you request something android doesn't automatically know which request it belongs to.
-   //so you use a request code to match the response to the original request.
+    //when you request something android doesn't automatically know which request it belongs to.
+    //so you use a request code to match the response to the original request.
 
-    //permission requests
-    private static final int CAMERA_REQUEST = 100;
-    private static final int GALLERY_REQUEST = 200;
+    //private static final int CAMERA_REQUEST = 100;
+    //private static final int GALLERY_REQUEST = 200;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
 
@@ -50,7 +45,7 @@ public class AddMoodEvent extends Fragment {
 
     }
 
-    //how to launch an activity and define its result
+
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -92,6 +87,7 @@ public class AddMoodEvent extends Fragment {
 
         media_upload.setOnClickListener(v -> {
             showSourceDialog();
+
         });
 
 
@@ -102,7 +98,6 @@ public class AddMoodEvent extends Fragment {
 
     private void showSourceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-
         LayoutInflater inflater = requireActivity().getLayoutInflater();
         View dialogView = inflater.inflate(R.layout.alert_box_of_cam_gallery, null);
 
@@ -111,35 +106,37 @@ public class AddMoodEvent extends Fragment {
         Button cameraButton = dialogView.findViewById(R.id.button_camera);
         Button galleryButton = dialogView.findViewById(R.id.button_gallery);
 
+        AlertDialog dialog = builder.create();  // Store the dialog instance
+
         cameraButton.setOnClickListener(v -> {
+            dialog.dismiss();
             checkCameraPermission();
         });
 
         galleryButton.setOnClickListener(v -> {
+            dialog.dismiss();
             checkGalleryPermission();
         });
-        builder.create()
-                .show();
+
+        dialog.show(); 
     }
-
-
 
     private void checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
 
-
             //https://developer.android.com/media/camera/camera-intents
             //startActivityForResult is deprecated version
 
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); //action of same or diff app
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
             cameraLauncher.launch(takePictureIntent);
 
         } else {
-            //request camera permission
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+            Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
         }
+
     }
 
+//add selected photo thing
     private void checkGalleryPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
 
@@ -147,8 +144,13 @@ public class AddMoodEvent extends Fragment {
             galleryLauncher.launch(galleryOpenIntent);
 
         } else {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, GALLERY_REQUEST);
+
+            Toast.makeText(requireContext(), "Gallery permission denied", Toast.LENGTH_SHORT).show();
+
         }
     }
+    }
 
-}
+
+
+
