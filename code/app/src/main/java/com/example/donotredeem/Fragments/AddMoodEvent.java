@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -26,12 +28,19 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.donotredeem.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.Priority;
 
 public class AddMoodEvent extends Fragment {
 
     //private MoodType moods;
     //private Uri imageUri = null; //path to image from camera or gallery
     private ImageView image;
+    private EditText location;
 
     //when you request something android doesn't automatically know which request it belongs to.
     //so you use a request code to match the response to the original request.
@@ -40,6 +49,9 @@ public class AddMoodEvent extends Fragment {
     //private static final int GALLERY_REQUEST = 200;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
+    private FusedLocationProviderClient fusedLocationClient;
+    private LocationCallback locationCallback; //https://developer.android.com/develop/sensors-and-location/location/request-updates
+
 
     public AddMoodEvent() {
 
@@ -49,8 +61,10 @@ public class AddMoodEvent extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        //this below code is taken from https://developer.android.com/media/camera/camera-deprecated/photobasics
+        // https://developer.android.com/develop/sensors-and-location/location/retrieve-current
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
+        //the code below is taken from https://developer.android.com/media/camera/camera-deprecated/photobasics
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
 
@@ -70,6 +84,7 @@ public class AddMoodEvent extends Fragment {
             }
         });
 
+
     }
 
     @Nullable
@@ -81,13 +96,20 @@ public class AddMoodEvent extends Fragment {
         EditText socialSituation = view.findViewById(R.id.social);
         EditText addTrigger = view.findViewById(R.id.trigger);
         EditText date = view.findViewById(R.id.date);
-        EditText location = view.findViewById(R.id.loc);
+
         image = view.findViewById(R.id.imageView);
         ImageButton media_upload = view.findViewById(R.id.upload_button);
 
         media_upload.setOnClickListener(v -> {
             showSourceDialog();
 
+        });
+
+        location = view.findViewById(R.id.loc);
+        RadioButton location_button = view.findViewById(R.id.radioButton);
+
+        location_button.setOnClickListener(v -> {
+            checkLocationPermission();
         });
 
 
@@ -118,7 +140,7 @@ public class AddMoodEvent extends Fragment {
             checkGalleryPermission();
         });
 
-        dialog.show(); 
+        dialog.show();
     }
 
     private void checkCameraPermission() {
@@ -149,7 +171,41 @@ public class AddMoodEvent extends Fragment {
 
         }
     }
+
+    private void checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+
+            // the code below is taken from https://developer.android.com/develop/sensors-and-location/location/change-location-settings
+            LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
+                    .setMinUpdateIntervalMillis(5000)
+                    .build();
+
+            locationCallback = new LocationCallback() {
+
+                //https://developer.android.com/develop/sensors-and-location/location/request-updates
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+
+                        double latitude = locationResult.getLastLocation().getLatitude();
+                        double longitude = locationResult.getLastLocation().getLongitude();
+                        String currentLocation = "Lat: " + latitude + ", Lon: " + longitude;
+                        location.setText(currentLocation);
+
+                        fusedLocationClient.removeLocationUpdates(locationCallback); //stop location updates
+                    }
+
+            };
+
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null); //
+
+        } else {
+            Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
+        }
+
     }
+
+
+}
 
 
 
