@@ -24,6 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -35,6 +36,9 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class AddMoodEvent extends Fragment {
 
     //private MoodType moods;
@@ -45,8 +49,9 @@ public class AddMoodEvent extends Fragment {
     //when you request something android doesn't automatically know which request it belongs to.
     //so you use a request code to match the response to the original request.
 
-    //private static final int CAMERA_REQUEST = 100;
-    //private static final int GALLERY_REQUEST = 200;
+    private static final int CAMERA_REQUEST = 100;
+    private static final int GALLERY_REQUEST = 200;
+    private static final int LOCATION_REQUEST = 300;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
     private FusedLocationProviderClient fusedLocationClient;
@@ -95,7 +100,6 @@ public class AddMoodEvent extends Fragment {
         EditText description = view.findViewById(R.id.desc);
         EditText socialSituation = view.findViewById(R.id.social);
         EditText addTrigger = view.findViewById(R.id.trigger);
-        EditText date = view.findViewById(R.id.date);
 
         image = view.findViewById(R.id.imageView);
         ImageButton media_upload = view.findViewById(R.id.upload_button);
@@ -112,8 +116,16 @@ public class AddMoodEvent extends Fragment {
             checkLocationPermission();
         });
 
+        EditText date = view.findViewById(R.id.date);
+        RadioButton date_button = view.findViewById(R.id.dateButton);
 
-        //USING QUERY FIND JO BHI USER IS UPLOADING AND STORING IN DATABASE
+        date_button.setOnClickListener(v -> { // this code is taken from - https://www.geeksforgeeks.org/how-to-get-current-time-and-date-in-android/
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            String currentDate = sdf.format(new Date());
+            date.setText(currentDate);
+        });
+
+        //USING QUERY FIND JO BHI USER IS UPLOADING AND STORING IN DATABASE - until then show it in mood historyyyy
 
         return view;
     }
@@ -153,6 +165,8 @@ public class AddMoodEvent extends Fragment {
             cameraLauncher.launch(takePictureIntent);
 
         } else {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+
             Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
         }
 
@@ -166,6 +180,8 @@ public class AddMoodEvent extends Fragment {
             galleryLauncher.launch(galleryOpenIntent);
 
         } else {
+
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, GALLERY_REQUEST);
 
             Toast.makeText(requireContext(), "Gallery permission denied", Toast.LENGTH_SHORT).show();
 
@@ -186,22 +202,23 @@ public class AddMoodEvent extends Fragment {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
 
-                        double latitude = locationResult.getLastLocation().getLatitude();
-                        double longitude = locationResult.getLastLocation().getLongitude();
-                        String currentLocation = "Lat: " + latitude + ", Lon: " + longitude;
-                        location.setText(currentLocation);
+                    double latitude = locationResult.getLastLocation().getLatitude();
+                    double longitude = locationResult.getLastLocation().getLongitude();
+                    String currentLocation = latitude + ", " + longitude;
+                    location.setText(currentLocation);
 
-                        fusedLocationClient.removeLocationUpdates(locationCallback); //stop location updates
-                    }
+                    fusedLocationClient.removeLocationUpdates(locationCallback); //stop location updates
+                }
 
             };
 
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null); //
 
         } else {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
+
             Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
         }
-
     }
 
 
