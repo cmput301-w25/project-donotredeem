@@ -1,6 +1,7 @@
 package com.example.donotredeem.Fragments;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -28,6 +30,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.example.donotredeem.MainActivity;
 import com.example.donotredeem.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -37,6 +40,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class AddMoodEvent extends Fragment {
@@ -118,12 +122,33 @@ public class AddMoodEvent extends Fragment {
 
         EditText date = view.findViewById(R.id.date);
         RadioButton date_button = view.findViewById(R.id.dateButton);
+        ImageButton calendar_button = view.findViewById(R.id.calendarButton);
 
         date_button.setOnClickListener(v -> { // this code is taken from - https://www.geeksforgeeks.org/how-to-get-current-time-and-date-in-android/
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String currentDate = sdf.format(new Date());
             date.setText(currentDate);
         });
+
+
+        calendar_button.setOnClickListener(v -> {
+
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH); //january is 0
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), (view1, selectedYear, selectedMonth, selectedDay) -> {
+
+                        String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                        date.setText(selectedDate);
+                    }, year, month, day
+            );
+
+            datePickerDialog.show();
+        });
+
+
 
         //USING QUERY FIND JO BHI USER IS UPLOADING AND STORING IN DATABASE - until then show it in mood historyyyy
 
@@ -140,7 +165,7 @@ public class AddMoodEvent extends Fragment {
         Button cameraButton = dialogView.findViewById(R.id.button_camera);
         Button galleryButton = dialogView.findViewById(R.id.button_gallery);
 
-        AlertDialog dialog = builder.create();  // Store the dialog instance
+        AlertDialog dialog = builder.create();
 
         cameraButton.setOnClickListener(v -> {
             dialog.dismiss();
@@ -212,7 +237,7 @@ public class AddMoodEvent extends Fragment {
 
             };
 
-            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null); //
+            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
 
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
