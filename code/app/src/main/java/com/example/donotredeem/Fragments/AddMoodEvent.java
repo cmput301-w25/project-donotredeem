@@ -1,8 +1,10 @@
 package com.example.donotredeem.Fragments;
 
-import android.app.Activity;
+import static android.content.ContentValues.TAG;
+
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
@@ -22,7 +24,6 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -34,7 +35,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.donotredeem.MainActivity;
 import com.example.donotredeem.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -42,39 +42,56 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class AddMoodEvent extends Fragment {
 
-    //private MoodType moods;
-    //private Uri imageUri = null; //path to image from camera or gallery
     private ImageView image;
     private EditText location;
-
-    //when you request something android doesn't automatically know which request it belongs to.
-    //so you use a request code to match the response to the original request.
 
     private static final int CAMERA_REQUEST = 100;
     private static final int GALLERY_REQUEST = 200;
     private static final int LOCATION_REQUEST = 300;
+
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
 
+    // Firebase variables
+    private FirebaseFirestore db;
+    private FirebaseStorage storage;
+    private StorageReference storageRef;
+    private Uri imageUri;
 
     public AddMoodEvent() {
-
+        // Required empty public constructor
     }
 
-
+    @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("AddMoodEvent", "onCreate called");
+
+        // Initialize Firestore and Firebase Storage
+        db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference().child("mood_images");
+        //test firestore
+        //testFirestore();
 
         // https://developer.android.com/develop/sensors-and-location/location/retrieve-current
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
@@ -99,17 +116,18 @@ public class AddMoodEvent extends Fragment {
             }
         });
 
-
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_mood, container, false);
 
         EditText description = view.findViewById(R.id.desc);
         EditText socialSituation = view.findViewById(R.id.social);
         EditText addTrigger = view.findViewById(R.id.trigger);
+        Button submit = view.findViewById(R.id.button);
 
         image = view.findViewById(R.id.imageView);
         ImageButton media_upload = view.findViewById(R.id.upload_button);
@@ -173,9 +191,9 @@ public class AddMoodEvent extends Fragment {
 
             TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), (view1, selectedHour, selectedMinute) -> {
 
-                        String selectedTime =  selectedHour + ":" + selectedMinute;
-                        time.setText(selectedTime);
-                    },
+                String selectedTime =  selectedHour + ":" + selectedMinute;
+                time.setText(selectedTime);
+            },
                     hour, minute, true // 24-hour format, false = am/pm
             );
 
@@ -209,7 +227,19 @@ public class AddMoodEvent extends Fragment {
             });
         });
 
-        //USING QUERY FIND JO BHI USER IS UPLOADING AND STORING IN DATABASE - until then show it in mood historyyyy
+        // Submit button: either upload image then save mood or save directly.
+        submit.setOnClickListener(v -> {
+            String descText = description.getText().toString();
+            String socialText = socialSituation.getText().toString();
+            String triggerText = addTrigger.getText().toString();
+            String dateText = date.getText().toString();
+            String locationText = location.getText().toString();
+            if (imageUri != null) {
+                uploadImageAndSaveMood(descText, socialText, triggerText, dateText, locationText);
+            } else {
+                saveMoodToFirestore(descText, socialText, triggerText, dateText, locationText, null);
+            }
+        });
 
         return view;
     }
@@ -256,7 +286,7 @@ public class AddMoodEvent extends Fragment {
 
     }
 
-//add selected photo thing
+    //add selected photo thing
     private void checkGalleryPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
 
@@ -305,8 +335,61 @@ public class AddMoodEvent extends Fragment {
         }
     }
 
+    // Uploads image to Firebase Storage and then saves mood data to Firestore
+    private void uploadImageAndSaveMood(String desc, String social, String trigger,
+                                        String date, String locationText) {
+        String imageFileName = UUID.randomUUID().toString() + ".jpg";
+        StorageReference imageRef = storageRef.child(imageFileName);
+        imageRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
+                        .addOnSuccessListener(uri -> saveMoodToFirestore(desc, social, trigger, date, locationText, uri.toString())))
+                .addOnFailureListener(e ->
+                        Toast.makeText(getContext(), "Image upload failed!", Toast.LENGTH_SHORT).show());
+    }
+
+    // Saves mood event data to Firestore
+    private void saveMoodToFirestore(String desc, String social, String trigger,
+                                     String date, String locationText, String imageUrl) {
+        Map<String, Object> moodData = new HashMap<>();
+        moodData.put("description", desc);
+        moodData.put("socialSituation", social);
+        moodData.put("trigger", trigger);
+        moodData.put("date", date);
+        moodData.put("location", locationText);
+        if (imageUrl != null) {
+            moodData.put("imageUrl", imageUrl);
+        }
+        db.collection("MoodEvents")
+                .add(moodData)
+                .addOnSuccessListener(documentReference ->
+                        Toast.makeText(getContext(), "Mood Event Saved!", Toast.LENGTH_SHORT).show())
+                .addOnFailureListener(e ->
+                        Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
+    }
+
+    // Helper method to convert a Bitmap into a URI using the MediaStore.
+//    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
+//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+//        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "CameraImage", null);
+//        return Uri.parse(path);
+//    }
+//    private void testFirestore() {
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//        Log.d("AddMoodEvent", "testFirestore called");
+//        Map<String, Object> testData = new HashMap<>();
+//        testData.put("first", "Ada");
+//        testData.put("last", "Lovelace");
+//        testData.put("born", 1815);
+//
+//        db.collection("Users")
+//                .add(testData)
+//                .addOnSuccessListener(documentReference -> {
+//                    Log.d(TAG, "Test document added with ID: " + documentReference.getId());
+//                })
+//                .addOnFailureListener(e -> {
+//                    Log.w(TAG, "Error adding test document", e);
+//                });
+//    }
 }
-
-
-
 
