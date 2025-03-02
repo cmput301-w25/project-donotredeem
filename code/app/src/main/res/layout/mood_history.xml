@@ -17,12 +17,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         >
 
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:id="@+id/cancel_history"
+            android:baselineAlignBottom="true"
+            android:scaleType="centerInside"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/history_heading"
+            android:src="@drawable/close"
+            android:paddingTop="12dp"
+            android:layout_marginEnd="5sp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            app:tint = "#F5E6D3"/>
+
         <TextView
             android:id="@+id/history_heading"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="20dp"
-            android:paddingTop="12dp"
+            android:paddingTop="20dp"
             android:text="MOOD HISTORY"
             android:textAlignment="center"
             android:textColor="#F5E6D3"
@@ -30,17 +46,19 @@
             android:textStyle="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toStartOf="@id/filter_icon"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/cancel_history" />
 
         <ImageButton
             android:id="@+id/filter_icon"
-            android:layout_height="50dp"
-            android:layout_width="50dp"
+            android:layout_height="40dp"
+            android:layout_width="40dp"
             android:baselineAlignBottom="true"
             android:scaleType="centerInside"
-            android:layout_marginTop="100dp"
+            android:layout_marginEnd="10dp"
+            android:backgroundTint="#F5E6D3"
             app:srcCompat="@drawable/setting"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/history_heading"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -57,6 +75,7 @@
         android:layout_marginEnd="20dp"
         android:paddingBottom="30dp"
         android:scrollbars="vertical"
+        android:backgroundTint="#F5E6D3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headings"
         tools:layout_editor_absoluteX="8dp" />
