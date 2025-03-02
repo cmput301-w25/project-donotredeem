@@ -73,47 +73,11 @@ public class LogIn extends AppCompatActivity {
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        //  Handle Login Button Click
-//        buttonLogIn.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String username = editTextUsername.getText().toString();
-//                String password = editTextPassword.getText().toString();
-//
-//                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(password)) {
-//                    Toast.makeText(LogIn.this, "Enter username and password", Toast.LENGTH_SHORT).show();
-//                    return;
-//                }
-//
-//                // 🔹 Check Firestore for username & password authentication
-//                db.collection("users").document(username).get().addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-//                        DocumentSnapshot document = task.getResult();
-//                        if (document.exists()) {
-//                            String storedPassword = document.getString("password");
-//                            if (storedPassword != null && storedPassword.equals(password)) {
-//                                Toast.makeText(LogIn.this, "Authentication Successful", Toast.LENGTH_SHORT).show();
-//                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-//                                finish();
-//                            } else {
-//                                Toast.makeText(LogIn.this, "Incorrect Password", Toast.LENGTH_SHORT).show();
-//                            }
-//                        } else {
-//                            Toast.makeText(LogIn.this, "User not found", Toast.LENGTH_SHORT).show();
-//                        }
-//                    } else {
-//                        Log.e(TAG, "Error getting document", task.getException());
-//                        Toast.makeText(LogIn.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            }
-//        });
         buttonLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String username, password;
-                username = String.valueOf(editTextUsername.getText().toString());
-                password = String.valueOf(editTextPassword.getText().toString());
+                String username = editTextUsername.getText().toString();
+                String password = editTextPassword.getText().toString();
 
                 if (TextUtils.isEmpty(username)) {
                     Toast.makeText(LogIn.this, "Enter username", Toast.LENGTH_SHORT).show();
@@ -126,17 +90,14 @@ public class LogIn extends AppCompatActivity {
                 }
 
                 // Firestore query to check if the username exists and password matches
-                DocumentReference userDocRef = db.collection("users").document(username);  // Using username as document name
-                userDocRef.get().addOnCompleteListener(new OnCompleteListener<org.apache.firestore.DocumentSnapshot>() {
+                DocumentReference userDocRef = db.collection("users").document(username);
+                userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<org.apache.firestore.DocumentSnapshot> task) {
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
-                            org.apache.firestore.DocumentSnapshot document = task.getResult();
+                            DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
-                                // Get the password from Firestore document
                                 String storedPassword = document.getString("password");
-
-                                // Check if the passwords match
                                 if (storedPassword != null && storedPassword.equals(password)) {
                                     // Password matches, allow login
                                     Toast.makeText(LogIn.this, "Login successful.", Toast.LENGTH_SHORT).show();
@@ -144,15 +105,14 @@ public class LogIn extends AppCompatActivity {
                                     startActivity(intent);
                                     finish();
                                 } else {
-                                    // Password does not match
                                     Toast.makeText(LogIn.this, "Incorrect password.", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                // User document doesn't exist
+                                Log.e(TAG, "User not found: " + username);
                                 Toast.makeText(LogIn.this, "User not found.", Toast.LENGTH_SHORT).show();
                             }
                         } else {
-                            // Error fetching document
+                            Log.e(TAG, "Firestore error: ", task.getException());
                             Toast.makeText(LogIn.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                     }
