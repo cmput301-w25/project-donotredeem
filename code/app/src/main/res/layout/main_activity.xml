@@ -110,26 +110,6 @@
 
     </ListView>
 
-    <Button
-        android:id="@+id/temp_sign_out"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SIGN OUT"
-        android:textColor="@color/black"
-        android:backgroundTint="@color/white"
-        tools:layout_editor_absoluteX="270dp"
-        tools:layout_editor_absoluteY="10dp"
-        tools:ignore="MissingConstraints" />
-
-
-    <TextView
-        android:id="@+id/user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="297dp"
-        tools:layout_editor_absoluteY="97dp" />
-
     <FrameLayout
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"

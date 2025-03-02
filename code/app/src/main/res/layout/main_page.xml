@@ -125,7 +125,27 @@
 
     </ListView>
 
-<!--    <Button-->
+    <Button
+        android:id="@+id/temp_sign_out"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Signout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.63"
+        app:layout_constraintStart_toEndOf="@+id/textView3"
+        tools:layout_editor_absoluteY="36dp"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/user"
+        android:layout_width="105dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="12dp"
+        android:text="TextView"
+        app:layout_constraintTop_toBottomOf="@+id/temp_sign_out"
+        tools:layout_editor_absoluteX="286dp" />
+
+    <!--    <Button-->
 <!--        android:id="@+id/temp_sign_out"-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
