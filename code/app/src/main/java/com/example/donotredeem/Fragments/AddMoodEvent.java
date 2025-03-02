@@ -389,7 +389,7 @@ public class AddMoodEvent extends Fragment {
 
             // Write bitmap to file with high quality
             FileOutputStream fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);  
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
             fos.flush();
             fos.close();
 
