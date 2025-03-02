@@ -8,25 +8,28 @@
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fragment_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#222121">
 
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/closeButton"
             android:layout_width="wrap_content"
             android:layout_height="43dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="48dp"
             android:adjustViewBounds="true"
             android:backgroundTint="#222121"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.905"
+            app:layout_constraintHorizontal_bias="0.904"
             app:layout_constraintStart_toEndOf="@+id/textView6"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/close"
-            app:tint="#F4EEEE" />
+            app:tint="#F4EEEE"
+
+            />
 
         <TextView
             android:id="@+id/textView6"
@@ -39,10 +42,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.068"
+            app:layout_constraintHorizontal_bias="0.077"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.007" />
+            app:layout_constraintVertical_bias="0.038" />
 
         <TextView
             android:id="@+id/textView11"
@@ -184,8 +187,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.075"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13"
-            app:srcCompat="@drawable/hapi" />
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
         <ImageButton
             android:id="@+id/upload_button"
@@ -260,6 +262,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView19"
             tools:ignore="MissingConstraints" />
+
+        <ImageButton
+            android:id="@+id/clockButton"
+            android:layout_width="26dp"
+            android:layout_height="27dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:src="@drawable/clock"
+            app:layout_constraintEnd_toEndOf="@id/Time"
+            app:layout_constraintTop_toTopOf="@id/Time" />
 
         <RadioButton
             android:id="@+id/timeButton"
@@ -470,7 +484,7 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/tired" />
 
-                <!-- Add right margin for last button -->
+
 
             </LinearLayout>
         </HorizontalScrollView>
