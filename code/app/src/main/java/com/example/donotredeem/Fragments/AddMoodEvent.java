@@ -11,6 +11,7 @@ import android.Manifest;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import com.example.donotredeem.R;
@@ -50,6 +52,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -102,7 +107,8 @@ public class AddMoodEvent extends Fragment {
 
                 Bundle extras = result.getData().getExtras();
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
-                image.setImageBitmap(imageBitmap);
+                imageUri = getImageUriFromBitmap(requireContext(), imageBitmap); // Convert to URI
+                image.setImageURI(imageUri);
 
             }
         });
@@ -111,7 +117,7 @@ public class AddMoodEvent extends Fragment {
 
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
-                Uri imageUri = result.getData().getData();
+                imageUri = result.getData().getData();
                 image.setImageURI(imageUri);
             }
         });
@@ -235,8 +241,10 @@ public class AddMoodEvent extends Fragment {
             String dateText = date.getText().toString();
             String locationText = location.getText().toString();
             if (imageUri != null) {
+                Log.d("AddMoodEvent", "Uploading image: " + imageUri.toString());
                 uploadImageAndSaveMood(descText, socialText, triggerText, dateText, locationText);
             } else {
+                Log.e("AddMoodEvent", "Image URI is null, cannot upload!");
                 saveMoodToFirestore(descText, socialText, triggerText, dateText, locationText, null);
             }
         });
@@ -366,6 +374,35 @@ public class AddMoodEvent extends Fragment {
                 .addOnFailureListener(e ->
                         Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
     }
+    //Quality bad
+//    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
+//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+//        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "CameraImage", null);
+//        return Uri.parse(path);
+//    }
+
+    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
+        try {
+            // Create an image file in external storage
+            File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "captured_image.jpg");
+
+            // Write bitmap to file with high quality
+            FileOutputStream fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);  
+            fos.flush();
+            fos.close();
+
+            // Get the file's URI using FileProvider
+            return FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
 
     // Helper method to convert a Bitmap into a URI using the MediaStore.
 //    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
