@@ -78,13 +78,16 @@ public class MainActivity extends AppCompatActivity {
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Log.d("MainActivity", "Add button clicked");
+
+                AddMoodEvent addMoodEvent = new AddMoodEvent();
+
                 getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new AddMoodEvent())
+                        .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+                        .add(R.id.fragment_container, addMoodEvent)
                         .addToBackStack(null)
                         .commit();
-
             }
+
         });
 
         mapButton.setOnClickListener(new View.OnClickListener() {

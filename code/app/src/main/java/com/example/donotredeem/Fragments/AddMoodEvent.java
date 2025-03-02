@@ -2,6 +2,7 @@ package com.example.donotredeem.Fragments;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
@@ -9,9 +10,12 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -38,10 +42,12 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class AddMoodEvent extends Fragment {
 
@@ -59,7 +65,7 @@ public class AddMoodEvent extends Fragment {
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
     private FusedLocationProviderClient fusedLocationClient;
-    private LocationCallback locationCallback; //https://developer.android.com/develop/sensors-and-location/location/request-updates
+    private LocationCallback locationCallback;
 
 
     public AddMoodEvent() {
@@ -124,12 +130,13 @@ public class AddMoodEvent extends Fragment {
         RadioButton date_button = view.findViewById(R.id.dateButton);
         ImageButton calendar_button = view.findViewById(R.id.calendarButton);
 
-        date_button.setOnClickListener(v -> { // this code is taken from - https://www.geeksforgeeks.org/how-to-get-current-time-and-date-in-android/
+
+        // this code is taken from - https://www.geeksforgeeks.org/how-to-get-current-time-and-date-in-android/
+        date_button.setOnClickListener(v -> {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String currentDate = sdf.format(new Date());
             date.setText(currentDate);
         });
-
 
         calendar_button.setOnClickListener(v -> {
 
@@ -140,15 +147,67 @@ public class AddMoodEvent extends Fragment {
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), (view1, selectedYear, selectedMonth, selectedDay) -> {
 
-                        String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-                        date.setText(selectedDate);
-                    }, year, month, day
+                String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                date.setText(selectedDate);
+            }, year, month, day
             );
 
             datePickerDialog.show();
         });
 
+        EditText time = view.findViewById(R.id.Time);
+        RadioButton time_button = view.findViewById(R.id.timeButton);
+        ImageButton clock_button = view.findViewById(R.id.clockButton);
 
+        time_button.setOnClickListener(v -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            String currentTime = sdf.format(new Date());
+            time.setText(currentTime);
+
+        });
+
+        clock_button.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+
+            TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), (view1, selectedHour, selectedMinute) -> {
+
+                        String selectedTime =  selectedHour + ":" + selectedMinute;
+                        time.setText(selectedTime);
+                    },
+                    hour, minute, true // 24-hour format, false = am/pm
+            );
+
+            timePickerDialog.show();
+        });
+
+        ImageButton close = view.findViewById(R.id.closeButton);
+        View fragmentRoot = view.findViewById(R.id.fragment_root);
+
+        close.setOnClickListener(v -> {
+            Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+            fragmentRoot.startAnimation(slideOut);
+
+            slideOut.setAnimationListener(new Animation.AnimationListener() {
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+
+            });
+        });
 
         //USING QUERY FIND JO BHI USER IS UPLOADING AND STORING IN DATABASE - until then show it in mood historyyyy
 
@@ -245,7 +304,6 @@ public class AddMoodEvent extends Fragment {
             Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
         }
     }
-
 
 }
 
