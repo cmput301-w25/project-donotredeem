@@ -23,6 +23,7 @@ import com.example.donotredeem.Fragments.AddMoodEvent;
 import com.example.donotredeem.Fragments.Analytics;
 import com.example.donotredeem.Fragments.MainPage;
 import com.example.donotredeem.Fragments.Map;
+import com.example.donotredeem.Fragments.moodhistory;
 import com.example.donotredeem.Fragments.ProfilePage;
 import com.example.donotredeem.Fragments.Requests;
 import com.google.firebase.auth.FirebaseAuth;

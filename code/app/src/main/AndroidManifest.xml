@@ -40,18 +40,18 @@
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
-    </activity>
-    <activity
-        android:name=".LogIn"
-        android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-</intent-filter>
-    <meta-data
-    android:name="android.app. lib_name"
-    android:value="" />
-    </activity>
+        </activity>
+        <activity
+            android:name=".LogIn"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app. lib_name"
+                android:value="" />
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -59,15 +59,19 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="com.example.donotredeem.fileprovider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
+
+
+        <!--        <provider-->
+        <!--            android:authorities="com.example.donotredeem.fileProvider"-->
+        <!--            android:name="androidx.core.content.FileProvider"-->
+        <!--            android:exported="false"-->
+        <!--            android:grantUriPermissions="true">-->
+
+        <!--            <meta-data-->
+        <!--                android:name="android.support.FILE_PROVIDER_PATH"-->
+        <!--                android:resource="@xml/file_path"/>-->
+
+        <!--        </provider>-->
 
     </application>
 

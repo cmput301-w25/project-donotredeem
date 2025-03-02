@@ -18,15 +18,24 @@ import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class moodhistory extends Fragment {
     private ListView listView;
     private MoodEventAdapter adapter;
     private FirebaseFirestore db;
     private ArrayList<MoodEvent> moodHistoryList;
-    Dialog dialog;
-    Button filter_btn;
+    MoodEvent[] moodEvents = {
+            new MoodEvent("Happy", LocalDate.of(2024, 3, 2), LocalTime.of(10, 0), "Park", "Good weather", "Had a great morning walk"),
+            new MoodEvent("Sad", LocalDate.of(2024, 3, 1), LocalTime.of(15, 30), "Home", "Bad news", "Received some disappointing news"),
+            new MoodEvent("Excited", LocalDate.of(2024, 3, 3), LocalTime.of(18, 45), "Mall", "Shopping", "Bought something nice"),
+            new MoodEvent("Angry", LocalDate.of(2024, 3, 4), LocalTime.of(14, 15), "Office", "Work stress", "A difficult meeting happened"),
+            new MoodEvent("Calm", LocalDate.of(2024, 3, 5), LocalTime.of(20, 0), "Beach", "Meditation", "Relaxed watching the sunset")
+    };
+
 
     @Nullable
     @Override
@@ -37,8 +46,8 @@ public class moodhistory extends Fragment {
 
         db = FirebaseFirestore.getInstance();
 
-        moodHistoryList = new ArrayList<>();
-
+        moodHistoryList = new ArrayList<MoodEvent>();
+        moodHistoryList.addAll(Arrays.asList(moodEvents));
         adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
         listView.setAdapter(adapter);
 
