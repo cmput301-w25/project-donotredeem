@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import com.example.donotredeem.Fragments.MoodHistory;
+import com.example.donotredeem.Fragments.moodhistory;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -42,9 +42,9 @@ public class ProfilePage extends Fragment {
         sidePanel.findViewById(R.id.nav_history).setOnClickListener(v -> {
             drawerLayout.closeDrawer(sidePanel);
 
-            MoodHistory historyFragment = new MoodHistory();
+            moodhistory historyFragment = new moodhistory();
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .add(R.id.profile_fragment_container, new MoodHistory())
+                    .add(R.id.profile_fragment_container, new moodhistory())
                     .addToBackStack(null)
                     .commit();
         });

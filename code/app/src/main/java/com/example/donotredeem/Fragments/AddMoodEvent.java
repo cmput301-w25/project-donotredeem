@@ -152,6 +152,8 @@ public class AddMoodEvent extends Fragment {
         View view = inflater.inflate(R.layout.add_mood, container, false);
 
         EditText description = view.findViewById(R.id.desc);
+
+
         EditText socialSituation = view.findViewById(R.id.social);
         EditText addTrigger = view.findViewById(R.id.trigger);
         Button submit = view.findViewById(R.id.button);
