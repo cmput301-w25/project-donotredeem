@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -59,6 +61,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -105,9 +109,10 @@ public class AddMoodEvent extends Fragment {
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
 
-                Bundle extras = result.getData().getExtras();
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                imageUri = getImageUriFromBitmap(requireContext(), imageBitmap); // Convert to URI
+                // Bundle extras = result.getData().getExtras();
+//                Bitmap imageBitmap = (Bitmap) extras.get("data");
+//                imageUri = getImageUriFromBitmap(requireContext(), imageBitmap); // Convert to URI
+//                image.setImageURI(imageUri);
                 image.setImageURI(imageUri);
 
             }
@@ -123,6 +128,22 @@ public class AddMoodEvent extends Fragment {
         });
 
     }
+    private File createImageFile() throws IOException {
+
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+
+        File storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+
+        Log.d("ImageFile", "Image file created: " + image.getAbsolutePath());
+
+        imageUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider", image);
+        Log.d("ImageUri", "Image URI: " + imageUri.toString());
+
+        return image;
+    }
+
 
     @Nullable
     @Override
@@ -131,6 +152,8 @@ public class AddMoodEvent extends Fragment {
         View view = inflater.inflate(R.layout.add_mood, container, false);
 
         EditText description = view.findViewById(R.id.desc);
+
+
         EditText socialSituation = view.findViewById(R.id.social);
         EditText addTrigger = view.findViewById(R.id.trigger);
         Button submit = view.findViewById(R.id.button);
@@ -146,8 +169,18 @@ public class AddMoodEvent extends Fragment {
         location = view.findViewById(R.id.loc);
         RadioButton location_button = view.findViewById(R.id.radioButton);
 
+        final boolean[] isSelected_loc = {false};
+
         location_button.setOnClickListener(v -> {
-            checkLocationPermission();
+            if (isSelected_loc[0]) {
+                location.setText("");
+                location_button.setChecked(false);
+            } else {
+                checkLocationPermission();
+                location_button.setChecked(true);
+            }
+
+            isSelected_loc[0] = !isSelected_loc[0];
         });
 
         EditText date = view.findViewById(R.id.date);
@@ -156,10 +189,20 @@ public class AddMoodEvent extends Fragment {
 
 
         // this code is taken from - https://www.geeksforgeeks.org/how-to-get-current-time-and-date-in-android/
+        final boolean[] isSelected_date = {false};
+
         date_button.setOnClickListener(v -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            String currentDate = sdf.format(new Date());
-            date.setText(currentDate);
+            if (isSelected_date[0]) {
+                date.setText("");
+                date_button.setChecked(false);
+            } else {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String currentDate = sdf.format(new Date());
+                date.setText(currentDate);
+                date_button.setChecked(true);
+            }
+
+            isSelected_date[0] = !isSelected_date[0];
         });
 
         calendar_button.setOnClickListener(v -> {
@@ -183,11 +226,20 @@ public class AddMoodEvent extends Fragment {
         RadioButton time_button = view.findViewById(R.id.timeButton);
         ImageButton clock_button = view.findViewById(R.id.clockButton);
 
-        time_button.setOnClickListener(v -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            String currentTime = sdf.format(new Date());
-            time.setText(currentTime);
+        final boolean[] isSelected_time = {false};
 
+        time_button.setOnClickListener(v -> {
+            if (isSelected_time[0]) {
+                time.setText("");
+                time_button.setChecked(false);
+            } else {
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                String currentTime = sdf.format(new Date());
+                time.setText(currentTime);
+                time_button.setChecked(true);
+            }
+
+            isSelected_time[0] = !isSelected_time[0];
         });
 
         clock_button.setOnClickListener(v -> {
@@ -240,6 +292,7 @@ public class AddMoodEvent extends Fragment {
             String triggerText = addTrigger.getText().toString();
             String dateText = date.getText().toString();
             String locationText = location.getText().toString();
+
             if (imageUri != null) {
                 Log.d("AddMoodEvent", "Uploading image: " + imageUri.toString());
                 uploadImageAndSaveMood(descText, socialText, triggerText, dateText, locationText);
@@ -247,7 +300,28 @@ public class AddMoodEvent extends Fragment {
                 Log.e("AddMoodEvent", "Image URI is null, cannot upload!");
                 saveMoodToFirestore(descText, socialText, triggerText, dateText, locationText, null);
             }
+
+            Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+            fragmentRoot.startAnimation(slideOut);
+
+            slideOut.setAnimationListener(new Animation.AnimationListener() {
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
         });
+
 
         return view;
     }
@@ -283,8 +357,21 @@ public class AddMoodEvent extends Fragment {
             //https://developer.android.com/media/camera/camera-intents
             //startActivityForResult is deprecated version
 
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
-            cameraLauncher.launch(takePictureIntent);
+//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
+//            cameraLauncher.launch(takePictureIntent);
+            try {
+
+                File imageFile = createImageFile();
+                imageUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider", imageFile);
+
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+                cameraLauncher.launch(takePictureIntent);
+
+            } catch (IOException e) {
+                Log.e("CameraError", "Error creating image file", e);
+            }
 
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
@@ -326,8 +413,22 @@ public class AddMoodEvent extends Fragment {
 
                     double latitude = locationResult.getLastLocation().getLatitude();
                     double longitude = locationResult.getLastLocation().getLongitude();
-                    String currentLocation = latitude + ", " + longitude;
-                    location.setText(currentLocation);
+//                    String currentLocation = latitude + ", " + longitude;
+//                    location.setText(currentLocation);
+                    Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
+
+                    List<Address> addresses = null;
+
+                    try {
+                        addresses = geocoder.getFromLocation(latitude, longitude, 1);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+
+                    String Address = addresses.get(0).getAddressLine(0);
+
+                    location.setText(Address);
 
                     fusedLocationClient.removeLocationUpdates(locationCallback); //stop location updates
                 }
@@ -382,26 +483,26 @@ public class AddMoodEvent extends Fragment {
 //        return Uri.parse(path);
 //    }
 
-    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
-        try {
-            // Create an image file in external storage
-            File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "captured_image.jpg");
-
-            // Write bitmap to file with high quality
-            FileOutputStream fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);  
-            fos.flush();
-            fos.close();
-
-            // Get the file's URI using FileProvider
-            return FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
+//    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
+//        try {
+//            // Create an image file in external storage
+//            File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "captured_image.jpg");
+//
+//            // Write bitmap to file with high quality
+//            FileOutputStream fos = new FileOutputStream(file);
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+//            fos.flush();
+//            fos.close();
+//
+//            // Get the file's URI using FileProvider
+//            return FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//    }
+//
+//
 
 
     // Helper method to convert a Bitmap into a URI using the MediaStore.

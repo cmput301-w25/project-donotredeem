@@ -49,25 +49,25 @@ public class MainActivity extends AppCompatActivity {
 
 
         auth = FirebaseAuth.getInstance();
-        button = findViewById(R.id.temp_sign_out);
-        textView = findViewById(R.id.user);
-        user = auth.getCurrentUser();
-        if (user ==null){
-            Intent intent = new Intent(getApplicationContext(), LogIn.class);
-            startActivity(intent);
-            finish();
-        } else{
-            textView.setText(user.getEmail());
-        }
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), LogIn.class);
-                startActivity(intent);
-                finish();
-            }
-        });
+//        button = findViewById(R.id.temp_sign_out);
+//        textView = findViewById(R.id.user);
+//        user = auth.getCurrentUser();
+//        if (user ==null){
+//            Intent intent = new Intent(getApplicationContext(), LogIn.class);
+//            startActivity(intent);
+//            finish();
+//        } else{
+//            textView.setText(user.getEmail());
+//        }
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                FirebaseAuth.getInstance().signOut();
+//                Intent intent = new Intent(getApplicationContext(), LogIn.class);
+//                startActivity(intent);
+//                finish();
+//            }
+//        });
 
         addEvent = findViewById(R.id.add_button);
         mapButton = findViewById(R.id.map_button);
