@@ -169,8 +169,18 @@ public class AddMoodEvent extends Fragment {
         location = view.findViewById(R.id.loc);
         RadioButton location_button = view.findViewById(R.id.radioButton);
 
+        final boolean[] isSelected_loc = {false};
+
         location_button.setOnClickListener(v -> {
-            checkLocationPermission();
+            if (isSelected_loc[0]) {
+                location.setText("");
+                location_button.setChecked(false);
+            } else {
+                checkLocationPermission();
+                location_button.setChecked(true);
+            }
+
+            isSelected_loc[0] = !isSelected_loc[0];
         });
 
         EditText date = view.findViewById(R.id.date);
@@ -179,11 +189,20 @@ public class AddMoodEvent extends Fragment {
 
 
         // this code is taken from - https://www.geeksforgeeks.org/how-to-get-current-time-and-date-in-android/
-        date_button.setOnClickListener(v -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            String currentDate = sdf.format(new Date());
-            date.setText(currentDate);
+        final boolean[] isSelected_date = {false};
 
+        date_button.setOnClickListener(v -> {
+            if (isSelected_date[0]) {
+                date.setText("");
+                date_button.setChecked(false);
+            } else {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                String currentDate = sdf.format(new Date());
+                date.setText(currentDate);
+                date_button.setChecked(true);
+            }
+
+            isSelected_date[0] = !isSelected_date[0];
         });
 
         calendar_button.setOnClickListener(v -> {
@@ -207,11 +226,20 @@ public class AddMoodEvent extends Fragment {
         RadioButton time_button = view.findViewById(R.id.timeButton);
         ImageButton clock_button = view.findViewById(R.id.clockButton);
 
-        time_button.setOnClickListener(v -> {
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-            String currentTime = sdf.format(new Date());
-            time.setText(currentTime);
+        final boolean[] isSelected_time = {false};
 
+        time_button.setOnClickListener(v -> {
+            if (isSelected_time[0]) {
+                time.setText("");
+                time_button.setChecked(false);
+            } else {
+                SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+                String currentTime = sdf.format(new Date());
+                time.setText(currentTime);
+                time_button.setChecked(true);
+            }
+
+            isSelected_time[0] = !isSelected_time[0];
         });
 
         clock_button.setOnClickListener(v -> {
@@ -271,6 +299,7 @@ public class AddMoodEvent extends Fragment {
                 Log.e("AddMoodEvent", "Image URI is null, cannot upload!");
                 saveMoodToFirestore(descText, socialText, triggerText, dateText, locationText, null);
             }
+
         });
 
         return view;
