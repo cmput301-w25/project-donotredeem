@@ -292,6 +292,7 @@ public class AddMoodEvent extends Fragment {
             String triggerText = addTrigger.getText().toString();
             String dateText = date.getText().toString();
             String locationText = location.getText().toString();
+
             if (imageUri != null) {
                 Log.d("AddMoodEvent", "Uploading image: " + imageUri.toString());
                 uploadImageAndSaveMood(descText, socialText, triggerText, dateText, locationText);
@@ -300,7 +301,27 @@ public class AddMoodEvent extends Fragment {
                 saveMoodToFirestore(descText, socialText, triggerText, dateText, locationText, null);
             }
 
+            Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+            fragmentRoot.startAnimation(slideOut);
+
+            slideOut.setAnimationListener(new Animation.AnimationListener() {
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
         });
+
 
         return view;
     }
