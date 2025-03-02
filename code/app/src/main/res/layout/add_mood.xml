@@ -8,25 +8,28 @@
     android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/fragment_root"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#222121">
 
 
         <ImageButton
-            android:id="@+id/imageButton"
+            android:id="@+id/closeButton"
             android:layout_width="wrap_content"
             android:layout_height="43dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="48dp"
             android:adjustViewBounds="true"
             android:backgroundTint="#222121"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.905"
+            app:layout_constraintHorizontal_bias="0.904"
             app:layout_constraintStart_toEndOf="@+id/textView6"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/close"
-            app:tint="#F4EEEE" />
+            app:tint="#F4EEEE"
+
+            />
 
         <TextView
             android:id="@+id/textView6"
@@ -39,10 +42,10 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.068"
+            app:layout_constraintHorizontal_bias="0.077"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.007" />
+            app:layout_constraintVertical_bias="0.038" />
 
         <TextView
             android:id="@+id/textView11"
@@ -114,7 +117,7 @@
             app:layout_constraintHorizontal_bias="0.045"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView"
-            app:layout_constraintVertical_bias="0.087" />
+            app:layout_constraintVertical_bias="0.051" />
 
         <TextView
             android:id="@+id/textView15"
@@ -128,7 +131,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.048"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Time"
+            app:layout_constraintTop_toBottomOf="@+id/timeButton"
             app:layout_constraintVertical_bias="0.038" />
 
         <TextView
@@ -165,14 +168,14 @@
             android:id="@+id/textView18"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="88dp"
+            android:layout_marginTop="92dp"
             android:fontFamily="@font/inter"
             android:text="Upload"
             android:textColor="#F6F3F3"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.394"
+            app:layout_constraintHorizontal_bias="0.41"
             app:layout_constraintStart_toEndOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
@@ -184,8 +187,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.075"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView13"
-            app:srcCompat="@drawable/hapi" />
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
         <ImageButton
             android:id="@+id/upload_button"
@@ -218,6 +220,35 @@
             app:layout_constraintTop_toBottomOf="@+id/textView14"
             tools:ignore="MissingConstraints" />
 
+        <ImageButton
+            android:id="@+id/calendarButton"
+            android:layout_width="26dp"
+            android:layout_height="27dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:src="@drawable/calendar"
+            app:layout_constraintEnd_toEndOf="@id/date"
+            app:layout_constraintTop_toTopOf="@id/date" />
+
+        <RadioButton
+            android:id="@+id/dateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter"
+            android:text="Use current date"
+            android:textColor="#F8F4F4"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.06"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/date"
+            app:layout_constraintVertical_bias="0.0" />
+
+
+
         <EditText
             android:id="@+id/Time"
             android:layout_width="0dp"
@@ -232,6 +263,31 @@
             app:layout_constraintTop_toBottomOf="@+id/textView19"
             tools:ignore="MissingConstraints" />
 
+        <ImageButton
+            android:id="@+id/clockButton"
+            android:layout_width="26dp"
+            android:layout_height="27dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:src="@drawable/clock"
+            app:layout_constraintEnd_toEndOf="@id/Time"
+            app:layout_constraintTop_toTopOf="@id/Time" />
+
+        <RadioButton
+            android:id="@+id/timeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/inter"
+            android:text="Use current time"
+            android:textColor="#F8F4F4"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.068"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Time" />
+
         <EditText
             android:id="@+id/loc"
             android:layout_width="0dp"
@@ -240,6 +296,7 @@
             android:layout_marginTop="8dp"
             android:background="@android:drawable/editbox_background"
             android:hint="Location"
+            android:inputType="textPostalAddress"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView15"
@@ -299,8 +356,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.04"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/date"
-            app:layout_constraintVertical_bias="0.008" />
+            app:layout_constraintTop_toBottomOf="@+id/dateButton"
+            app:layout_constraintVertical_bias="0.022" />
 
         <Button
             android:id="@+id/button"
@@ -427,7 +484,6 @@
                     android:scaleType="fitCenter"
                     android:src="@drawable/tired" />
 
-                <!-- Add right margin for last button -->
 
             </LinearLayout>
         </HorizontalScrollView>
