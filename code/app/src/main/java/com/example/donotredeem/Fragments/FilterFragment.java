@@ -26,6 +26,8 @@ public class FilterFragment extends DialogFragment {
     private Button donebtn;
     private ImageButton close;
     private EditText Keyword;
+
+    private ImageButton selectedEmoji = null;
     private FilterMoodListener listener;
     private ArrayList<MoodEvent> moodEvents;
 
@@ -39,6 +41,8 @@ public class FilterFragment extends DialogFragment {
         if (getArguments() != null) {
             moodEvents = (ArrayList<MoodEvent>) getArguments().getSerializable("moodEvents");
         }
+
+
     }
 
     @Override
@@ -82,6 +86,18 @@ public class FilterFragment extends DialogFragment {
             dismiss();
         });
 
+        int[] emojiButtonIds = {
+                R.id.filter_emoji_happy, R.id.filter_emoji_sad, R.id.filter_emoji_fear,
+                R.id.filter_emoji_angry, R.id.filter_emoji_confused, R.id.filter_emoji_disgusted,
+                R.id.filter_emoji_shameful, R.id.filter_emoji_surprised, R.id.filter_emoji_shy,
+                R.id.filter_emoji_tired
+        };
+
+        for (int id : emojiButtonIds) {
+            ImageButton emojiButton = view.findViewById(id);
+            emojiButton.setOnClickListener(v -> highlightSelectedEmoji((ImageButton) v));
+        }
+
         return view;
     }
 
@@ -90,6 +106,21 @@ public class FilterFragment extends DialogFragment {
                 event.getPlace().toLowerCase().contains(keyword) ||
                 event.getTrigger().toLowerCase().contains(keyword) ||
                 event.getExplainText().toLowerCase().contains(keyword);
+    }
+
+    private void highlightSelectedEmoji(ImageButton selected) {
+        if (selectedEmoji != null) {
+            selectedEmoji.setBackground(null); // Remove highlight from previous selection
+            selectedEmoji.setElevation(0);
+        }
+
+        if (selectedEmoji == selected) {
+            selectedEmoji = null; // Unselect if clicking the same emoji
+        } else {
+            selected.setBackgroundResource(R.drawable.highlight_background);
+            selected.setElevation(8);
+            selectedEmoji = selected;
+        }
     }
 }
 
