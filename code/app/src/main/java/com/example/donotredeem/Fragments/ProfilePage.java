@@ -70,11 +70,16 @@ public class ProfilePage extends Fragment {
         sidePanel.findViewById(R.id.nav_history).setOnClickListener(v -> {
             drawerLayout.closeDrawer(sidePanel);
 
-            moodhistory historyFragment = new moodhistory();
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .add(R.id.profile_fragment_container, new moodhistory())
-                    .addToBackStack(null)
-                    .commit();
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment existingFragment = fragmentManager.findFragmentByTag("moodhistory");
+
+            if (existingFragment == null) { // Only add if not already in stack
+                moodhistory historyFragment = new moodhistory();
+                fragmentManager.beginTransaction()
+                        .add(R.id.profile_fragment_container, historyFragment, "moodhistory")
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         return view;
