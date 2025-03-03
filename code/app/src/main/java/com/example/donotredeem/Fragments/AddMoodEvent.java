@@ -15,6 +15,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -155,6 +157,33 @@ public class AddMoodEvent extends Fragment {
         View view = inflater.inflate(R.layout.add_mood, container, false);
 
         EditText description = view.findViewById(R.id.desc);
+        description.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String input = s.toString().trim();
+                int wordCount;
+
+                if (input.isEmpty()) {
+                    wordCount = 0;
+                } else {
+                    wordCount = input.split("\\s+").length;
+                }
+
+                int charCount = input.length();
+
+                if (wordCount > 3 || charCount > 20) {
+                    description.setError("Max 3 words or 20 characters");
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
 
         EditText socialSituation = view.findViewById(R.id.social);
@@ -185,6 +214,25 @@ public class AddMoodEvent extends Fragment {
 
             isSelected_loc[0] = !isSelected_loc[0];
         });
+
+        location.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0 && location_button.isChecked()) {
+                    location_button.setChecked(false);
+                    isSelected_loc[0] = false;
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
 
         EditText date = view.findViewById(R.id.date);
         RadioButton date_button = view.findViewById(R.id.dateButton);
@@ -224,6 +272,25 @@ public class AddMoodEvent extends Fragment {
 
             datePickerDialog.show();
         });
+        date.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0 && date_button.isChecked()) {
+                    date_button.setChecked(false);
+                    isSelected_date[0] = false;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
 
         EditText time = view.findViewById(R.id.Time);
         RadioButton time_button = view.findViewById(R.id.timeButton);
@@ -259,6 +326,25 @@ public class AddMoodEvent extends Fragment {
             );
 
             timePickerDialog.show();
+        });
+
+        time.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() > 0 && time_button.isChecked()) {
+                    time_button.setChecked(false);
+                    isSelected_time[0] = false;
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
         });
 
         ImageButton close = view.findViewById(R.id.closeButton);
