@@ -25,5 +25,16 @@ public enum MoodType {
     public int getImg_id() {
         return img_id;
     }
+
+    public static int getImageIdByMood(String mood) {
+        for (MoodType m : MoodType.values()) {
+            if (m.mood.equalsIgnoreCase(mood)) {
+                return m.img_id;
+            }
+        }
+        return -1; // Default value if not found (optional: return a default drawable)
+    }
 }
+
+
 

@@ -2,4 +2,15 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="Happy">#FDF6B8</color>
+    <color name="Sad">#BAC6CE</color>
+    <color name="Fear">#C09E90</color>
+    <color name="Angry">#E9A9A9</color>
+    <color name="Confused">#F6F5E7</color>
+    <color name="Disgusted">#BCDFAB</color>
+    <color name="Shameful">#E8CDFF</color>
+    <color name="Surprised">#FFFB8D</color>
+    <color name="Shy">#E5FFCB</color>
+    <color name="Tired">#CBE6FF</color>
+
 </resources>

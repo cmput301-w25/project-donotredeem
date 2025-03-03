@@ -66,7 +66,6 @@
 
     <ListView
         android:id="@+id/history_list"
-        android:background="@color/white"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
@@ -75,7 +74,6 @@
         android:layout_marginEnd="20dp"
         android:paddingBottom="30dp"
         android:scrollbars="vertical"
-        android:backgroundTint="#F5E6D3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headings"
         tools:layout_editor_absoluteX="8dp" />
