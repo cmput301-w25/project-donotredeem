@@ -3,6 +3,7 @@ package com.example.donotredeem;
 import android.content.Context;
 import android.graphics.Movie;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,6 +78,34 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         } else {
             Details.setCardBackgroundColor(ContextCompat.getColor(context,R.color.white)); // Set fallback color
         }
+
+        if (Current_Mood_Event.getExplainPicture() != null) {
+            // If picture description is available, show the image
+            ThisPictureDescription.setVisibility(View.VISIBLE);
+            // Set the image resource if available
+            ThisPictureDescription.setImageResource(R.drawable.sad); // Use actual image from the data if needed
+        } else {
+            // Hide the image if there's no picture description
+            ThisPictureDescription.setVisibility(View.GONE);
+        }
+
+        if(Current_Mood_Event.getExplainText() != null){
+            ThisTextDescription.setVisibility(View.VISIBLE);
+        }
+    else {
+        // Hide the image if there's no picture description
+        ThisTextDescription.setVisibility(View.GONE);
+    }
+
+//BITMAP IMAGES NOT WORKING WE NEED TO CHANGE TO URI EVERYWHERE
+//        if (Current_Mood_Event.getImageUri() != null && !Current_Mood_Event.getImageUri().isEmpty()) {
+//            ThisPictureDescription.setVisibility(View.VISIBLE);
+//            ThisPictureDescription.setImageURI(Uri.parse(Current_Mood_Event.getImageUri()));
+//        } else {
+//            ThisPictureDescription.setVisibility(View.GONE);
+//        }
+
+
 
 
 
