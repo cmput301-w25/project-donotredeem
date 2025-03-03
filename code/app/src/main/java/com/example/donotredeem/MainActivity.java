@@ -35,7 +35,7 @@ import androidx.fragment.app.Fragment;
 import org.w3c.dom.Text;
 
 public class MainActivity extends AppCompatActivity {
-    private ImageButton addEvent, mapButton, gridButton, heartButton, profilePage;
+    private ImageButton addEvent, mapButton, homeButton, heartButton, profilePage;
     FirebaseAuth auth;
     Button button;
     TextView textView;
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         addEvent = findViewById(R.id.add_button);
         mapButton = findViewById(R.id.map_button);
-        gridButton = findViewById(R.id.grid_button);
+        homeButton = findViewById(R.id.grid_button);
         heartButton = findViewById(R.id.heart_button);
         profilePage = findViewById(R.id.profilepage);
 
@@ -125,11 +125,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        gridButton.setOnClickListener(new View.OnClickListener() {
+        homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, new Analytics())
+                        .add(R.id.fragment_container, new MainPage())
                         .addToBackStack(null) // Adds this transaction to the back stack
                         .commit();
             }
