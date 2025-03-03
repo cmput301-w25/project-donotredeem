@@ -71,9 +71,12 @@ public class AddMoodEvent extends Fragment {
     private ImageView image;
     private EditText location;
 
+
     private static final int CAMERA_REQUEST = 100;
     private static final int GALLERY_REQUEST = 200;
     private static final int LOCATION_REQUEST = 300;
+
+    private ImageButton selectedEmoji = null;
 
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
@@ -322,6 +325,18 @@ public class AddMoodEvent extends Fragment {
             });
         });
 
+        int[] emojiButtonIds = {
+                R.id.emoji_happy, R.id.emoji_sad, R.id.emoji_fear,
+                R.id.emoji_angry, R.id.emoji_confused, R.id.emoji_disgusted,
+                R.id.emoji_shameful, R.id.emoji_surprised, R.id.emoji_shy,
+                R.id.emoji_tired
+        };
+
+        for (int id : emojiButtonIds) {
+            ImageButton emojiButton = view.findViewById(id);
+            emojiButton.setOnClickListener(v -> highlightSelectedEmoji((ImageButton) v));
+        }
+
 
         return view;
     }
@@ -529,5 +544,21 @@ public class AddMoodEvent extends Fragment {
 //                    Log.w(TAG, "Error adding test document", e);
 //                });
 //    }
+
+
+    private void highlightSelectedEmoji(ImageButton selected) {
+        if (selectedEmoji != null) {
+            selectedEmoji.setBackground(null); // Remove highlight from previous selection
+            selectedEmoji.setElevation(0);
+        }
+
+        if (selectedEmoji == selected) {
+            selectedEmoji = null; // Unselect if clicking the same emoji
+        } else {
+            selected.setBackgroundResource(R.drawable.highlight_background);
+            selected.setElevation(8);
+            selectedEmoji = selected;
+        }
+    }
 }
 
