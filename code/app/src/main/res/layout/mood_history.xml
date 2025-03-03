@@ -30,7 +30,7 @@
             android:paddingTop="12dp"
             android:layout_marginEnd="5sp"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="40dp"
             app:tint = "#F5E6D3"/>
 
         <TextView

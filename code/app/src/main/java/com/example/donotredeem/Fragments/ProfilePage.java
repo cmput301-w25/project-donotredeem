@@ -33,9 +33,9 @@ public class ProfilePage extends Fragment {
 
 
     MoodEvent[] moodEvents = {
-            new MoodEvent("Happy", LocalDate.of(2024, 3, 2), LocalTime.of(10, 0), "Park", "Good weather", "Had a great morning walk"),
+            new MoodEvent("Happy", LocalDate.of(2024, 3, 2), LocalTime.of(10, 0), "Park", "Good weather"),
             new MoodEvent("Sad", LocalDate.of(2024, 3, 1), LocalTime.of(15, 30), "Home", "Bad news", "Received some disappointing news"),
-            new MoodEvent("Shy", LocalDate.of(2024, 3, 3), LocalTime.of(18, 45), "Mall", "Shopping", "Bought something nice"),
+            new MoodEvent("Shy", LocalDate.of(2024, 3, 3), LocalTime.of(18, 45), "Mall", "Shopping"),
             new MoodEvent("Angry", LocalDate.of(2024, 3, 4), LocalTime.of(14, 15), "Office", "Work stress", "A difficult meeting happened"),
             new MoodEvent("Fear", LocalDate.of(2024, 3, 5), LocalTime.of(20, 0), "Beach", "Meditation", "Relaxed watching the sunset")
     };
@@ -70,11 +70,16 @@ public class ProfilePage extends Fragment {
         sidePanel.findViewById(R.id.nav_history).setOnClickListener(v -> {
             drawerLayout.closeDrawer(sidePanel);
 
-            moodhistory historyFragment = new moodhistory();
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .add(R.id.profile_fragment_container, new moodhistory())
-                    .addToBackStack(null)
-                    .commit();
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment existingFragment = fragmentManager.findFragmentByTag("moodhistory");
+
+            if (existingFragment == null) { // Only add if not already in stack
+                moodhistory historyFragment = new moodhistory();
+                fragmentManager.beginTransaction()
+                        .add(R.id.profile_fragment_container, historyFragment, "moodhistory")
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
 
         return view;
