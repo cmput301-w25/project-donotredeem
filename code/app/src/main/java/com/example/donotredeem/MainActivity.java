@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
 
 
-        auth = FirebaseAuth.getInstance();
+        //auth = FirebaseAuth.getInstance();
 //        button = findViewById(R.id.temp_sign_out);
 //        textView = findViewById(R.id.user);
 //        user = auth.getCurrentUser();
