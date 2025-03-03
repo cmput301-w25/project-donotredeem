@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -79,17 +81,39 @@ public class MainActivity extends AppCompatActivity {
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                Fragment existingFragment = fragmentManager.findFragmentByTag("AddMoodEvent");
 
-                AddMoodEvent addMoodEvent = new AddMoodEvent();
+                if (fragmentManager.findFragmentByTag("AddMoodEvent") == null) {
 
-                getSupportFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
-                        .add(R.id.fragment_container, addMoodEvent)
-                        .addToBackStack(null)
-                        .commit();
+                    AddMoodEvent addMoodEvent = new AddMoodEvent();
+                    fragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+                            .add(R.id.fragment_container, addMoodEvent, "AddMoodEvent")
+                            .addToBackStack("AddMoodEvent")
+                            .commit();
+                } else {
+
+                    View fragmentView = existingFragment.getView();
+                    Animation slideOut = AnimationUtils.loadAnimation(view.getContext(), R.anim.slide_out_bottom);
+                    fragmentView.startAnimation(slideOut);
+
+                    slideOut.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {}
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            fragmentManager.popBackStack("AddMoodEvent", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {}
+                    });
+                }
             }
-
         });
+
 
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
