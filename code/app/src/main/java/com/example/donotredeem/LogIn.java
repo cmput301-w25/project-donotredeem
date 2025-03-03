@@ -90,13 +90,15 @@ public class LogIn extends AppCompatActivity {
                 }
 
                 // Firestore query to check if the username exists and password matches
-                DocumentReference userDocRef = db.collection("users").document(username);
+                Log.d(TAG, "Fetching user: " + username);
+                DocumentReference userDocRef = db.collection("User").document(username);
                 userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             DocumentSnapshot document = task.getResult();
                             if (document.exists()) {
+                                Log.d(TAG, "User document found: " + document.getData());
                                 String storedPassword = document.getString("password");
                                 if (storedPassword != null && storedPassword.equals(password)) {
                                     // Password matches, allow login
