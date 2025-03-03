@@ -1,6 +1,7 @@
 package com.example.donotredeem.Fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class moodhistory extends Fragment {
+public class moodhistory extends Fragment implements FilterFragment.FilterMoodListener{
     private ListView listView;
     private MoodEventAdapter adapter;
     private FirebaseFirestore db;
@@ -35,6 +36,12 @@ public class moodhistory extends Fragment {
             new MoodEvent("Angry", LocalDate.of(2024, 3, 4), LocalTime.of(14, 15), "Office", "Work stress", "A difficult meeting happened"),
             new MoodEvent("Fear", LocalDate.of(2024, 3, 5), LocalTime.of(20, 0), "Beach", "Meditation", "Relaxed watching the sunset")
     };
+
+    @Override
+    public void filterMood(ArrayList<MoodEvent> filteredList) {
+        Display(filteredList);
+
+    }
 
 
     @Nullable
@@ -48,8 +55,7 @@ public class moodhistory extends Fragment {
 
         moodHistoryList = new ArrayList<MoodEvent>();
         moodHistoryList.addAll(Arrays.asList(moodEvents));
-        adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
-        listView.setAdapter(adapter);
+        Display(moodHistoryList);
 
 
         view.findViewById(R.id.cancel_history).setOnClickListener(v -> {
@@ -57,10 +63,17 @@ public class moodhistory extends Fragment {
         });
 
         ImageButton filter_btn = view.findViewById(R.id.filter_icon);
+
         filter_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog();
+                // Create FilterFragment and pass the current mood list
+                FilterFragment filterFragment = new FilterFragment();
+                Bundle args = new Bundle();
+                args.putSerializable("moodEvents", moodHistoryList);
+                filterFragment.setArguments(args);
+                filterFragment.setTargetFragment(moodhistory.this, 0);
+                filterFragment.show(getParentFragmentManager(), "filter");
             }
         });
 
@@ -68,18 +81,10 @@ public class moodhistory extends Fragment {
         return view;
     }
 
-    private void showDialog(){
-        Dialog dialog = new Dialog(requireContext());
-        dialog.setContentView(R.layout.filter_mood);
-        ImageButton close = dialog.findViewById(R.id.filer_closeButton);
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.show();
+    private void Display(ArrayList<MoodEvent> moodHistoryList){
+        adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
 }
