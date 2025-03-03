@@ -2,6 +2,8 @@ package com.example.donotredeem;
 
 import android.content.Context;
 import android.graphics.Movie;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 
@@ -37,7 +41,12 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             MainView = convertView;
         }
 
+
         MoodEvent Current_Mood_Event = getItem(position);
+
+        ImageView Emoji = MainView.findViewById(R.id.emojiIcon);
+
+        CardView Details = MainView.findViewById(R.id.details);
 
         TextView ThisEmoState = MainView.findViewById(R.id.Emotional_State);
         TextView ThisTime = MainView.findViewById(R.id.Specific_Time);
@@ -56,6 +65,20 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             ThisTrigger.setText(Current_Mood_Event.getTrigger());
             ThisTextDescription.setText(Current_Mood_Event.getExplainText());
         }
+
+        String mood = Current_Mood_Event.getEmotionalState();
+        int imageId = MoodType.getImageIdByMood(mood);
+        Emoji.setImageResource(imageId);
+        int colorId = context.getResources().getIdentifier(mood, "color", context.getPackageName());
+
+        if (colorId != 0) { // Ensure the color resource exists
+            int color = ContextCompat.getColor(context, colorId);
+            Details.setCardBackgroundColor(color);
+        } else {
+            Details.setCardBackgroundColor(ContextCompat.getColor(context,R.color.white)); // Set fallback color
+        }
+
+
 
         return MainView;
 

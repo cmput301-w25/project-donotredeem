@@ -3,7 +3,6 @@
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/history_list">
@@ -19,18 +18,15 @@
         android:layout_alignParentTop="true"/>
 
 
-    <TextView
+    <ImageView
         android:id="@+id/emojiIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/angry"
-        android:gravity="center"
-        android:textSize="18sp"
-
+        android:src="@drawable/pfpicon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/details"
         app:layout_constraintBottom_toBottomOf="@id/details"
-        android:layout_marginStart="16dp" />
+        android:layout_marginStart="16dp"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/details"
