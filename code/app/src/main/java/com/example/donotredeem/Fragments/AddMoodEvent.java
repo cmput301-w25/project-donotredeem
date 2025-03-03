@@ -41,6 +41,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -72,13 +73,14 @@ public class AddMoodEvent extends Fragment {
 
     private ImageView image;
     private EditText location;
-
+    private String selectedMoodName = null;
 
     private static final int CAMERA_REQUEST = 100;
     private static final int GALLERY_REQUEST = 200;
     private static final int LOCATION_REQUEST = 300;
 
     private ImageButton selectedEmoji = null;
+    ImageButton socialButton;
 
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
@@ -94,6 +96,14 @@ public class AddMoodEvent extends Fragment {
     public AddMoodEvent() {
         // Required empty public constructor
     }
+
+    int[] emojiButtonIds = {
+            R.id.emoji_happy, R.id.emoji_sad, R.id.emoji_fear,
+            R.id.emoji_angry, R.id.emoji_confused, R.id.emoji_disgusted,
+            R.id.emoji_shameful, R.id.emoji_surprised, R.id.emoji_shy,
+            R.id.emoji_tired
+    };
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,7 +134,6 @@ public class AddMoodEvent extends Fragment {
         });
 
         // change bitmap to uri after database is added
-
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
                 imageUri = result.getData().getData();
@@ -175,8 +184,8 @@ public class AddMoodEvent extends Fragment {
 
                 int charCount = input.length();
 
-                if (wordCount > 3 || charCount > 20) {
-                    description.setError("Max 3 words or 20 characters");
+                if (wordCount > 3 && charCount > 20) {
+                    description.setError("Max 3 words or less than 20 characters");
                 }
             }
             @Override
@@ -186,8 +195,9 @@ public class AddMoodEvent extends Fragment {
         });
 
 
-        EditText socialSituation = view.findViewById(R.id.social);
+
         EditText addTrigger = view.findViewById(R.id.trigger);
+//        EditText social = view.findViewById(R.id.social);
         Button submit = view.findViewById(R.id.button);
 
         image = view.findViewById(R.id.imageView);
@@ -347,8 +357,59 @@ public class AddMoodEvent extends Fragment {
             }
         });
 
-        ImageButton close = view.findViewById(R.id.closeButton);
+        int[] socialButtonIds = {R.id.alone_social, R.id.pair_social, R.id.crowd_social};
+        for (int id : socialButtonIds) {
+            socialButton = view.findViewById(id);
+            socialButton.setOnClickListener(v -> highlightSelectedEmoji((ImageButton) v));
+        }
+
+
+
+        for (int id : emojiButtonIds) {
+            ImageButton emojiButton = view.findViewById(id);
+            emojiButton.setOnClickListener(v -> highlightSelectedEmoji((ImageButton) v));
+        }
+
         View fragmentRoot = view.findViewById(R.id.fragment_root);
+        submit.setOnClickListener(v -> {
+            String descText = description.getText().toString();
+            //String socialText = social.getText().toString();
+            String triggerText = addTrigger.getText().toString();
+            String dateText = date.getText().toString();
+            String locationText = location.getText().toString();
+
+
+            if (imageUri != null) {
+                Log.d("AddMoodEvent", "Uploading image: " + imageUri.toString());
+                uploadImageAndSaveMood(descText, triggerText, dateText, locationText, selectedMoodName);
+            } else {
+                Log.e("AddMoodEvent", "Image URI is null, cannot upload!");
+                saveMoodToFirestore(descText, triggerText, dateText, locationText, null, selectedMoodName);
+            }
+
+            Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+            fragmentRoot.startAnimation(slideOut);
+
+            slideOut.setAnimationListener(new Animation.AnimationListener() {
+
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+        });
+
+
+        ImageButton close = view.findViewById(R.id.closeButton);
 
         close.setOnClickListener(v -> {
             Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
@@ -374,54 +435,6 @@ public class AddMoodEvent extends Fragment {
             });
         });
 
-        // Submit button: either upload image then save mood or save directly.
-        submit.setOnClickListener(v -> {
-            String descText = description.getText().toString();
-            String socialText = socialSituation.getText().toString();
-            String triggerText = addTrigger.getText().toString();
-            String dateText = date.getText().toString();
-            String locationText = location.getText().toString();
-
-            if (imageUri != null) {
-                Log.d("AddMoodEvent", "Uploading image: " + imageUri.toString());
-                uploadImageAndSaveMood(descText, socialText, triggerText, dateText, locationText);
-            } else {
-                Log.e("AddMoodEvent", "Image URI is null, cannot upload!");
-                saveMoodToFirestore(descText, socialText, triggerText, dateText, locationText, null);
-            }
-
-            Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-            fragmentRoot.startAnimation(slideOut);
-
-            slideOut.setAnimationListener(new Animation.AnimationListener() {
-
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-        });
-
-        int[] emojiButtonIds = {
-                R.id.emoji_happy, R.id.emoji_sad, R.id.emoji_fear,
-                R.id.emoji_angry, R.id.emoji_confused, R.id.emoji_disgusted,
-                R.id.emoji_shameful, R.id.emoji_surprised, R.id.emoji_shy,
-                R.id.emoji_tired
-        };
-
-        for (int id : emojiButtonIds) {
-            ImageButton emojiButton = view.findViewById(id);
-            emojiButton.setOnClickListener(v -> highlightSelectedEmoji((ImageButton) v));
-        }
 
 
         return view;
@@ -546,26 +559,28 @@ public class AddMoodEvent extends Fragment {
     }
 
     // Uploads image to Firebase Storage and then saves mood data to Firestore
-    private void uploadImageAndSaveMood(String desc, String social, String trigger,
-                                        String date, String locationText) {
+    private void uploadImageAndSaveMood(String desc, String trigger,
+                                        String date, String locationText, String mood) {
         String imageFileName = UUID.randomUUID().toString() + ".jpg";
         StorageReference imageRef = storageRef.child(imageFileName);
         imageRef.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
-                        .addOnSuccessListener(uri -> saveMoodToFirestore(desc, social, trigger, date, locationText, uri.toString())))
+                        .addOnSuccessListener(uri -> saveMoodToFirestore(desc, trigger, date, locationText, uri.toString(), mood)))
                 .addOnFailureListener(e ->
                         Toast.makeText(getContext(), "Image upload failed!", Toast.LENGTH_SHORT).show());
     }
 
     // Saves mood event data to Firestore
-    private void saveMoodToFirestore(String desc, String social, String trigger,
-                                     String date, String locationText, String imageUrl) {
+    private void saveMoodToFirestore(String desc, String trigger,
+                                     String date, String locationText, String imageUrl, String mood) {
         Map<String, Object> moodData = new HashMap<>();
+        moodData.put("mood", mood);
         moodData.put("description", desc);
-        moodData.put("socialSituation", social);
+        //moodData.put("socialSituation", social);
         moodData.put("trigger", trigger);
         moodData.put("date", date);
         moodData.put("location", locationText);
+
         if (imageUrl != null) {
             moodData.put("imageUrl", imageUrl);
         }
@@ -631,7 +646,6 @@ public class AddMoodEvent extends Fragment {
 //                });
 //    }
 
-
     private void highlightSelectedEmoji(ImageButton selected) {
         if (selectedEmoji != null) {
             selectedEmoji.setBackground(null); // Remove highlight from previous selection
@@ -640,11 +654,31 @@ public class AddMoodEvent extends Fragment {
 
         if (selectedEmoji == selected) {
             selectedEmoji = null; // Unselect if clicking the same emoji
+            selectedMoodName = null;  // Reset selected mood
         } else {
             selected.setBackgroundResource(R.drawable.highlight_background);
             selected.setElevation(8);
             selectedEmoji = selected;
+
+            int buttonId = selected.getId();
+            MoodType selectedMood = getMoodForButtonId(buttonId);
+            if (selectedMood != null) {
+                selectedMoodName = selectedMood.getMood();
+            }
         }
     }
+
+    private MoodType getMoodForButtonId(int buttonId) {
+
+        for (int i = 0; i < emojiButtonIds.length; i++) {
+            if (emojiButtonIds[i] == buttonId) {
+                //MoodType selectedMood = MoodType.values()[i];
+                //Log.d("SelectedMood", "Mood for buttonId " + buttonId + ": " + selectedMood.getMood());
+                return MoodType.values()[i];
+            }
+        }
+        return null;
+    }
+
 }
 
