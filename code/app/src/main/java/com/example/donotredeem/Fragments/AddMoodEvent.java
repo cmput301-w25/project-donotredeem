@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.graphics.Bitmap;
@@ -58,6 +59,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.firestore.FieldValue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -599,13 +601,27 @@ public class AddMoodEvent extends Fragment {
                                          String mood, String social, String time) {
 
             MoodEvent moodEvent = new MoodEvent(mood, date, time, locationText, social, trigger, desc, imageUrl);
-                db.collection("MoodEvents")
-                        .add(moodEvent)
-                        .addOnSuccessListener(documentReference ->
-                                Toast.makeText(getContext(), "Mood Event Saved!", Toast.LENGTH_SHORT).show())
-                        .addOnFailureListener(e ->
-                                Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
-            }
+            db.collection("MoodEvents")
+                    .add(moodEvent)
+                    .addOnSuccessListener(documentReference -> {
+                        Toast.makeText(getContext(), "Mood Event Saved!", Toast.LENGTH_SHORT).show();
+                        // Retrieve the currently logged in username from SharedPreferences
+                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+                        String loggedInUsername = sharedPreferences.getString("username", null);
+                        if (loggedInUsername != null) {
+                            // Update the user document by appending the new mood event reference to the "MoodRef" array field
+                            DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
+                            userDocRef.update("MoodRef", FieldValue.arrayUnion(documentReference.getId()))
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "User document updated with mood event reference"))
+                                    .addOnFailureListener(e -> Log.e(TAG, "Failed to update user document", e));
+                        } else {
+                            Log.e(TAG, "Logged-in username not found in SharedPreferences");
+                        }
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
+        }
+
 
     //Quality bad
 //    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
