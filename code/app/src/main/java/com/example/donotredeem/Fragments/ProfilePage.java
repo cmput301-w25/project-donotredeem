@@ -1,5 +1,7 @@
 package com.example.donotredeem.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +47,9 @@ public class ProfilePage extends Fragment {
 
         recent_list = view.findViewById(R.id.recent_history);
 
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        String loggedInUsername = sharedPreferences.getString("username", null);
+
         moodHistoryList = new ArrayList<MoodEvent>();
         moodHistoryList.addAll(Arrays.asList(moodEvents));
 
@@ -77,6 +82,21 @@ public class ProfilePage extends Fragment {
                 moodhistory historyFragment = new moodhistory();
                 fragmentManager.beginTransaction()
                         .add(R.id.profile_fragment_container, historyFragment, "moodhistory")
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+        sidePanel.findViewById(R.id.nav_profile).setOnClickListener(v -> {
+            drawerLayout.closeDrawer(sidePanel);
+
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment existingFragment = fragmentManager.findFragmentByTag("EditProfile");
+
+            if (existingFragment == null) { // Only add if not already in stack
+                EditProfile profileFragment = new EditProfile();
+                fragmentManager.beginTransaction()
+                        .add(R.id.profile_fragment_container, profileFragment, "EditProfile")
                         .addToBackStack(null)
                         .commit();
             }

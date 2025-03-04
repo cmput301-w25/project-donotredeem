@@ -1,6 +1,9 @@
 package com.example.donotredeem.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +26,7 @@ import com.google.firebase.firestore.auth.User;
 
 public class EditProfile extends Fragment {
 
-    String username;
+    String username ="AG";
 
     private EditText editUsername;
     private EditText editPassword;
@@ -36,6 +39,7 @@ public class EditProfile extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_profile, container, false);
+
         done =view.findViewById(R.id.button2);
         editUsername = view.findViewById(R.id.username_desc);
         editPassword = view.findViewById(R.id.password_desc);
@@ -50,6 +54,7 @@ public class EditProfile extends Fragment {
             }
             @Override
             public void onUserProfileFetchError(Exception e) {
+                Toast.makeText(getContext(), "Failed to fetch profile", Toast.LENGTH_SHORT).show();
             }
         });
 
