@@ -2,7 +2,9 @@ package com.example.donotredeem;
 
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.net.Uri;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -17,13 +19,13 @@ public class MoodEvent {
     private String situation;
     private String trigger;
     private String explainText;
-    private Bitmap explainPicture;
+    private String explainPicture;
 
 
     // Constructor
     public MoodEvent(String emotionalState, LocalDate date, LocalTime time,
                      String place, Location location, String situation,
-                     String trigger, String explainText, Bitmap explainPicture) {
+                     String trigger, String explainText, String explainPicture) {
 
         // Required Field
         if (emotionalState == null || emotionalState.trim().isEmpty()) {
@@ -80,6 +82,28 @@ public class MoodEvent {
 //    heer testing
     public MoodEvent(String emotionalState, LocalDate date, LocalTime time,
                      String place, String situation,
+                     String trigger, String explainText, String explainPicture) {
+
+        // Required Field
+        if (emotionalState == null || emotionalState.trim().isEmpty()) {
+            throw new IllegalArgumentException("Emotional state is required.");
+        }
+        this.emotionalState = emotionalState;
+        this.time = (time != null) ? time : LocalTime.now();
+        this.date = (date != null) ? date : LocalDate.now();
+
+        // Defaults to user-entered place or empty string
+        this.place = (place != null) ? place : "";
+
+        this.situation = situation;
+        // Optional fields, need to provide null values if not there
+        this.trigger = trigger;
+        this.explainText = explainText;
+        this.explainPicture = explainPicture;
+    }
+
+    public MoodEvent(String emotionalState, LocalDate date, LocalTime time,
+                     String place, String situation,
                      String trigger, String explainText) {
 
         // Required Field
@@ -87,11 +111,13 @@ public class MoodEvent {
             throw new IllegalArgumentException("Emotional state is required.");
         }
         this.emotionalState = emotionalState;
+        this.time = (time != null) ? time : LocalTime.now();
+        this.date = (date != null) ? date : LocalDate.now();
 
-        // user date and time, if not given then system date and time
-        this.date = LocalDate.of(2024, 3, 2);
+        // Defaults to user-entered place or empty string
+        this.place = (place != null) ? place : "";
 
-
+        this.situation = situation;
         // Optional fields, need to provide null values if not there
         this.trigger = trigger;
         this.explainText = explainText;
@@ -160,7 +186,7 @@ public class MoodEvent {
         return explainText;
     }
 
-    public Bitmap getExplainPicture() {
+    public String getExplainPicture() {
         return explainPicture;
     }
 
@@ -201,7 +227,7 @@ public class MoodEvent {
         this.explainText = explainText;
     }
 
-    public void setExplainPicture(Bitmap explainPicture) {
+    public void setExplainPicture(String explainPicture) {
         this.explainPicture = explainPicture;
     }
 }

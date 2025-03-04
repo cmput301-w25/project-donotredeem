@@ -25,15 +25,20 @@ public enum SocialSituation {
     }
 
 
-    public static int getImageIdBySituation(String label) {
-        for (SocialSituation situation : SocialSituation.values()) {
-            if (situation.getLabel().equalsIgnoreCase(label)) {
-                return situation.getImg_id();
-            }
+    public static int getImageIdBySituation(String situation) {
+        if (situation == null) return -1;
+
+        switch (situation) {
+            case "Alone":
+                return R.drawable.alone;
+            case "Pair":
+                return R.drawable.pair;
+            case "Crowd":
+                return R.drawable.crowd;
+            // Add more cases here
+            default:
+                return -1;  // Return -1 for invalid or unrecognized situations
         }
-        // Log or handle invalid situation gracefully
-        Log.e("SocialSituation", "No matching situation found for label: " + label);
-        return -1;  // Return a fallback value or handle error
     }
 
 }

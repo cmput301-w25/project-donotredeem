@@ -3,6 +3,7 @@ package com.example.donotredeem.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +24,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -160,24 +162,24 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
                                 String trigger = (String) documentSnapshot.get("trigger");
                                 String explainText = (String) documentSnapshot.get("description");
                                 String timeString = (String) documentSnapshot.get("time");
-                                Log.d("MoodHistory", "string time " + timeString);
-                                String situation = (String) documentSnapshot.get("situation");
+                                Log.e("MoodHistory", "Time string:" + timeString);
+                                String situation = (String) documentSnapshot.get("socialSituation");
                                 String location = (String) documentSnapshot.get("location");
-                                timeString = timeString.trim();
+                                String picture_string = (String)documentSnapshot.get("imageUrl");
+                                Log.e("MoodHistory", "  Picture string:" + picture_string);
+
 
 
                                 LocalDate date = parseStringToDate(dateString);
                                 LocalTime time = parseStringToTime(timeString);
 
+                                MoodEvent moodEvent;
+                                if (picture_string == null){
+                                    moodEvent = new MoodEvent(emotionalState, date, time, location, situation, trigger, explainText);
 
-
-                                // Create the MoodEvent object
-                                MoodEvent moodEvent = new MoodEvent(emotionalState, date, time, location, situation, trigger, explainText);
-
-                                // Log the MoodEvent creation
-                                Log.d("MoodHistory", "MoodEvent created: " + moodEvent.toString());
-                                Log.d("MoodHistory", "MoodEvent created: " + moodEvent.getEmotionalState());
-                                Log.d("MoodHistory", "MoodEvent created: " + moodEvent.getTime());
+                                }
+                                else {
+                                moodEvent = new MoodEvent(emotionalState, date, time, location, situation, trigger, explainText,picture_string);}
 
                                 // You can also add this to a list or display it as needed
                                 moodHistoryList.add(moodEvent);
@@ -237,6 +239,9 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
             return LocalTime.now(); // Default to current time if parsing fails
         }
     }
+
+
+
 
 
 

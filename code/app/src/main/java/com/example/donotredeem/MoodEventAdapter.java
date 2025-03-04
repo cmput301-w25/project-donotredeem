@@ -18,6 +18,9 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
+import com.bumptech.glide.Glide;
+
+import java.net.URI;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
@@ -55,6 +58,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         TextView ThisDate = MainView.findViewById(R.id.Specific_Date);
         TextView ThisLocation = MainView.findViewById(R.id.Specific_Location);
         ImageView ThisSituation = MainView.findViewById(R.id.SituationImage);
+        ThisSituation.setVisibility(View.VISIBLE);
         TextView ThisTrigger = MainView.findViewById(R.id.Specific_Trigger);
         TextView ThisTextDescription = MainView.findViewById(R.id.Additional_details);
         ImageView ThisPictureDescription = MainView.findViewById(R.id.timelineImage);
@@ -62,26 +66,45 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         if (Current_Mood_Event != null) {
             ThisEmoState.setText(Current_Mood_Event.getEmotionalState());
-            LocalTime time = Current_Mood_Event.getTime();
-            if (time != null) {
-                ThisTime.setText(time.toString());  // Show time if valid
-            } else {
-                ThisTime.setText("00:00:00");  // Default time if it's null
-            }
+            ThisTime.setText(Current_Mood_Event.getTime().toString());
+            ThisLocation.setText(Current_Mood_Event.getPlace());
             ThisDate.setText(Current_Mood_Event.getDate().toString());
             ThisTrigger.setText(Current_Mood_Event.getTrigger());
             ThisTextDescription.setText(Current_Mood_Event.getExplainText());
         }
 
+        String imageUri = Current_Mood_Event.getExplainPicture();
+
+        if (imageUri != null && !imageUri.isEmpty()) {
+            // Use Glide to load the image into the ImageView
+            Glide.with(getContext()) // 'context' could be your activity or fragment
+                    .load(imageUri) // Load the image from the URL
+                    .placeholder(R.drawable.rounded_background) // Optional: set a placeholder while loading
+                    .error(R.drawable.rounded_background) // Optional: set an error image if the URL fails
+                    .into(ThisPictureDescription); // Set the image into the ImageView
+        } else {
+            // Fallback to default image if no URL is provided
+            ThisPictureDescription.setImageResource(R.drawable.rounded_background);
+        }
+
+
+//        if (imageUri != null) {
+//            Log.d("image", "image uri is not null");
+//            ThisPictureDescription.setImageURI(imageUri);
+//        } else {
+//            ThisPictureDescription.setImageResource(R.drawable.cat); // Default image
+//        }
+
         String mood = Current_Mood_Event.getEmotionalState();
         String situation = Current_Mood_Event.getSituation();
 
-        int situationid = SocialSituation.getImageIdBySituation(situation);
-        if (situationid != -1) {
-            ThisSituation.setImageResource(situationid);
+
+        int situationId = SocialSituation.getImageIdBySituation(situation);
+        if (situationId != -1) {
+            ThisSituation.setImageResource(situationId);
+            Log.d("MoodAdapter", "Image set.");
         } else {
-            // Handle invalid image resource or use a default image
-            ThisSituation.setImageResource(R.drawable.pfpicon);
+            ThisSituation.setImageResource(R.drawable.pfpicon);  // Use a fallback
         }
 
         int imageId = MoodType.getImageIdByMood(mood);
