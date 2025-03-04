@@ -42,6 +42,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
+import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
 import com.example.donotredeem.SocialSituation;
@@ -385,14 +386,18 @@ public class AddMoodEvent extends Fragment {
             String triggerText = addTrigger.getText().toString();
             String dateText = date.getText().toString();
             String locationText = location.getText().toString();
+            String timeText = time.getText().toString();
 
 
-            if (imageUri != null) {
+            if (imageUri != null) { //gallery or camera
                 Log.d("AddMoodEvent", "Uploading image: " + imageUri.toString());
-                uploadImageAndSaveMood(descText, triggerText, dateText, locationText, selectedMoodName, selectedSocial);
-            } else {
+                uploadImageAndSaveMood(descText, triggerText, dateText, locationText, imageUri, selectedMoodName, selectedSocial, timeText);
+
+
+            } else { //no pic by user
                 Log.e("AddMoodEvent", "Image URI is null, cannot upload!");
-                saveMoodToFirestore(descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial);
+                saveMoodToFirestore(descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial, timeText);
+
             }
 
             Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
@@ -567,37 +572,41 @@ public class AddMoodEvent extends Fragment {
 
     // Uploads image to Firebase Storage and then saves mood data to Firestore
     private void uploadImageAndSaveMood(String desc, String trigger,
-                                        String date, String locationText, String mood, String social) {
-        String imageFileName = UUID.randomUUID().toString() + ".jpg";
-        StorageReference imageRef = storageRef.child(imageFileName);
-        imageRef.putFile(imageUri)
-                .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
-                        .addOnSuccessListener(uri -> saveMoodToFirestore(desc, trigger, date, locationText, uri.toString(), mood, social)))
+                                        String date, String locationText, Uri imageUri,
+                                        String mood, String social, String time) {
+            if (imageUri == null) {
+                saveMoodToFirestore(desc, trigger, date, locationText, null, mood, social, time);
+                return;
+            }
+            String imageFileName = UUID.randomUUID().toString() + ".jpg";
+            StorageReference imageRef = storageRef.child(imageFileName);
+
+            imageRef.putFile(imageUri)
+                    .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
+                            .addOnSuccessListener(uri -> {
+                                Log.d("Upload", "Image uploaded, saving to Firestore: " + uri.toString());
+                                saveMoodToFirestore(desc, trigger, date, locationText, uri.toString(), mood, social, time);
+                            }))
                 .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Image upload failed!", Toast.LENGTH_SHORT).show());
-    }
-
-    // Saves mood event data to Firestore
-    private void saveMoodToFirestore(String desc, String trigger,
-                                     String date, String locationText, String imageUrl, String mood, String social) {
-        Map<String, Object> moodData = new HashMap<>();
-        moodData.put("mood", mood);
-        moodData.put("description", desc);
-        moodData.put("socialSituation", social);
-        moodData.put("trigger", trigger);
-        moodData.put("date", date);
-        moodData.put("location", locationText);
-
-        if (imageUrl != null) {
-            moodData.put("imageUrl", imageUrl);
+                    Toast.makeText(getContext(), "Image upload failed!", Toast.LENGTH_SHORT).show());
         }
-        db.collection("MoodEvents")
-                .add(moodData)
-                .addOnSuccessListener(documentReference ->
-                        Toast.makeText(getContext(), "Mood Event Saved!", Toast.LENGTH_SHORT).show())
-                .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
-    }
+
+
+
+        // Saves mood event data to Firestore
+        private void saveMoodToFirestore(String desc, String trigger,
+                                         String date, String locationText, String imageUrl,
+                                         String mood, String social, String time) {
+
+            MoodEvent moodEvent = new MoodEvent(mood, date, time, locationText, social, trigger, desc, imageUrl);
+                db.collection("MoodEvents")
+                        .add(moodEvent)
+                        .addOnSuccessListener(documentReference ->
+                                Toast.makeText(getContext(), "Mood Event Saved!", Toast.LENGTH_SHORT).show())
+                        .addOnFailureListener(e ->
+                                Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
+            }
+
     //Quality bad
 //    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
 //        ByteArrayOutputStream bytes = new ByteArrayOutputStream();

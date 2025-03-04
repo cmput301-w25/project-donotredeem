@@ -157,29 +157,22 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
                         if (documentSnapshot.exists()) {
                             try {
                                 // Retrieve fields from the document snapshot
-                                String emotionalState = (String) documentSnapshot.get("mood");
-                                String dateString = (String) documentSnapshot.get("date"); // Assuming it's stored
-                                String trigger = (String) documentSnapshot.get("trigger");
-                                String explainText = (String) documentSnapshot.get("description");
-                                String timeString = (String) documentSnapshot.get("time");
-                                Log.e("MoodHistory", "Time string:" + timeString);
-                                String situation = (String) documentSnapshot.get("socialSituation");
-                                String location = (String) documentSnapshot.get("location");
-                                String picture_string = (String)documentSnapshot.get("imageUrl");
-                                Log.e("MoodHistory", "  Picture string:" + picture_string);
+//                                String emotionalState = (String) documentSnapshot.get("emotionalState");
+//                                String dateString = (String) documentSnapshot.get("date"); // Assuming it's stored
+//                                String trigger = (String) documentSnapshot.get("trigger");
+//                                String explainText = (String) documentSnapshot.get("explainText");
+//                                String timeString = (String) documentSnapshot.get("time");
+//                                Log.e("MoodHistory", "Time string:" + timeString);
+//                                String situation = (String) documentSnapshot.get("situation");
+//                                String location = (String) documentSnapshot.get("place");
+//                                String picture_string = (String)documentSnapshot.get("explainPicture");
+//                                Log.e("MoodHistory", "  Picture string:" + picture_string);
 
-
-
-                                LocalDate date = parseStringToDate(dateString);
-                                LocalTime time = parseStringToTime(timeString);
 
                                 MoodEvent moodEvent;
-                                if (picture_string == null){
-                                    moodEvent = new MoodEvent(emotionalState, date, time, location, situation, trigger, explainText);
-
-                                }
-                                else {
-                                moodEvent = new MoodEvent(emotionalState, date, time, location, situation, trigger, explainText,picture_string);}
+                                moodEvent = documentSnapshot.toObject(MoodEvent.class);
+//
+//                                moodEvent = new MoodEvent(emotionalState, dateString, timeString, location, situation, trigger, explainText,picture_string);
 
                                 // You can also add this to a list or display it as needed
                                 moodHistoryList.add(moodEvent);
@@ -199,15 +192,15 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
     }
 
     // Helper method to parse date string to LocalDate
-    private LocalDate parseStringToDate(String dateString) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Adjust format based on your date format
-            return LocalDate.parse(dateString, formatter);
-        } catch (Exception e) {
-            Log.e("MoodHistory", "Invalid date format", e);
-            return LocalDate.now(); // Default to current date if parsing fails
-        }
-    }
+//    private LocalDate parseStringToDate(String dateString) {
+//        try {
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Adjust format based on your date format
+//            return LocalDate.parse(dateString, formatter);
+//        } catch (Exception e) {
+//            Log.e("MoodHistory", "Invalid date format", e);
+//            return LocalDate.now(); // Default to current date if parsing fails
+//        }
+//    }
 
 
 
@@ -217,28 +210,28 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
         adapter.notifyDataSetChanged();
     }
 
-    private LocalTime parseStringToTime(String timeString) {
-        // Log the raw string received
-        Log.d("MoodHistory", "Parsing time string: " + timeString);
-
-        if (timeString == null || timeString.isEmpty()) {
-            Log.e("MoodHistory", "Time string is null or empty");
-            return LocalTime.now(); // Default to current time if parsing fails
-        }
-
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // 24-hour format
-            LocalTime parsedTime = LocalTime.parse(timeString, formatter);
-
-            // Log the parsed time
-            Log.d("MoodHistory", "Parsed time: " + parsedTime);
-
-            return parsedTime;
-        } catch (DateTimeParseException e) {
-            Log.e("MoodHistory", "Error parsing time: " + timeString, e);
-            return LocalTime.now(); // Default to current time if parsing fails
-        }
-    }
+//    private LocalTime parseStringToTime(String timeString) {
+//        // Log the raw string received
+//        Log.d("MoodHistory", "Parsing time string: " + timeString);
+//
+//        if (timeString == null || timeString.isEmpty()) {
+//            Log.e("MoodHistory", "Time string is null or empty");
+//            return LocalTime.now(); // Default to current time if parsing fails
+//        }
+//
+//        try {
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // 24-hour format
+//            LocalTime parsedTime = LocalTime.parse(timeString, formatter);
+//
+//            // Log the parsed time
+//            Log.d("MoodHistory", "Parsed time: " + parsedTime);
+//
+//            return parsedTime;
+//        } catch (DateTimeParseException e) {
+//            Log.e("MoodHistory", "Error parsing time: " + timeString, e);
+//            return LocalTime.now(); // Default to current time if parsing fails
+//        }
+//    }
 
 
 

@@ -35,12 +35,12 @@ public class ProfilePage extends Fragment {
 
 
     MoodEvent[] moodEvents = {
-            new MoodEvent("Happy", LocalDate.of(2024, 3, 2), LocalTime.of(10, 0), "Park", "Good weather"),
-            new MoodEvent("Sad", LocalDate.of(2024, 3, 1), LocalTime.of(15, 30), "Home", "Bad news", "Received some disappointing news"),
-            new MoodEvent("Shy", LocalDate.of(2024, 3, 3), LocalTime.of(18, 45), "Mall", "Shopping"),
-            new MoodEvent("Angry", LocalDate.of(2024, 3, 4), LocalTime.of(14, 15), "Office", "Work stress", "A difficult meeting happened"),
-            new MoodEvent("Fear", LocalDate.of(2024, 3, 5), LocalTime.of(20, 0), "Beach", "Meditation", "Relaxed watching the sunset")
-    };
+            new MoodEvent("Happy", "12/12/2023", "10:00", "Park", "Alone", null, "Good weather", null),
+            new MoodEvent("Sad", "12/12/2023", "10:00", "Home", "Crowd", "Bad news", null, null),
+            new MoodEvent("Sad", "12/12/2023", "10:00", "Home", "Pair","Bad news", "Received some disappointing news", null),
+            new MoodEvent("Shy", "12/12/2023", "10:00", "Mall", null,null,null,"Shopping"),
+            new MoodEvent("Angry", "12/12/2023", "10:00", "Office", null, null,"A difficult meeting happened",null),
+            new MoodEvent("Fear", "12/12/2023", "10:00", "Beach", null, null,"Relaxed watching the sunset",null)};
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile, container, false);

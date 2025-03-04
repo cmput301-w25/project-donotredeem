@@ -21,7 +21,10 @@ import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.R;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -149,7 +152,7 @@ public class FilterFragment extends DialogFragment {
         LocalDate currentDate = LocalDate.now();
 
         // Get event date from MoodEvent (assuming you have a getDate() method)
-        LocalDate eventDate = event.getDate();
+        LocalDate eventDate = parseStringToDate(event.getDate());
 
         // Compare year and month components
         return eventDate.getYear() == currentDate.getYear() &&
@@ -158,7 +161,7 @@ public class FilterFragment extends DialogFragment {
 
     private boolean week(MoodEvent event){
         LocalDate currentDate = LocalDate.now();
-        LocalDate eventDate = event.getDate();
+        LocalDate eventDate = parseStringToDate(event.getDate());
 
         // Get week of year using system's week definition
         WeekFields weekFields = WeekFields.of(Locale.getDefault());
@@ -202,6 +205,39 @@ public class FilterFragment extends DialogFragment {
             selected.setBackgroundResource(R.drawable.highlight_background);
             selected.setElevation(8);
             selectedEmoji = selected;
+        }
+    }
+
+    private LocalDate parseStringToDate(String dateString) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Adjust format based on your date format
+            return LocalDate.parse(dateString, formatter);
+        } catch (Exception e) {
+            Log.e("MoodHistory", "Invalid date format", e);
+            return LocalDate.now(); // Default to current date if parsing fails
+        }
+    }
+
+    private LocalTime parseStringToTime(String timeString) {
+        // Log the raw string received
+        Log.d("MoodHistory", "Parsing time string: " + timeString);
+
+        if (timeString == null || timeString.isEmpty()) {
+            Log.e("MoodHistory", "Time string is null or empty");
+            return LocalTime.now(); // Default to current time if parsing fails
+        }
+
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // 24-hour format
+            LocalTime parsedTime = LocalTime.parse(timeString, formatter);
+
+            // Log the parsed time
+            Log.d("MoodHistory", "Parsed time: " + parsedTime);
+
+            return parsedTime;
+        } catch (DateTimeParseException e) {
+            Log.e("MoodHistory", "Error parsing time: " + timeString, e);
+            return LocalTime.now(); // Default to current time if parsing fails
         }
     }
 }
