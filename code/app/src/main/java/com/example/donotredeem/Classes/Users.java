@@ -11,19 +11,19 @@ public class Users {
     private String username;
     private String password;
     private String email;
-    private String phoneNumber;
-    private String name;
-    private String birthdayDate; // yyyy-mm-dd
-    private List<String> helpYouDown;
-    private String frequency;
+//    private String phoneNumber;
+//    private String name;
+//    private String birthdayDate; // yyyy-mm-dd
+//    private List<String> helpYouDown;
+//    private String frequency;
 //    private Boolean remember;
-    private String picture;
-    private  List<String> Events;
-    private Boolean isAdmin;
-    private int followers;
-    private List<String> followerList;
-    private int following;
-    private List<String> followingList;
+//    private String picture;
+    private  List<String> MoodREF;
+//    private Boolean isAdmin;
+//    private int followers;
+//    private List<String> followerList;
+//    private int following;
+//    private List<String> followingList;
     private String bio;
 
     /**
@@ -99,100 +99,101 @@ public class Users {
         this.email = email;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+//    public String getPhoneNumber() {
+//        return phoneNumber;
+//    }
+//
+//    public void setPhoneNumber(String phoneNumber) {
+//        this.phoneNumber = phoneNumber;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public void setName(String name) {
+//        this.name = name;
+//    }
+//
+//    public String getBirthdayDate() {
+//        return birthdayDate;
+//    }
+//
+//    public void setBirthdayDate(String birthdayDate) {
+//        this.birthdayDate = birthdayDate;
+//    }
+//
+//    public List<String> getHelpYouDown() {
+//        return helpYouDown;
+//    }
+//
+//    public void setHelpYouDown(List<String> helpYouDown) {
+//        this.helpYouDown = helpYouDown;
+//    }
+//
+//    public String getFrequency() {
+//        return frequency;
+//    }
+//
+//    public void setFrequency(String frequency) {
+//        this.frequency = frequency;
+//    }
+//
+//    public String getPicture() {
+//        return picture;
+//    }
+//
+//    public void setPicture(String picture) {
+//        this.picture = picture;
+//    }
+//
+//
+//    public Boolean getAdmin() {
+//        return isAdmin;
+//    }
+//
+//    public void setAdmin(Boolean admin) {
+//        isAdmin = admin;
+//    }
+//
+//    public int getFollowers() {
+//        return followers;
+//    }
+//
+//    public void setFollowers(int followers) {
+//        this.followers = followers;
+//    }
+//
+//    public List<String> getFollowerList() {
+//        return followerList;
+//    }
+//
+//    public void setFollowerList(List<String> followerList) {
+//        this.followerList = followerList;
+//    }
+//
+//    public int getFollowing() {
+//        return following;
+//    }
+//
+//    public void setFollowing(int following) {
+//        this.following = following;
+//    }
+//
+//    public List<String> getFollowingList() {
+//        return followingList;
+//    }
+//
+//    public void setFollowingList(List<String> followingList) {
+//        this.followingList = followingList;
+//    }
+
+    public List<String> getMoodREF() {
+        return MoodREF;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getBirthdayDate() {
-        return birthdayDate;
-    }
-
-    public void setBirthdayDate(String birthdayDate) {
-        this.birthdayDate = birthdayDate;
-    }
-
-    public List<String> getHelpYouDown() {
-        return helpYouDown;
-    }
-
-    public void setHelpYouDown(List<String> helpYouDown) {
-        this.helpYouDown = helpYouDown;
-    }
-
-    public String getFrequency() {
-        return frequency;
-    }
-
-    public void setFrequency(String frequency) {
-        this.frequency = frequency;
-    }
-
-    public String getPicture() {
-        return picture;
-    }
-
-    public void setPicture(String picture) {
-        this.picture = picture;
-    }
-
-    public List<String> getEvents() {
-        return Events;
-    }
-
-    public void setEvents(List<String> events) {
-        Events = events;
-    }
-
-    public Boolean getAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(Boolean admin) {
-        isAdmin = admin;
-    }
-
-    public int getFollowers() {
-        return followers;
-    }
-
-    public void setFollowers(int followers) {
-        this.followers = followers;
-    }
-
-    public List<String> getFollowerList() {
-        return followerList;
-    }
-
-    public void setFollowerList(List<String> followerList) {
-        this.followerList = followerList;
-    }
-
-    public int getFollowing() {
-        return following;
-    }
-
-    public void setFollowing(int following) {
-        this.following = following;
-    }
-
-    public List<String> getFollowingList() {
-        return followingList;
-    }
-
-    public void setFollowingList(List<String> followingList) {
-        this.followingList = followingList;
+    public void setMoodREF(List<String> moodREF) {
+        MoodREF = moodREF;
     }
 
     public String getBio() {

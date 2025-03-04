@@ -20,13 +20,22 @@ import androidx.fragment.app.DialogFragment;
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.R;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class FilterFragment extends DialogFragment {
     private Button donebtn;
     private ImageButton close;
     private EditText Keyword;
-
+    private Button pastmonth;
+    private Button pastweek;
+    private Button all;
+    String btn;
     private ImageButton selectedEmoji = null;
     private FilterMoodListener listener;
     private ArrayList<MoodEvent> moodEvents;
@@ -63,7 +72,19 @@ public class FilterFragment extends DialogFragment {
         Keyword = view.findViewById(R.id.desc);
         donebtn = view.findViewById(R.id.done_filter_button);
         close = view.findViewById(R.id.filer_closeButton);
+        pastmonth = view.findViewById(R.id.month_filter_button);
+        pastweek = view.findViewById(R.id.week_filter_button);
+        all = view.findViewById(R.id.All_filter_button);
 
+        pastmonth.setOnClickListener(v ->{
+            btn = "month";
+        });
+        pastweek.setOnClickListener(v ->{
+            btn = "week";
+        });
+        all.setOnClickListener(v ->{
+            btn = "all";
+        });
         close.setOnClickListener( v -> {
             dismiss();
         });
@@ -75,11 +96,34 @@ public class FilterFragment extends DialogFragment {
 
             if (moodEvents != null) {
                 for (MoodEvent event : moodEvents) {
-                    if (matchesSearch(event, searchKeyword)) {
-                        filteredList.add(event);
+                    boolean matchesKeyword = matchesSearch(event, searchKeyword);
+                    boolean isInMonth = month(event);
+                    boolean isInWeek = week(event);
+
+                    if (Objects.equals(btn, "month")) {
+                        // If "month" is selected, add event only if it matches keyword OR no keyword is entered
+                        if (isInMonth && (matchesKeyword || searchKeyword.isEmpty())) {
+                            filteredList.add(event);
+                        }
+                    } else if (Objects.equals(btn, "week")) {
+                        // If "week" is selected, add event only if it matches keyword OR no keyword is entered
+                        if (isInWeek && (matchesKeyword || searchKeyword.isEmpty())) {
+                            filteredList.add(event);
+                        }
+                    } else if (Objects.equals(btn, "all")) {
+                        // If "all" is selected, apply only keyword filtering
+                        if (matchesKeyword || searchKeyword.isEmpty()) {
+                            filteredList.add(event);
+                        }
+                    } else if (btn == null) {
+                        // If no filter is selected, only apply keyword filtering
+                        if (matchesKeyword) {
+                            filteredList.add(event);
+                        }
                     }
                 }
             }
+
             if (listener != null) {
                 listener.filterMood(filteredList);
             }
@@ -101,11 +145,49 @@ public class FilterFragment extends DialogFragment {
         return view;
     }
 
+    private boolean month(MoodEvent event){
+        LocalDate currentDate = LocalDate.now();
+
+        // Get event date from MoodEvent (assuming you have a getDate() method)
+        LocalDate eventDate = event.getDate();
+
+        // Compare year and month components
+        return eventDate.getYear() == currentDate.getYear() &&
+                eventDate.getMonth() == currentDate.getMonth();
+    }
+
+    private boolean week(MoodEvent event){
+        LocalDate currentDate = LocalDate.now();
+        LocalDate eventDate = event.getDate();
+
+        // Get week of year using system's week definition
+        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+
+        return currentDate.getYear() == eventDate.getYear() &&
+                currentDate.get(weekFields.weekOfYear()) == eventDate.get(weekFields.weekOfYear());
+    }
     private boolean matchesSearch(MoodEvent event, String keyword) {
-        return event.getEmotionalState().toLowerCase().contains(keyword) ||
-                event.getPlace().toLowerCase().contains(keyword) ||
-                event.getTrigger().toLowerCase().contains(keyword) ||
-                event.getExplainText().toLowerCase().contains(keyword);
+        if (keyword.isEmpty()) {
+            return false; // Avoid matching empty keyword
+        }
+
+        // Define regex pattern for whole word match
+        String pattern = "\\b" + Pattern.quote(keyword) + "\\b";
+
+        return matchesWholeWord(event.getEmotionalState(), pattern) ||
+                matchesWholeWord(event.getPlace(), pattern) ||
+                matchesWholeWord(event.getTrigger(), pattern) ||
+                matchesWholeWord(event.getExplainText(), pattern);
+    }
+
+    /**
+     * Checks if the given text contains the keyword as a whole word.
+     */
+    private boolean matchesWholeWord(String text, String pattern) {
+        if (text == null) {
+            return false;
+        }
+        return Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(text).find();
     }
 
     private void highlightSelectedEmoji(ImageButton selected) {
@@ -123,4 +205,13 @@ public class FilterFragment extends DialogFragment {
         }
     }
 }
+
+
+
+//    private boolean matchesSearch(MoodEvent event, String keyword) {
+//        return event.getEmotionalState().toLowerCase().contains(keyword) ||
+//                event.getPlace().toLowerCase().contains(keyword) ||
+//                event.getTrigger().toLowerCase().contains(keyword) ||
+//                event.getExplainText().toLowerCase().contains(keyword);
+//    }
 
