@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.donotredeem.LogIn;
 import com.example.donotredeem.R;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -29,7 +30,8 @@ public class MainPage extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.main_page, container, false);
 
         db = FirebaseFirestore.getInstance();
@@ -41,6 +43,7 @@ public class MainPage extends Fragment {
         if (!sharedPreferences.contains("username")) {
             Log.e("MainPageDebug", "Username not found in SharedPreferences, redirecting to login");
             redirectToLogin();
+            return view; // Early return to stop further processing
         } else {
             loggedInUsername = sharedPreferences.getString("username", null);
             Log.d("MainPageDebug", "Retrieved username: " + loggedInUsername);
@@ -49,15 +52,14 @@ public class MainPage extends Fragment {
         if (loggedInUsername == null) {
             // No user logged in, redirect to login screen
             redirectToLogin();
+            return view; // Early return
         } else {
             // Fetch user details from Firestore
             Log.d("MainPageDebug", "Fetching user details for: " + loggedInUsername);
             fetchUserDetails(textView);
         }
 
-        button.setOnClickListener(view1 -> {
-            logout();
-        });
+        button.setOnClickListener(view1 -> logout());
 
         return view;
     }
@@ -69,7 +71,8 @@ public class MainPage extends Fragment {
             return;
         }
 
-        db.collection("User").document(loggedInUsername).get()
+        DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
+        userDocRef.get()
                 .addOnSuccessListener(document -> {
                     if (document.exists()) {
                         textView.setText(loggedInUsername);
@@ -84,12 +87,13 @@ public class MainPage extends Fragment {
                 });
     }
 
-
     private void logout() {
+        FirebaseAuth.getInstance().signOut();
+
         // Clear stored login data
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.remove("username");
+        editor.clear();
         editor.apply();
 
         // Redirect to login screen
@@ -98,7 +102,10 @@ public class MainPage extends Fragment {
 
     private void redirectToLogin() {
         Intent intent = new Intent(getActivity(), LogIn.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        requireActivity().finish();
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 }
