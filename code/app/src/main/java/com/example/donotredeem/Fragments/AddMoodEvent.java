@@ -76,7 +76,7 @@ public class AddMoodEvent extends Fragment {
     private ImageView image;
     private EditText location;
     private String selectedMoodName = null;
-    private SocialSituation selectedSocial = null;
+    private String selectedSocial = null;
 
     private static final int CAMERA_REQUEST = 100;
     private static final int GALLERY_REQUEST = 200;
@@ -362,10 +362,10 @@ public class AddMoodEvent extends Fragment {
         });
 
 
-//        for (int id : socialButtonIds) {
-//            ImageButton socialButton = view.findViewById(id);
-//            socialButton.setOnClickListener(v -> highlightSelectedSocial((ImageButton) v));
-//        }
+        for (int id : socialButtonIds) {
+            ImageButton socialButton = view.findViewById(id);
+            socialButton.setOnClickListener(v -> highlightSelectedSocial((ImageButton) v));
+        }
 
 
         for (int id : emojiButtonIds) {
@@ -376,7 +376,6 @@ public class AddMoodEvent extends Fragment {
         View fragmentRoot = view.findViewById(R.id.fragment_root);
         submit.setOnClickListener(v -> {
             String descText = description.getText().toString();
-            //String socialText = social.getText().toString();
             String triggerText = addTrigger.getText().toString();
             String dateText = date.getText().toString();
             String locationText = location.getText().toString();
@@ -384,10 +383,10 @@ public class AddMoodEvent extends Fragment {
 
             if (imageUri != null) {
                 Log.d("AddMoodEvent", "Uploading image: " + imageUri.toString());
-                uploadImageAndSaveMood(descText, triggerText, dateText, locationText, selectedMoodName);
+                uploadImageAndSaveMood(descText, triggerText, dateText, locationText, selectedMoodName, selectedSocial);
             } else {
                 Log.e("AddMoodEvent", "Image URI is null, cannot upload!");
-                saveMoodToFirestore(descText, triggerText, dateText, locationText, null, selectedMoodName);
+                saveMoodToFirestore(descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial);
             }
 
             Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
@@ -563,23 +562,23 @@ public class AddMoodEvent extends Fragment {
 
     // Uploads image to Firebase Storage and then saves mood data to Firestore
     private void uploadImageAndSaveMood(String desc, String trigger,
-                                        String date, String locationText, String mood) {
+                                        String date, String locationText, String mood, String social) {
         String imageFileName = UUID.randomUUID().toString() + ".jpg";
         StorageReference imageRef = storageRef.child(imageFileName);
         imageRef.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
-                        .addOnSuccessListener(uri -> saveMoodToFirestore(desc, trigger, date, locationText, uri.toString(), mood)))
+                        .addOnSuccessListener(uri -> saveMoodToFirestore(desc, trigger, date, locationText, uri.toString(), mood, social)))
                 .addOnFailureListener(e ->
                         Toast.makeText(getContext(), "Image upload failed!", Toast.LENGTH_SHORT).show());
     }
 
     // Saves mood event data to Firestore
     private void saveMoodToFirestore(String desc, String trigger,
-                                     String date, String locationText, String imageUrl, String mood) {
+                                     String date, String locationText, String imageUrl, String mood, String social) {
         Map<String, Object> moodData = new HashMap<>();
         moodData.put("mood", mood);
         moodData.put("description", desc);
-        //moodData.put("socialSituation", social);
+        moodData.put("socialSituation", social);
         moodData.put("trigger", trigger);
         moodData.put("date", date);
         moodData.put("location", locationText);
@@ -682,37 +681,38 @@ public class AddMoodEvent extends Fragment {
         return null;
     }
 
-//    private void highlightSelectedSocial(Button selected) {
-//        if (selectedSocialButton != null) {
-//            selectedSocialButton.setBackground(null);
-//            selectedSocialButton.setElevation(0);
-//        }
-//
-//        if (selectedSocialButton == selected) {
-//            selectedEmoji = null; // Unselect if clicking the same emoji
-//            selectedMoodName = null;  // Reset selected mood
-//        } else {
-//            selected.setBackgroundResource(R.drawable.highlight_background);
-//            selected.setElevation(8);
-//            selectedEmoji = selected;
-//
-//            int buttonId = selected.getId();
-//            MoodType selectedMood = getMoodForButtonId(buttonId);
-//            if (selectedMood != null) {
-//                selectedMoodName = selectedMood.getMood();
-//            }
-//        }
-//
-//    }
-//
-//    private SocialSituation getSocialSituationForButtonId(int buttonId) {
-//        for (int i = 0; i < socialButtonIds.length; i++) {
-//            if (socialButtonIds[i] == buttonId) {
-//                return SocialSituation.values()[i];
-//            }
-//        }
-//        return null;
-//    }
+    private void highlightSelectedSocial(ImageButton selected) {
+        if (selectedSocialButton != null) {
+            selectedSocialButton.setBackground(null);
+            selectedSocialButton.setElevation(0);
+        }
+
+        if (selectedSocialButton == selected) {
+            selectedSocialButton = null;
+            selectedSocial = null;
+        } else {
+            selected.setBackgroundResource(R.drawable.highlight_background);
+            selected.setElevation(8);
+            selectedSocialButton = selected;
+
+            int buttonId = selected.getId();
+            SocialSituation selectedSituation = getSocialSituationForButtonId(buttonId);
+            if (selectedSituation != null) {
+                selectedSocial = selectedSituation.getLabel();
+            }
+
+        }
+
+    }
+
+    private SocialSituation getSocialSituationForButtonId(int buttonId) {
+        for (int i = 0; i < socialButtonIds.length; i++) {
+            if (socialButtonIds[i] == buttonId) {
+                return SocialSituation.values()[i];
+            }
+        }
+        return null;
+    }
 
 }
 
