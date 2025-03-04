@@ -26,7 +26,7 @@ import com.google.firebase.firestore.auth.User;
 
 public class EditProfile extends Fragment {
 
-    String username ="AG";
+    String username;
 
     private EditText editUsername;
     private EditText editPassword;
@@ -40,6 +40,8 @@ public class EditProfile extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_profile, container, false);
 
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        String username = sharedPreferences.getString("username", null);
         done =view.findViewById(R.id.button2);
         editUsername = view.findViewById(R.id.username_desc);
         editPassword = view.findViewById(R.id.password_desc);
