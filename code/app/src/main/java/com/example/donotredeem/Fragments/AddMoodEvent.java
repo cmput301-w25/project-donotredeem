@@ -362,10 +362,10 @@ public class AddMoodEvent extends Fragment {
         });
 
 
-        for (int id : socialButtonIds) {
-            ImageButton socialButton = view.findViewById(id);
-            socialButton.setOnClickListener(v -> highlightSelectedSocial((ImageButton) v));
-        }
+//        for (int id : socialButtonIds) {
+//            ImageButton socialButton = view.findViewById(id);
+//            socialButton.setOnClickListener(v -> highlightSelectedSocial((ImageButton) v));
+//        }
 
 
         for (int id : emojiButtonIds) {
@@ -682,36 +682,37 @@ public class AddMoodEvent extends Fragment {
         return null;
     }
 
-    private void highlightSelectedSocial(Button selected) {
-        if (selectedSocialButton != null) {
-            selectedSocialButton.setBackground(null);
-            selectedSocialButton.setElevation(0);
-        }
-
-        if (selectedSocialButton == selected) {
-            selectedEmoji = null; // Unselect if clicking the same emoji
-            selectedMoodName = null;  // Reset selected mood
-        } else {
-            selected.setBackgroundResource(R.drawable.highlight_background);
-            selected.setElevation(8);
-            selectedEmoji = selected;
-
-            int buttonId = selected.getId();
-            MoodType selectedMood = getMoodForButtonId(buttonId);
-            if (selectedMood != null) {
-                selectedMoodName = selectedMood.getMood();
-            }
-        }
-
-    }
-
-    private SocialSituation getSocialSituationForButtonId(int buttonId) {
-            if (socialButtonIds[i] == buttonId) {
-                return SocialSituation.values()[i];
-            }
-        }
-        return null;
-    }
+//    private void highlightSelectedSocial(Button selected) {
+//        if (selectedSocialButton != null) {
+//            selectedSocialButton.setBackground(null);
+//            selectedSocialButton.setElevation(0);
+//        }
+//
+//        if (selectedSocialButton == selected) {
+//            selectedEmoji = null; // Unselect if clicking the same emoji
+//            selectedMoodName = null;  // Reset selected mood
+//        } else {
+//            selected.setBackgroundResource(R.drawable.highlight_background);
+//            selected.setElevation(8);
+//            selectedEmoji = selected;
+//
+//            int buttonId = selected.getId();
+//            MoodType selectedMood = getMoodForButtonId(buttonId);
+//            if (selectedMood != null) {
+//                selectedMoodName = selectedMood.getMood();
+//            }
+//        }
+//
+//    }
+//
+//    private SocialSituation getSocialSituationForButtonId(int buttonId) {
+//        for (int i = 0; i < socialButtonIds.length; i++) {
+//            if (socialButtonIds[i] == buttonId) {
+//                return SocialSituation.values()[i];
+//            }
+//        }
+//        return null;
+//    }
 
 }
 
