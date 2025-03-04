@@ -42,6 +42,7 @@ public class LogIn extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseFirestore db;
     GoogleSignInClient mGoogleSignInClient;
+    TextView textview;
 
     @Override
     public void onStart() {
@@ -67,6 +68,16 @@ public class LogIn extends AppCompatActivity {
         editTextPassword = findViewById(R.id.etPassword);
         buttonLogIn = findViewById(R.id.btnLogin);
         buttonGoogleSignIn = findViewById(R.id.btnGoogle);
+
+        textview = findViewById(R.id.button4);
+        textview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), Register.class);
+                startActivity(intent);
+                finish();
+            }
+        });
 
         // Google Sign-In Configuration
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
