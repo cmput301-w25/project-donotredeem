@@ -77,6 +77,26 @@ public class MoodEvent {
         this.explainText = explainText;
     }
 
+//    heer testing
+    public MoodEvent(String emotionalState, LocalDate date, LocalTime time,
+                     String place, String situation,
+                     String trigger, String explainText) {
+
+        // Required Field
+        if (emotionalState == null || emotionalState.trim().isEmpty()) {
+            throw new IllegalArgumentException("Emotional state is required.");
+        }
+        this.emotionalState = emotionalState;
+
+        // user date and time, if not given then system date and time
+        this.date = LocalDate.of(2024, 3, 2);
+
+
+        // Optional fields, need to provide null values if not there
+        this.trigger = trigger;
+        this.explainText = explainText;
+    }
+
     public MoodEvent(String emotionalState, LocalDate date, LocalTime time,
                      String place,
                      String trigger) {
@@ -98,6 +118,9 @@ public class MoodEvent {
         // Optional fields, need to provide null values if not there
         this.trigger = trigger;
     }
+
+
+
 
 
     // Getters

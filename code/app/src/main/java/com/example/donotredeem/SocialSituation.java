@@ -1,5 +1,7 @@
 package com.example.donotredeem;
 
+import android.util.Log;
+
 public enum SocialSituation {
 
     Alone("Alone", R.drawable.alone),
@@ -21,4 +23,17 @@ public enum SocialSituation {
     public int getImg_id() {
         return img_id;
     }
+
+
+    public static int getImageIdBySituation(String label) {
+        for (SocialSituation situation : SocialSituation.values()) {
+            if (situation.getLabel().equalsIgnoreCase(label)) {
+                return situation.getImg_id();
+            }
+        }
+        // Log or handle invalid situation gracefully
+        Log.e("SocialSituation", "No matching situation found for label: " + label);
+        return -1;  // Return a fallback value or handle error
+    }
+
 }

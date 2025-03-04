@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
@@ -53,7 +54,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         TextView ThisTime = MainView.findViewById(R.id.Specific_Time);
         TextView ThisDate = MainView.findViewById(R.id.Specific_Date);
         TextView ThisLocation = MainView.findViewById(R.id.Specific_Location);
-//        TextView ThisSituation = MainView.findViewById();
+        ImageView ThisSituation = MainView.findViewById(R.id.SituationImage);
         TextView ThisTrigger = MainView.findViewById(R.id.Specific_Trigger);
         TextView ThisTextDescription = MainView.findViewById(R.id.Additional_details);
         ImageView ThisPictureDescription = MainView.findViewById(R.id.timelineImage);
@@ -61,13 +62,28 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         if (Current_Mood_Event != null) {
             ThisEmoState.setText(Current_Mood_Event.getEmotionalState());
-            ThisTime.setText(Current_Mood_Event.getTime().toString());
+            LocalTime time = Current_Mood_Event.getTime();
+            if (time != null) {
+                ThisTime.setText(time.toString());  // Show time if valid
+            } else {
+                ThisTime.setText("00:00:00");  // Default time if it's null
+            }
             ThisDate.setText(Current_Mood_Event.getDate().toString());
             ThisTrigger.setText(Current_Mood_Event.getTrigger());
             ThisTextDescription.setText(Current_Mood_Event.getExplainText());
         }
 
         String mood = Current_Mood_Event.getEmotionalState();
+        String situation = Current_Mood_Event.getSituation();
+
+        int situationid = SocialSituation.getImageIdBySituation(situation);
+        if (situationid != -1) {
+            ThisSituation.setImageResource(situationid);
+        } else {
+            // Handle invalid image resource or use a default image
+            ThisSituation.setImageResource(R.drawable.pfpicon);
+        }
+
         int imageId = MoodType.getImageIdByMood(mood);
         Emoji.setImageResource(imageId);
         int colorId = context.getResources().getIdentifier(mood, "color", context.getPackageName());
