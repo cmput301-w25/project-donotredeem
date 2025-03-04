@@ -146,6 +146,7 @@ public class AddMoodEvent extends Fragment {
         });
 
     }
+
     private File createImageFile() throws IOException {
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -175,6 +176,7 @@ public class AddMoodEvent extends Fragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 String input = s.toString().trim();
@@ -192,12 +194,12 @@ public class AddMoodEvent extends Fragment {
                     description.setError("Max 3 words or less than 20 characters");
                 }
             }
+
             @Override
             public void afterTextChanged(Editable s) {
 
             }
         });
-
 
 
         EditText addTrigger = view.findViewById(R.id.trigger);
@@ -234,6 +236,7 @@ public class AddMoodEvent extends Fragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0 && location_button.isChecked()) {
@@ -241,6 +244,7 @@ public class AddMoodEvent extends Fragment {
                     isSelected_loc[0] = false;
                 }
             }
+
             @Override
             public void afterTextChanged(Editable s) {
 
@@ -291,6 +295,7 @@ public class AddMoodEvent extends Fragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0 && date_button.isChecked()) {
@@ -333,7 +338,7 @@ public class AddMoodEvent extends Fragment {
 
             TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), (view1, selectedHour, selectedMinute) -> {
 
-                String selectedTime =  selectedHour + ":" + selectedMinute;
+                String selectedTime = selectedHour + ":" + selectedMinute;
                 time.setText(selectedTime);
             },
                     hour, minute, true // 24-hour format, false = am/pm
@@ -347,6 +352,7 @@ public class AddMoodEvent extends Fragment {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() > 0 && time_button.isChecked()) {
@@ -436,7 +442,6 @@ public class AddMoodEvent extends Fragment {
 
             });
         });
-
 
 
         return view;
@@ -686,7 +691,6 @@ public class AddMoodEvent extends Fragment {
             selectedSocialButton.setBackground(null);
             selectedSocialButton.setElevation(0);
         }
-
         if (selectedSocialButton == selected) {
             selectedSocialButton = null;
             selectedSocial = null;
@@ -713,5 +717,4 @@ public class AddMoodEvent extends Fragment {
         }
         return null;
     }
-
 }
