@@ -11,6 +11,7 @@ import android.Manifest;
 import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,6 +44,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
+import com.example.donotredeem.SocialSituation;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -74,13 +76,14 @@ public class AddMoodEvent extends Fragment {
     private ImageView image;
     private EditText location;
     private String selectedMoodName = null;
+    private SocialSituation selectedSocial = null;
 
     private static final int CAMERA_REQUEST = 100;
     private static final int GALLERY_REQUEST = 200;
     private static final int LOCATION_REQUEST = 300;
 
     private ImageButton selectedEmoji = null;
-    ImageButton socialButton;
+    private ImageButton selectedSocialButton = null;
 
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
@@ -104,6 +107,7 @@ public class AddMoodEvent extends Fragment {
             R.id.emoji_tired
     };
 
+    int[] socialButtonIds = {R.id.alone_social, R.id.pair_social, R.id.crowd_social};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -357,12 +361,11 @@ public class AddMoodEvent extends Fragment {
             }
         });
 
-        int[] socialButtonIds = {R.id.alone_social, R.id.pair_social, R.id.crowd_social};
-        for (int id : socialButtonIds) {
-            socialButton = view.findViewById(id);
-            socialButton.setOnClickListener(v -> highlightSelectedEmoji((ImageButton) v));
-        }
 
+        for (int id : socialButtonIds) {
+            ImageButton socialButton = view.findViewById(id);
+            socialButton.setOnClickListener(v -> highlightSelectedSocial((ImageButton) v));
+        }
 
 
         for (int id : emojiButtonIds) {
@@ -672,9 +675,39 @@ public class AddMoodEvent extends Fragment {
 
         for (int i = 0; i < emojiButtonIds.length; i++) {
             if (emojiButtonIds[i] == buttonId) {
-                //MoodType selectedMood = MoodType.values()[i];
                 //Log.d("SelectedMood", "Mood for buttonId " + buttonId + ": " + selectedMood.getMood());
                 return MoodType.values()[i];
+            }
+        }
+        return null;
+    }
+
+    private void highlightSelectedSocial(Button selected) {
+        if (selectedSocialButton != null) {
+            selectedSocialButton.setBackground(null);
+            selectedSocialButton.setElevation(0);
+        }
+
+        if (selectedSocialButton == selected) {
+            selectedEmoji = null; // Unselect if clicking the same emoji
+            selectedMoodName = null;  // Reset selected mood
+        } else {
+            selected.setBackgroundResource(R.drawable.highlight_background);
+            selected.setElevation(8);
+            selectedEmoji = selected;
+
+            int buttonId = selected.getId();
+            MoodType selectedMood = getMoodForButtonId(buttonId);
+            if (selectedMood != null) {
+                selectedMoodName = selectedMood.getMood();
+            }
+        }
+
+    }
+
+    private SocialSituation getSocialSituationForButtonId(int buttonId) {
+            if (socialButtonIds[i] == buttonId) {
+                return SocialSituation.values()[i];
             }
         }
         return null;
