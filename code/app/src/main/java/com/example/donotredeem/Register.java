@@ -15,6 +15,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
@@ -132,21 +133,38 @@ public class Register extends AppCompatActivity {
             return;
         }
 
-        mAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
-                        if (firebaseUser != null) {
-                            saveUserData(firebaseUser);
-                        }
-                    } else {
-                        Log.e("Register", "Registration failed: " + task.getException().getMessage());
-                        Toast.makeText(Register.this, "Registration failed.", Toast.LENGTH_SHORT).show();
-                    }
-                });
+        DocumentReference userDocRef = db.collection("User").document(username);
+        userDocRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    // Username already exists
+                    Toast.makeText(Register.this, "Username already taken!", Toast.LENGTH_LONG).show();
+                    currentPage = 2;
+                    showPage(currentPage);
+                } else {
+                    // Username is unique
+                    mAuth.createUserWithEmailAndPassword(email, password)
+                            .addOnCompleteListener(Register.this, authTask -> {
+                                if (authTask.isSuccessful()) {
+                                    FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                                    if (firebaseUser != null) {
+                                        saveUserData(firebaseUser);
+                                    }
+                                } else {
+                                    Log.e("Register", "Registration failed: " + authTask.getException().getMessage());
+                                    Toast.makeText(Register.this, "Registration failed.", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+            } else {
+                Toast.makeText(Register.this, "Error checking username uniqueness!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void saveUserData(FirebaseUser firebaseUser) {
+
+        private void saveUserData(FirebaseUser firebaseUser) {
         Map<String, Object> user = new HashMap<>();
         user.put("name", name);
         user.put("email", email);
