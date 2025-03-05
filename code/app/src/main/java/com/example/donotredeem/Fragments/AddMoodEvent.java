@@ -286,8 +286,9 @@ public class AddMoodEvent extends Fragment {
 
             DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), (view1, selectedYear, selectedMonth, selectedDay) -> {
 
-                String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+                String selectedDate = String.format("%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear);
                 date.setText(selectedDate);
+
             }, year, month, day
             );
 
