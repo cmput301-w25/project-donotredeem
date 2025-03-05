@@ -1,10 +1,15 @@
 package com.example.donotredeem.Classes;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * UserProfileManager
@@ -102,14 +107,31 @@ public class UserProfileManager {
 
     /**
      * Updates an existing user profile in Firestore.
-     * @param user the Users object to add to Firestore.
+     * @param updatedUser the Users object to add to Firestore.
      * @param username the unique ID for the user.
      */
-    public void updateUser(Users user, String username){
-        assert db != null;
-        db.collection("User").document(username) // Use username as the document ID
-                .set(user);
+    public void updateUser(Users updatedUser, String username) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Creating a map of only the fields that need to be updated
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("username", updatedUser.getUsername());
+        updates.put("password", updatedUser.getPassword());
+        updates.put("email", updatedUser.getEmail());
+        updates.put("bio", updatedUser.getBio());
+
+        // Directly reference the document by username (document ID)
+        db.collection("User").document(username)
+                .update(updates)
+                .addOnSuccessListener(aVoid -> Log.d("FirestoreUpdate", "User updated successfully"))
+                .addOnFailureListener(e -> Log.e("FirestoreUpdate", "Error updating user", e));
     }
+
+//    public void updateUser(Users user, String username){
+//        assert db != null;
+//        db.collection("User").document(username) // Use username as the document ID
+//                .set(user);
+//    }
 
 //    /**
 //     * Delete a user profile from Firestore using the device ID.

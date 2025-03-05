@@ -18,6 +18,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.donotredeem.MoodEvent;
+import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
 
 import java.time.LocalDate;
@@ -42,6 +43,14 @@ public class FilterFragment extends DialogFragment {
     private ImageButton selectedEmoji = null;
     private FilterMoodListener listener;
     private ArrayList<MoodEvent> moodEvents;
+
+    String selectedEmojiName = null;
+    int[] emojiButtonIds = {
+            R.id.filter_emoji_happy, R.id.filter_emoji_sad, R.id.filter_emoji_fear,
+            R.id.filter_emoji_angry, R.id.filter_emoji_confused, R.id.filter_emoji_disgusted,
+            R.id.filter_emoji_shameful, R.id.filter_emoji_surprised, R.id.filter_emoji_shy,
+            R.id.filter_emoji_tired
+    };
 
     public interface FilterMoodListener {
         void filterMood(ArrayList<MoodEvent> filteredList);
@@ -92,37 +101,33 @@ public class FilterFragment extends DialogFragment {
             dismiss();
         });
 
-
         donebtn.setOnClickListener(v -> {
             String searchKeyword = Keyword.getText().toString().trim().toLowerCase();
             ArrayList<MoodEvent> filteredList = new ArrayList<>();
 
             if (moodEvents != null) {
                 for (MoodEvent event : moodEvents) {
-                    boolean matchesKeyword = matchesSearch(event, searchKeyword);
-                    boolean isInMonth = month(event);
-                    boolean isInWeek = week(event);
+                    boolean matchesKeyword = !searchKeyword.isEmpty() && matchesSearch(event, searchKeyword);
+                    boolean matchesTime = false;
+                    boolean matchesEmotion = selectedEmojiName != null && selectedEmojiName.equals(event.getEmotionalState());
 
-                    if (Objects.equals(btn, "month")) {
-                        // If "month" is selected, add event only if it matches keyword OR no keyword is entered
-                        if (isInMonth && (matchesKeyword || searchKeyword.isEmpty())) {
-                            filteredList.add(event);
+                    if (btn != null) {
+                        if (btn.equals("month")) {
+                            matchesTime = month(event);
+                        } else if (btn.equals("week")) {
+                            matchesTime = week(event);
+                        } else if (btn.equals("all")) {
+                            matchesTime = true;  // If "all" is selected, ignore time filtering.
                         }
-                    } else if (Objects.equals(btn, "week")) {
-                        // If "week" is selected, add event only if it matches keyword OR no keyword is entered
-                        if (isInWeek && (matchesKeyword || searchKeyword.isEmpty())) {
-                            filteredList.add(event);
-                        }
-                    } else if (Objects.equals(btn, "all")) {
-                        // If "all" is selected, apply only keyword filtering
-                        if (matchesKeyword || searchKeyword.isEmpty()) {
-                            filteredList.add(event);
-                        }
-                    } else if (btn == null) {
-                        // If no filter is selected, only apply keyword filtering
-                        if (matchesKeyword) {
-                            filteredList.add(event);
-                        }
+                    } else {
+                        matchesTime = true;  // No time filter applied.
+                    }
+
+                    // Apply filtering dynamically
+                    if ((selectedEmojiName == null || matchesEmotion) &&
+                            (btn == null || matchesTime) &&
+                            (searchKeyword.isEmpty() || matchesKeyword)) {
+                        filteredList.add(event);
                     }
                 }
             }
@@ -133,12 +138,72 @@ public class FilterFragment extends DialogFragment {
             dismiss();
         });
 
-        int[] emojiButtonIds = {
-                R.id.filter_emoji_happy, R.id.filter_emoji_sad, R.id.filter_emoji_fear,
-                R.id.filter_emoji_angry, R.id.filter_emoji_confused, R.id.filter_emoji_disgusted,
-                R.id.filter_emoji_shameful, R.id.filter_emoji_surprised, R.id.filter_emoji_shy,
-                R.id.filter_emoji_tired
-        };
+
+//        donebtn.setOnClickListener(v -> {
+//            String searchKeyword = Keyword.getText().toString().trim().toLowerCase();
+//            ArrayList<MoodEvent> filteredList = new ArrayList<>();
+//
+//            if (moodEvents != null) {
+//                for (MoodEvent event : moodEvents) {
+//                    boolean matchesKeyword = matchesSearch(event, searchKeyword);
+//                    boolean isInMonth = month(event);
+//                    boolean isInWeek = week(event);
+//
+//                    if (selectedEmojiName.equals(event.getEmotionalState())) {
+//                        if (Objects.equals(btn, "month")) {
+//                            // If "month" is selected, add event only if it matches keyword OR no keyword is entered
+//                            if (isInMonth && (matchesKeyword || searchKeyword.isEmpty())) {
+//                                filteredList.add(event);
+//                            }
+//                        } else if (Objects.equals(btn, "week")) {
+//                            // If "week" is selected, add event only if it matches keyword OR no keyword is entered
+//                            if (isInWeek && (matchesKeyword || searchKeyword.isEmpty())) {
+//                                filteredList.add(event);
+//                            }
+//                        } else if (Objects.equals(btn, "all")) {
+//                            // If "all" is selected, apply only keyword filtering
+//                            if (matchesKeyword || searchKeyword.isEmpty()) {
+//                                filteredList.add(event);
+//                            }
+//                        } else if (btn == null) {
+//                            // If no filter is selected, only apply keyword filtering
+//                            if (matchesKeyword) {
+//                                filteredList.add(event);
+//                            }
+//                        }
+//                    } else {
+//                        if (Objects.equals(btn, "month")) {
+//                            // If "month" is selected, add event only if it matches keyword OR no keyword is entered
+//                            if (isInMonth && (matchesKeyword || searchKeyword.isEmpty())) {
+//                                filteredList.add(event);
+//                            }
+//                        } else if (Objects.equals(btn, "week")) {
+//                            // If "week" is selected, add event only if it matches keyword OR no keyword is entered
+//                            if (isInWeek && (matchesKeyword || searchKeyword.isEmpty())) {
+//                                filteredList.add(event);
+//                            }
+//                        } else if (Objects.equals(btn, "all")) {
+//                            // If "all" is selected, apply only keyword filtering
+//                            if (matchesKeyword || searchKeyword.isEmpty()) {
+//                                filteredList.add(event);
+//                            }
+//                        } else if (btn == null) {
+//                            // If no filter is selected, only apply keyword filtering
+//                            if (matchesKeyword) {
+//                                filteredList.add(event);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//
+//            if (listener != null) {
+//                listener.filterMood(filteredList);
+//            }
+//            dismiss();
+//        });
+
+
 
         for (int id : emojiButtonIds) {
             ImageButton emojiButton = view.findViewById(id);
@@ -205,7 +270,24 @@ public class FilterFragment extends DialogFragment {
             selected.setBackgroundResource(R.drawable.highlight_background);
             selected.setElevation(8);
             selectedEmoji = selected;
+
+            int buttonId = selected.getId();
+            MoodType selectedMood = getMoodForButtonId(buttonId);
+            if (selectedMood != null) {
+                selectedEmojiName = selectedMood.getMood();
+            }
         }
+    }
+
+    private MoodType getMoodForButtonId(int buttonId) {
+
+        for (int i = 0; i < emojiButtonIds.length; i++) {
+            if (emojiButtonIds[i] == buttonId) {
+                //Log.d("SelectedMood", "Mood for buttonId " + buttonId + ": " + selectedMood.getMood());
+                return MoodType.values()[i];
+            }
+        }
+        return null;
     }
 
     private LocalDate parseStringToDate(String dateString) {
@@ -218,28 +300,28 @@ public class FilterFragment extends DialogFragment {
         }
     }
 
-    private LocalTime parseStringToTime(String timeString) {
-        // Log the raw string received
-        Log.d("MoodHistory", "Parsing time string: " + timeString);
-
-        if (timeString == null || timeString.isEmpty()) {
-            Log.e("MoodHistory", "Time string is null or empty");
-            return LocalTime.now(); // Default to current time if parsing fails
-        }
-
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // 24-hour format
-            LocalTime parsedTime = LocalTime.parse(timeString, formatter);
-
-            // Log the parsed time
-            Log.d("MoodHistory", "Parsed time: " + parsedTime);
-
-            return parsedTime;
-        } catch (DateTimeParseException e) {
-            Log.e("MoodHistory", "Error parsing time: " + timeString, e);
-            return LocalTime.now(); // Default to current time if parsing fails
-        }
-    }
+//    private LocalTime parseStringToTime(String timeString) {
+//        // Log the raw string received
+//        Log.d("MoodHistory", "Parsing time string: " + timeString);
+//
+//        if (timeString == null || timeString.isEmpty()) {
+//            Log.e("MoodHistory", "Time string is null or empty");
+//            return LocalTime.now(); // Default to current time if parsing fails
+//        }
+//
+//        try {
+//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // 24-hour format
+//            LocalTime parsedTime = LocalTime.parse(timeString, formatter);
+//
+//            // Log the parsed time
+//            Log.d("MoodHistory", "Parsed time: " + parsedTime);
+//
+//            return parsedTime;
+//        } catch (DateTimeParseException e) {
+//            Log.e("MoodHistory", "Error parsing time: " + timeString, e);
+//            return LocalTime.now(); // Default to current time if parsing fails
+//        }
+//    }
 }
 
 
