@@ -190,12 +190,12 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
 
     private LocalDate parseStringToDate(String dateString) {
         try {
-            // Use ISO format if dates are stored like "2024-03-15"
-            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+            // Use pattern matching for "DD-MM-YYYY" format
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             return LocalDate.parse(dateString, formatter);
         } catch (Exception e) {
             Log.e("MoodHistory", "Invalid date format: " + dateString, e);
-            return LocalDate.MIN; // Use MIN instead of current date for error handling
+            return LocalDate.MIN;
         }
     }
 

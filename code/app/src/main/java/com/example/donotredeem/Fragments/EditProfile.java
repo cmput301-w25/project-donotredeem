@@ -84,6 +84,7 @@ public class EditProfile extends Fragment {
     }
 
     public void setDetails(Users user){
+        editUsername.setText(user.getUsername());
         editPassword.setText(user.getPassword());
         editEmail.setText(user.getEmail());
         bio.setText(user.getBio());
