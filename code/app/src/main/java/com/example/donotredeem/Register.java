@@ -170,6 +170,7 @@ public class Register extends AppCompatActivity {
         user.put("email", email);
         user.put("phone", phone);
         user.put("password", password);
+        user.put("username", username);
 //        user.put("birthDate", birthDate);
 //        user.put("activity", activity);
 //        user.put("moodRecurrence", moodRecurrence);
