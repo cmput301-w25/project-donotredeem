@@ -1,86 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
     android:background="#222121">
 
-    <HorizontalScrollView
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:paddingBottom="100dp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="412dp"
-                android:layout_height="700dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/main_happy" />
-
-            <ImageView
-                android:layout_width="403dp"
-                android:layout_height="700dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/main_sad" />
-
-            <ImageView
-                android:layout_width="403dp"
-                android:layout_height="700dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/main_fear" />
-
-            <ImageView
-                android:layout_width="403dp"
-                android:layout_height="700dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/main_angry" />
-
-            <ImageView
-                android:layout_width="403dp"
-                android:layout_height="700dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/main_confused" />
-
-            <ImageView
-                android:layout_width="403dp"
-                android:layout_height="700dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/main_disgusted" />
-
-            <ImageView
-                android:layout_width="403dp"
-                android:layout_height="700dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/main_shameful" />
-
-            <ImageView
-                android:layout_width="403dp"
-                android:layout_height="700dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/main_surprised" />
-
-
-            <ImageView
-                android:layout_width="403dp"
-                android:layout_height="700dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/main_shy" />
-
-            <ImageView
-                android:layout_width="403dp"
-                android:layout_height="700dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/main_tired" />
-
-
-        </LinearLayout>
-    </HorizontalScrollView>
-
+    <!-- Skip Button -->
     <Button
         android:id="@+id/skip_button"
         android:layout_width="wrap_content"
@@ -90,12 +22,12 @@
         android:layout_marginBottom="25dp"
         android:backgroundTint="#222121"
         android:fontFamily="@font/amatica_sc_bold"
-        android:text="@string/skip"
+        android:text="SKIP"
         android:textColor="#FFFFFF"
         android:textSize="24sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
-    <!-- Next Button (Right) -->
+    <!-- Next Button -->
     <Button
         android:id="@+id/next_button"
         android:layout_width="160dp"
@@ -109,6 +41,6 @@
         android:paddingEnd="24dp"
         android:text="NEXT >"
         android:textColor="#000000"
-        android:textSize="24sp" />
+        android:textSize="24sp"/>
 
 </FrameLayout>
