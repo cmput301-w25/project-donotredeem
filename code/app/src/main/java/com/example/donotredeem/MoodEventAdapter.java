@@ -104,7 +104,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             ThisSituation.setImageResource(situationId);
             Log.d("MoodAdapter", "Image set.");
         } else {
-            ThisSituation.setImageResource(R.drawable.pfpicon);  // Use a fallback
+            ThisSituation.setVisibility(View.GONE);  // Use a fallback
         }
 
         int imageId = MoodType.getImageIdByMood(mood);

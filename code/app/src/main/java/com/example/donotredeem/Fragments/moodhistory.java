@@ -77,6 +77,8 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
             Display(moodHistoryList); // Assuming you want to display it after adding
         }
 
+
+
 //        moodHistoryList.addAll(Arrays.asList(moodEvents));
         Display(moodHistoryList);
 
@@ -161,53 +163,11 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
         }
     }
 
-    // Helper method to parse date string to LocalDate
-//    private LocalDate parseStringToDate(String dateString) {
-//        try {
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Adjust format based on your date format
-//            return LocalDate.parse(dateString, formatter);
-//        } catch (Exception e) {
-//            Log.e("MoodHistory", "Invalid date format", e);
-//            return LocalDate.now(); // Default to current date if parsing fails
-//        }
-//    }
-
-
-
     private void Display(ArrayList<MoodEvent> moodHistoryList){
         adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
-
-//    private LocalTime parseStringToTime(String timeString) {
-//        // Log the raw string received
-//        Log.d("MoodHistory", "Parsing time string: " + timeString);
-//
-//        if (timeString == null || timeString.isEmpty()) {
-//            Log.e("MoodHistory", "Time string is null or empty");
-//            return LocalTime.now(); // Default to current time if parsing fails
-//        }
-//
-//        try {
-//            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss"); // 24-hour format
-//            LocalTime parsedTime = LocalTime.parse(timeString, formatter);
-//
-//            // Log the parsed time
-//            Log.d("MoodHistory", "Parsed time: " + parsedTime);
-//
-//            return parsedTime;
-//        } catch (DateTimeParseException e) {
-//            Log.e("MoodHistory", "Error parsing time: " + timeString, e);
-//            return LocalTime.now(); // Default to current time if parsing fails
-//        }
-//    }
-
-
-
-
-
-
 
     private void redirectToLogin() {
         Intent intent = new Intent(getActivity(), LogIn.class);

@@ -65,13 +65,12 @@
                 android:src="@drawable/alone"
                 android:contentDescription="describes"
                 android:visibility="visible"
-                android:layout_marginStart="10dp"
                 app:tint="#222121"
-                android:layout_marginEnd="150dp"
                 app:layout_constraintStart_toEndOf="@id/Emotional_State"
                 app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
