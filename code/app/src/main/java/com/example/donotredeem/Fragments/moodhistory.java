@@ -117,33 +117,17 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
                 .addOnSuccessListener(querySnapshot -> {
                     if (!querySnapshot.isEmpty()) {
                         DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
-                        Log.d("MoodHistory", "User found: " + userDoc.getData()); // Log user document details
-
-                        // Get the MoodREF field which is a DocumentReference
-                        DocumentReference moodRef = userDoc.getDocumentReference("MoodREF");
-
-                        if (moodRef != null) {
-                            Log.d("MoodHistory", "MoodREF found: " + moodRef.getPath()); // Log the MoodREF path
-
-                            String References = moodRef.getPath();
-                            String[] refArray = References.split(","); // Split the string by commas
-
-                            // Create a list to store the DocumentReferences
-                            List<DocumentReference> moodRefsList = new ArrayList<>();
-
-                            for (String ref : refArray) {
-                                ref = ref.trim();  // Remove leading/trailing whitespace
-                                DocumentReference documentReference = db.document(ref); // Create a new DocumentReference for each
-                                moodRefsList.add(documentReference);  // Add it to the list
-                                Log.d("MoodHistory", "Document Reference: " + documentReference.getPath()); // Log each reference
-                            }
-
-                            // Fetch the mood events using the list of references
-                            fetchMoodEvents(moodRefsList);
-                        } else {
-                            Log.e("MoodHistory", "MoodREF is null or not a reference");
+                        Log.d("MoodHistory", "User found: " + userDoc.getData());
+                        List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
+                        if (moodRefsList != null && !moodRefsList.isEmpty()) {
+                            fetchMoodEvents(moodRefsList); // Fetch the referenced mood events
                         }
-                    } else {
+                        else {
+                            Log.d("MoodHistory", "No mood events found.");
+                        }
+                    }
+
+                    else {
                         Log.e("MoodHistory", "No user found with username: " + username);
                     }
                 })
@@ -156,24 +140,10 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             try {
-                                // Retrieve fields from the document snapshot
-//                                String emotionalState = (String) documentSnapshot.get("emotionalState");
-//                                String dateString = (String) documentSnapshot.get("date"); // Assuming it's stored
-//                                String trigger = (String) documentSnapshot.get("trigger");
-//                                String explainText = (String) documentSnapshot.get("explainText");
-//                                String timeString = (String) documentSnapshot.get("time");
-//                                Log.e("MoodHistory", "Time string:" + timeString);
-//                                String situation = (String) documentSnapshot.get("situation");
-//                                String location = (String) documentSnapshot.get("place");
-//                                String picture_string = (String)documentSnapshot.get("explainPicture");
-//                                Log.e("MoodHistory", "  Picture string:" + picture_string);
-
 
                                 MoodEvent moodEvent;
                                 moodEvent = documentSnapshot.toObject(MoodEvent.class);
 //
-//                                moodEvent = new MoodEvent(emotionalState, dateString, timeString, location, situation, trigger, explainText,picture_string);
-
                                 // You can also add this to a list or display it as needed
                                 moodHistoryList.add(moodEvent);
                                 Display(moodHistoryList);
