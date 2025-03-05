@@ -74,13 +74,8 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
             // Fetch user details from Firestore
             Log.d("HistoryDebug", "Fetching user details for: " + loggedInUsername);
             fetchUserMoodEvents(loggedInUsername);
-            Display(moodHistoryList); // Assuming you want to display it after adding
         }
 
-
-
-//        moodHistoryList.addAll(Arrays.asList(moodEvents));
-        Display(moodHistoryList);
 
 
         view.findViewById(R.id.cancel_history).setOnClickListener(v -> {
@@ -115,8 +110,7 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
 
         db.collection("User")
                 .whereEqualTo("username", username)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
+                .addSnapshotListener((querySnapshot, error) -> {
                     if (!querySnapshot.isEmpty()) {
                         DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
                         Log.d("MoodHistory", "User found: " + userDoc.getData());
@@ -132,8 +126,7 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
                     else {
                         Log.e("MoodHistory", "No user found with username: " + username);
                     }
-                })
-                .addOnFailureListener(e -> Log.e("MoodHistory", "Error fetching user data", e));
+                });
     }
 
     private void fetchMoodEvents(List<DocumentReference> moodRefs) {

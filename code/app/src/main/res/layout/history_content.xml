@@ -9,24 +9,24 @@
 
     <View
         android:id="@+id/verticalLine"
-        android:layout_width="2dp"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="30dp"
+        android:layout_width="4dp"
+        android:layout_height="0dp"
+        android:background="#F5E6D3"
+        android:layout_marginStart="32dp"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_alignParentTop="true"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 
     <ImageView
         android:id="@+id/emojiIcon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:src="@drawable/pfpicon"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/details"
         app:layout_constraintBottom_toBottomOf="@id/details"
-        android:layout_marginStart="16dp"/>
+        android:layout_marginStart="10dp"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/details"

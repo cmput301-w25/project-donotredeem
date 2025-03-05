@@ -142,8 +142,7 @@ public class ProfilePage extends Fragment {
 
         db.collection("User")
                 .whereEqualTo("username", username)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
+                .addSnapshotListener((querySnapshot, error) -> {
                     if (!querySnapshot.isEmpty()) {
                         DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
                         Log.d("MoodHistory", "User found: " + userDoc.getData());
@@ -160,24 +159,24 @@ public class ProfilePage extends Fragment {
                     else {
                         Log.e("MoodHistory", "No user found with username: " + username);
                     }
-                })
-                .addOnFailureListener(e -> Log.e("MoodHistory", "Error fetching user data", e));
+                });
+
     }
 
     private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+        moodHistoryList.clear(); // Clear the list to avoid duplicates
         for (DocumentReference moodRef : moodRefs) {
             moodRef.get()
                     .addOnSuccessListener(documentSnapshot -> {
                         if (documentSnapshot.exists()) {
                             try {
-
                                 MoodEvent moodEvent;
                                 moodEvent = documentSnapshot.toObject(MoodEvent.class);
 //
                                 // You can also add this to a list or display it as needed
                                 moodHistoryList.add(moodEvent);
-                                if (moodHistoryList.size() > 3 ){
-                                    moodHistoryList = new ArrayList<>(moodHistoryList.subList(0, 3));
+                                if (moodHistoryList.size() > 2 ){
+                                    moodHistoryList = new ArrayList<>(moodHistoryList.subList(0, 2));
                                 }
                                 Display(moodHistoryList);
 
