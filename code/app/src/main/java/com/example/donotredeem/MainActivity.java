@@ -78,14 +78,14 @@ public class MainActivity extends AppCompatActivity {
         heartButton = findViewById(R.id.heart_button);
         profilePage = findViewById(R.id.profilepage);
 
+
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment existingFragment = fragmentManager.findFragmentByTag("AddMoodEvent");
 
-                if (fragmentManager.findFragmentByTag("AddMoodEvent") == null) {
-
+                if (existingFragment == null) {
                     AddMoodEvent addMoodEvent = new AddMoodEvent();
                     fragmentManager.beginTransaction()
                             .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
@@ -93,26 +93,34 @@ public class MainActivity extends AppCompatActivity {
                             .addToBackStack("AddMoodEvent")
                             .commit();
                 } else {
-
                     View fragmentView = existingFragment.getView();
-                    Animation slideOut = AnimationUtils.loadAnimation(view.getContext(), R.anim.slide_out_bottom);
-                    fragmentView.startAnimation(slideOut);
+                    if (fragmentView != null) {
+                        Animation slideOut = AnimationUtils.loadAnimation(view.getContext(), R.anim.slide_out_bottom);
+                        fragmentView.startAnimation(slideOut);
 
-                    slideOut.setAnimationListener(new Animation.AnimationListener() {
-                        @Override
-                        public void onAnimationStart(Animation animation) {}
+                        slideOut.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
 
-                        @Override
-                        public void onAnimationEnd(Animation animation) {
-                            fragmentManager.popBackStack("AddMoodEvent", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        }
+                            }
 
-                        @Override
-                        public void onAnimationRepeat(Animation animation) {}
-                    });
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                fragmentManager.popBackStack("AddMoodEvent", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+                    } else {
+                        fragmentManager.popBackStack("AddMoodEvent", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                    }
                 }
             }
         });
+
 
 
         mapButton.setOnClickListener(new View.OnClickListener() {
