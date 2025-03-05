@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +35,7 @@ public class EditProfile extends Fragment {
     private EditText editEmail;
     private EditText bio;
     private Button done;
+    private ImageButton cancel;
     Users userProfile = new Users();
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -47,6 +49,7 @@ public class EditProfile extends Fragment {
         editPassword = view.findViewById(R.id.password_desc);
         editEmail = view.findViewById(R.id.email_desc);
         bio = view.findViewById(R.id.bio_desc);
+        cancel= view.findViewById(R.id.closeButton);
         UserProfileManager userProfileManager = new UserProfileManager();
         userProfileManager.getUserProfile(username, new UserProfileManager.OnUserProfileFetchListener() {
             @Override
@@ -72,6 +75,10 @@ public class EditProfile extends Fragment {
                 userProfile.setBio(bio.getText().toString());
                 userProfileManager.updateUser(userProfile, username);
             }
+        });
+
+        cancel.setOnClickListener(v -> {
+            requireActivity().getSupportFragmentManager().popBackStack();
         });
         return view;
     }
