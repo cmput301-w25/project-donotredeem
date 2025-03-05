@@ -391,37 +391,38 @@ public class AddMoodEvent extends Fragment {
             String locationText = location.getText().toString();
             String timeText = time.getText().toString();
 
-
             if (imageUri != null) { //gallery or camera
                 Log.d("AddMoodEvent", "Uploading image: " + imageUri.toString());
                 uploadImageAndSaveMood(descText, triggerText, dateText, locationText, imageUri, selectedMoodName, selectedSocial, timeText);
-
-
             } else { //no pic by user
                 Log.e("AddMoodEvent", "Image URI is null, cannot upload!");
                 saveMoodToFirestore(descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial, timeText);
-
             }
 
-            Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-            fragmentRoot.startAnimation(slideOut);
+            if (fragmentRoot != null) {
+                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+                fragmentRoot.startAnimation(slideOut);
 
-            slideOut.setAnimationListener(new Animation.AnimationListener() {
+                slideOut.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
 
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
+                    }
 
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
-                }
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
+                    }
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
 
-                }
-            });
+                    }
+                });
+            } else {
+
+                getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
+            }
         });
 
 
