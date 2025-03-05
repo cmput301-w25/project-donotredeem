@@ -41,7 +41,6 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
 
     private SharedPreferences sharedPreferences;
 
-
     @Override
     public void filterMood(ArrayList<MoodEvent> filteredList) {
         Display(filteredList);
@@ -76,8 +75,6 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
             fetchUserMoodEvents(loggedInUsername);
         }
 
-
-
         view.findViewById(R.id.cancel_history).setOnClickListener(v -> {
             requireActivity().getSupportFragmentManager().popBackStack();
         });
@@ -96,11 +93,8 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
                 filterFragment.show(getParentFragmentManager(), "filter");
             }
         });
-
-
         return view;
     }
-
 
     private void fetchUserMoodEvents(String username) {
         if (username == null) {
@@ -128,36 +122,61 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
                     }
                 });
     }
-
     private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+        ArrayList<MoodEvent> tempList = new ArrayList<>();
+        final int[] fetchedCount = {0};
+
         for (DocumentReference moodRef : moodRefs) {
-            moodRef.get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            try {
-
-                                MoodEvent moodEvent;
-                                moodEvent = documentSnapshot.toObject(MoodEvent.class);
-//
-                                // You can also add this to a list or display it as needed
-                                moodHistoryList.add(moodEvent);
-                                Display(moodHistoryList);
-
-
-                            } catch (Exception e) {
-                                Log.e("MoodHistory", "Error creating MoodEvent from document snapshot", e);
-                            }
-                        } else {
-                            Log.e("MoodHistory", "No document found at reference: " + moodRef.getPath());
+            moodRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    try {
+                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
+                        if (moodEvent != null) {
+                            tempList.add(moodEvent);
                         }
+                    } catch (Exception e) {
+                        Log.e("MoodHistory", "Error converting document", e);
+                    }
+                }
 
-                    })
-                    .addOnFailureListener(e -> Log.e("MoodHistory", "Error fetching mood event", e));
+                fetchedCount[0]++;
+                if (fetchedCount[0] == moodRefs.size()) {
+                    moodHistoryList.clear();
+                    moodHistoryList.addAll(tempList);
+                    Display(moodHistoryList); // Only sort once when all data is loaded
+                }
+            }).addOnFailureListener(e -> {
+                Log.e("MoodHistory", "Error fetching document", e);
+                fetchedCount[0]++;
+            });
         }
     }
 
-    private void Display(ArrayList<MoodEvent> moodHistoryList){
-        adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
+    private void Display(ArrayList<MoodEvent> moodHistoryList) {
+        // Create a defensive copy to avoid ConcurrentModificationException
+        ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
+
+        sortedList.sort((event1, event2) -> {
+            try {
+                LocalDate date1 = parseStringToDate(event1.getDate());
+                LocalDate date2 = parseStringToDate(event2.getDate());
+
+                // First compare dates
+                int dateCompare = date2.compareTo(date1); // Reverse chronological
+                if (dateCompare != 0) return dateCompare;
+
+                // If dates equal, compare times
+                LocalTime time1 = parseStringToTime(event1.getTime());
+                LocalTime time2 = parseStringToTime(event2.getTime());
+                return time2.compareTo(time1); // Reverse chronological
+            } catch (Exception e) {
+                Log.e("Sorting", "Error comparing events", e);
+                return 0;
+            }
+        });
+
+        // Update adapter with sorted list
+        adapter = new MoodEventAdapter(requireContext(), sortedList);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -168,6 +187,64 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
         requireActivity().finish();
     }
 
+
+    private LocalDate parseStringToDate(String dateString) {
+        try {
+            // Use ISO format if dates are stored like "2024-03-15"
+            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE;
+            return LocalDate.parse(dateString, formatter);
+        } catch (Exception e) {
+            Log.e("MoodHistory", "Invalid date format: " + dateString, e);
+            return LocalDate.MIN; // Use MIN instead of current date for error handling
+        }
+    }
+
+    private LocalTime parseStringToTime(String timeString) {
+        try {
+            // Handle both with and without seconds
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm[:ss]");
+            return LocalTime.parse(timeString, formatter);
+        } catch (Exception e) {
+            Log.e("MoodHistory", "Invalid time format: " + timeString, e);
+            return LocalTime.MIN;
+        }
+    }
 }
 
+
+
+
+
+//    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+//        for (DocumentReference moodRef : moodRefs) {
+//            moodRef.get()
+//                    .addOnSuccessListener(documentSnapshot -> {
+//                        if (documentSnapshot.exists()) {
+//                            try {
+//
+//                                MoodEvent moodEvent;
+//                                moodEvent = documentSnapshot.toObject(MoodEvent.class);
+////
+//                                // You can also add this to a list or display it as needed
+//                                moodHistoryList.add(moodEvent);
+//                                Display(moodHistoryList);
+//
+//
+//                            } catch (Exception e) {
+//                                Log.e("MoodHistory", "Error creating MoodEvent from document snapshot", e);
+//                            }
+//                        } else {
+//                            Log.e("MoodHistory", "No document found at reference: " + moodRef.getPath());
+//                        }
+//
+//                    })
+//                    .addOnFailureListener(e -> Log.e("MoodHistory", "Error fetching mood event", e));
+//        }
+//    }
+
+//    private void Display(ArrayList<MoodEvent> moodHistoryList){
+//        adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
+//        listView.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
+//    }
 
