@@ -611,7 +611,8 @@ public class AddMoodEvent extends Fragment {
                         if (loggedInUsername != null) {
                             // Update the user document by appending the new mood event reference to the "MoodRef" array field
                             DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
-                            userDocRef.update("MoodRef", FieldValue.arrayUnion(documentReference.getId()))
+                            //userDocRef.update("MoodRef", FieldValue.arrayUnion(documentReference.getId()))
+                            userDocRef.update("MoodRef", FieldValue.arrayUnion(documentReference))
                                     .addOnSuccessListener(aVoid -> Log.d(TAG, "User document updated with mood event reference"))
                                     .addOnFailureListener(e -> Log.e(TAG, "Failed to update user document", e));
                         } else {
