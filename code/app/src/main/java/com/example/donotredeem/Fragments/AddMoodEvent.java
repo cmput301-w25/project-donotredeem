@@ -55,6 +55,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -342,7 +343,7 @@ public class AddMoodEvent extends Fragment {
 
             TimePickerDialog timePickerDialog = new TimePickerDialog(v.getContext(), (view1, selectedHour, selectedMinute) -> {
 
-                String selectedTime = selectedHour + ":" + selectedMinute;
+                String selectedTime = String.format("%02d:%02d",selectedHour, selectedMinute);
                 time.setText(selectedTime);
             },
                     hour, minute, true // 24-hour format, false = am/pm
@@ -391,6 +392,26 @@ public class AddMoodEvent extends Fragment {
             String locationText = location.getText().toString();
             String timeText = time.getText().toString();
 
+
+            if (selectedMoodName == null || selectedMoodName.isEmpty()) {
+                Snackbar.make(getView(), "Please select a mood!", Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+
+            if ((descText.isEmpty()) && (imageUri == null)) {
+                Snackbar.make(getView(), "Provide either a description or an image!", Snackbar.LENGTH_LONG).show();
+                return;
+            }
+
+            if (dateText.isEmpty()) {
+                Snackbar.make(getView(), "Please select a date!", Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+            if (timeText.isEmpty()) {
+                Snackbar.make(getView(), "Please select a time!", Snackbar.LENGTH_SHORT).show();
+                return;
+            }
+
             if (imageUri != null) { //gallery or camera
                 Log.d("AddMoodEvent", "Uploading image: " + imageUri.toString());
                 uploadImageAndSaveMood(descText, triggerText, dateText, locationText, imageUri, selectedMoodName, selectedSocial, timeText);
@@ -429,6 +450,7 @@ public class AddMoodEvent extends Fragment {
         ImageButton close = view.findViewById(R.id.closeButton);
 
         close.setOnClickListener(v -> {
+
             Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
             fragmentRoot.startAnimation(slideOut);
 
@@ -611,7 +633,7 @@ public class AddMoodEvent extends Fragment {
                         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
                         String loggedInUsername = sharedPreferences.getString("username", null);
                         if (loggedInUsername != null) {
-                            // Update the user document by appending the new mood event reference to the "MoodRef" array field
+
                             DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
                             //userDocRef.update("MoodRef", FieldValue.arrayUnion(documentReference.getId()))
                             userDocRef.update("MoodRef", FieldValue.arrayUnion(documentReference))
