@@ -20,6 +20,7 @@ public class MoodEvent {
     private String trigger;
     private String explainText;
     private String explainPicture;
+    private String moodEventId;
 
 
 //    // Constructor
@@ -79,7 +80,7 @@ public class MoodEvent {
 //        this.explainText = explainText;
 //    }
 
-//    heer testing
+    //    heer testing
     public MoodEvent(String emotionalState, String date, String time,
                      String place, @Nullable String situation,
                      @Nullable String trigger, @Nullable String explainText, @Nullable String explainPicture) {
@@ -96,6 +97,23 @@ public class MoodEvent {
         this.place = (place != null) ? place : "";
 
         // Optional fields, need to provide null values if not there
+        this.situation = situation;
+        this.trigger = trigger;
+        this.explainText = explainText;
+        this.explainPicture = explainPicture;
+    }
+
+    public MoodEvent(String moodEventId, String emotionalState, String date, String time,
+                     String place, @Nullable String situation,
+                     @Nullable String trigger, @Nullable String explainText, @Nullable String explainPicture) {
+        if (emotionalState == null || emotionalState.trim().isEmpty()) {
+            throw new IllegalArgumentException("Emotional state is required.");
+        }
+        this.moodEventId = moodEventId;
+        this.emotionalState = emotionalState;
+        this.time = time;
+        this.date = date;
+        this.place = (place != null) ? place : "";
         this.situation = situation;
         this.trigger = trigger;
         this.explainText = explainText;
@@ -218,6 +236,11 @@ public class MoodEvent {
     public void setExplainPicture(String explainPicture) {
         this.explainPicture = explainPicture;
     }
+    public String getMoodEventId() {
+        return moodEventId;
+    }
+
+    public void setMoodEventId(String moodEventId) {
+        this.moodEventId = moodEventId;
+    }
 }
-
-

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.net.URI;
@@ -32,13 +34,13 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class moodhistory extends Fragment implements FilterFragment.FilterMoodListener{
     private ListView listView;
     private MoodEventAdapter adapter;
     private FirebaseFirestore db;
     private String loggedInUsername;
     private ArrayList<MoodEvent> moodHistoryList;
-
     private SharedPreferences sharedPreferences;
 
     @Override
@@ -93,6 +95,8 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
                 filterFragment.show(getParentFragmentManager(), "filter");
             }
         });
+
+
         return view;
     }
 
@@ -209,6 +213,7 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
             return LocalTime.MIN;
         }
     }
+
 }
 
 
@@ -247,4 +252,3 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
 //        listView.setAdapter(adapter);
 //        adapter.notifyDataSetChanged();
 //    }
-

@@ -10,6 +10,7 @@
     
     
     <github.com.st235.swipetoactionlayout.SwipeToActionLayout
+        android:id="@+id/swipe_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:sal_gravity="right"

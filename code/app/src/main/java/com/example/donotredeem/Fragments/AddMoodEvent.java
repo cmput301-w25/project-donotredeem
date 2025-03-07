@@ -623,21 +623,24 @@ public class AddMoodEvent extends Fragment {
         private void saveMoodToFirestore(String desc, String trigger,
                                          String date, String locationText, String imageUrl,
                                          String mood, String social, String time) {
+            // Generate a unique moodEventId
+            String moodEventId = UUID.randomUUID().toString();
+            DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
 
-            MoodEvent moodEvent = new MoodEvent(mood, date, time, locationText, social, trigger, desc, imageUrl);
-            db.collection("MoodEvents")
-                    .add(moodEvent)
-                    .addOnSuccessListener(documentReference -> {
+            MoodEvent moodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
+            moodEventRef.set(moodEvent)
+                    .addOnSuccessListener(aVoid -> {
                         Toast.makeText(getContext(), "Mood Event Saved!", Toast.LENGTH_SHORT).show();
-                        // Retrieve the currently logged in username from SharedPreferences
+
+                        // Retrieve the logged-in username from SharedPreferences
                         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
                         String loggedInUsername = sharedPreferences.getString("username", null);
-                        if (loggedInUsername != null) {
 
+                        if (loggedInUsername != null) {
                             DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
-                            //userDocRef.update("MoodRef", FieldValue.arrayUnion(documentReference.getId()))
-                            userDocRef.update("MoodRef", FieldValue.arrayUnion(documentReference))
-                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "User document updated with mood event reference"))
+                            // Store the moodEventRef (DocumentReference) instead of a String
+                            userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
+                                    .addOnSuccessListener(aVoid1 -> Log.d(TAG, "User document updated with mood event reference"))
                                     .addOnFailureListener(e -> Log.e(TAG, "Failed to update user document", e));
                         } else {
                             Log.e(TAG, "Logged-in username not found in SharedPreferences");
