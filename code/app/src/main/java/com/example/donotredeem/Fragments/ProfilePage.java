@@ -82,7 +82,7 @@ public class ProfilePage extends Fragment {
         adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
         recent_list.setAdapter(adapter);
 
-        
+
         DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
         LinearLayout sidePanel = view.findViewById(R.id.side_panel);
 
