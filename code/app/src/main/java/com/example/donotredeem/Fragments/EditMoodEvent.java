@@ -373,6 +373,7 @@ public class EditMoodEvent extends Fragment {
 
 
         submit.setOnClickListener(v -> {
+            View fragmentRoot = view.findViewById(R.id.fragment_root);
             String descText = description.getText().toString();
             String triggerText = triggerEdit.getText().toString();
             String dateText = dateEdit.getText().toString();
@@ -404,6 +405,24 @@ public class EditMoodEvent extends Fragment {
             } else {
                 updateMoodEventInFirestore(descText, triggerText, dateText, locationText, firebaseImageUrl,
                         selectedMoodName, selectedSocial, timeText);
+            }
+            if (fragmentRoot != null) {
+                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+                fragmentRoot.startAnimation(slideOut);
+
+                slideOut.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        getParentFragmentManager().beginTransaction().remove(EditMoodEvent.this).commit();
+                    }
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {}
+                });
+            } else {
+                getParentFragmentManager().beginTransaction().remove(EditMoodEvent.this).commit();
             }
         });
 
