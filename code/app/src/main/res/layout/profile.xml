@@ -19,7 +19,7 @@
             android:id="@+id/side_panel_button"
             android:layout_height="40dp"
             app:layout_constraintTop_toTopOf="parent"
-            android:src="@drawable/grid"
+            android:src="@drawable/menu"
             android:layout_marginEnd="20dp"
             android:layout_marginTop="40dp"
             app:tint="#F5E6D3"

@@ -18,10 +18,10 @@
         android:contentDescription="See statistics"
         android:padding="10dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/grid"
+        android:src="@drawable/home"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/add_button"
-        app:tint="#FAF6F6" />
+        app:tint="#FAF4F4" />
 
     <ImageButton
         android:id="@+id/map_button"
@@ -69,7 +69,7 @@
         android:contentDescription="Open Profile Page"
         android:padding="10dp"
         android:scaleType="fitCenter"
-        android:src="@drawable/map_icon"
+        android:src="@drawable/user"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="#FAF9F9" />
