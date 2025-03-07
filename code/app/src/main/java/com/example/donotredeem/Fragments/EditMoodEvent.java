@@ -53,12 +53,16 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
@@ -115,9 +119,13 @@ public class EditMoodEvent extends Fragment {
     // To hold the original moodEventId for update
     private String moodEventId;
 
+    private String firebaseImageUrl = null;
+
     public EditMoodEvent() {
         // Required empty public constructor
     }
+
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -150,6 +158,17 @@ public class EditMoodEvent extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+
+//        FirebaseAuth auth = FirebaseAuth.getInstance();
+//        if (auth.getCurrentUser() == null) {
+//            auth.signInAnonymously().addOnCompleteListener(task -> {
+//                if (task.isSuccessful()) {
+//                    Log.d("Auth", "Signed in anonymously");
+//                } else {
+//                    Log.e("Auth", "Anonymous sign-in failed", task.getException());
+//                }
+//            });
+//        }
         // Inflate the layout (assumed to be similar to add_mood.xml)
         View view = inflater.inflate(R.layout.edit_mood, container, false);
 
@@ -204,7 +223,12 @@ public class EditMoodEvent extends Fragment {
                 Glide.with(this)
                         .load(explainPicture)
                         .into(image);
-                imageUri = Uri.parse(explainPicture);
+                // If the URL is already a Firebase Storage URL, save it for later use
+                if (explainPicture.startsWith("https://firebasestorage.googleapis.com/")) {
+                    firebaseImageUrl = explainPicture;
+                } else {
+                    imageUri = Uri.parse(explainPicture); // Use only if it's a local Uri
+                }
             }
 
             if (!TextUtils.isEmpty(emotionalState)) {
@@ -359,7 +383,7 @@ public class EditMoodEvent extends Fragment {
                 Snackbar.make(getView(), "Please select a mood!", Snackbar.LENGTH_SHORT).show();
                 return;
             }
-            if ((descText.isEmpty()) && (imageUri == null)) {
+            if ((descText.isEmpty()) && (imageUri == null && firebaseImageUrl == null)) {
                 Snackbar.make(getView(), "Provide either a description or an image!", Snackbar.LENGTH_LONG).show();
                 return;
             }
@@ -372,13 +396,18 @@ public class EditMoodEvent extends Fragment {
                 return;
             }
 
+            // Always update the mood event:
+            // If a new image was selected, upload it first; otherwise, update using the existing firebaseImageUrl.
             if (imageUri != null) {
                 Log.d("EditMoodEvent", "Uploading image: " + imageUri.toString());
-                uploadImageAndUpdateMood(descText, triggerText, dateText, locationText, imageUri, selectedMoodName, selectedSocial, timeText);
+                uploadImageAndUpdateMood();
             } else {
-                updateMoodEventInFirestore(descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial, timeText);
+                updateMoodEventInFirestore(descText, triggerText, dateText, locationText, firebaseImageUrl,
+                        selectedMoodName, selectedSocial, timeText);
             }
         });
+
+
 
         // Close button to dismiss the fragment
         closeButton.setOnClickListener(v -> {
@@ -483,20 +512,59 @@ public class EditMoodEvent extends Fragment {
     }
 
     // Uploads new image and then updates the mood event in Firestore
-    private void uploadImageAndUpdateMood(String desc, String trigger,
-                                          String date, String locationText, Uri imageUri,
-                                          String mood, String social, String time) {
-        String imageFileName = UUID.randomUUID().toString() + ".jpg";
-        StorageReference imageRef = storageRef.child(imageFileName);
-        imageRef.putFile(imageUri)
-                .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
-                        .addOnSuccessListener(uri -> {
-                            Log.d("EditMoodEvent", "Image uploaded, updating Firestore: " + uri.toString());
-                            updateMoodEventInFirestore(desc, trigger, date, locationText, uri.toString(), mood, social, time);
-                        }))
-                .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Image upload failed!", Toast.LENGTH_SHORT).show());
+    private void uploadImageAndUpdateMood() {
+        // If imageUri is null, use the existing firebaseImageUrl
+        if (imageUri == null) {
+            Log.d("Firebase", "No new image to upload, updating event with existing image.");
+            updateMoodEventInFirestore(
+                    description.getText().toString(),
+                    triggerEdit.getText().toString(),
+                    dateEdit.getText().toString(),
+                    locationEdit.getText().toString(),
+                    firebaseImageUrl,
+                    selectedMoodName,
+                    selectedSocial,
+                    timeEdit.getText().toString());
+            return;
+        }
+
+        String imageUrl = imageUri.toString();
+
+        // If the image is already uploaded, update without re-uploading
+        if (imageUrl.startsWith("https://firebasestorage.googleapis.com/")) {
+            Log.d("Firebase", "Image is already uploaded, skipping re-upload.");
+            updateMoodEventInFirestore(
+                    description.getText().toString(),
+                    triggerEdit.getText().toString(),
+                    dateEdit.getText().toString(),
+                    locationEdit.getText().toString(),
+                    imageUrl,
+                    selectedMoodName,
+                    selectedSocial,
+                    timeEdit.getText().toString());
+            return;
+        }
+
+        StorageReference newStorageRef = FirebaseStorage.getInstance().getReference()
+                .child("mood_images/" + System.currentTimeMillis() + ".jpg");
+
+        newStorageRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> newStorageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    Log.d("Firebase", "Image uploaded successfully: " + uri.toString());
+                    updateMoodEventInFirestore(
+                            description.getText().toString(),
+                            triggerEdit.getText().toString(),
+                            dateEdit.getText().toString(),
+                            locationEdit.getText().toString(),
+                            uri.toString(),
+                            selectedMoodName,
+                            selectedSocial,
+                            timeEdit.getText().toString());
+                }))
+                .addOnFailureListener(e -> Log.e("Firebase", "Image upload failed", e));
     }
+
+
 
     // Updates the mood event in Firestore using the existing moodEventId
     private void updateMoodEventInFirestore(String desc, String trigger,
@@ -574,4 +642,5 @@ public class EditMoodEvent extends Fragment {
         }
         return null;
     }
+
 }
