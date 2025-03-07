@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_to_action_menu"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <item
+        android:id="@+id/edit_button_moodhistory"
+        android:icon="@drawable/ic_edit"
+        app:showAsAction="always"
+        android:title="edit"
+        app:actionLayout="@layout/menu_item_layout_edit" />
+
+    <item
+        android:id="@+id/delete_button_moodhistory"
+        android:icon="@drawable/ic_delete"
+        app:showAsAction="always"
+        android:title="delete"
+        app:actionLayout="@layout/menu_item_layout_delete" />
+
+</menu>
+

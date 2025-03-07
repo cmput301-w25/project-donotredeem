@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation("com.github.st235:swipetoactionlayout:1.1.4")
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
     implementation("com.google.firebase:firebase-auth:23.2.0")
@@ -47,6 +48,8 @@ dependencies {
     //image
     implementation ("com.github.bumptech.glide:glide:4.12.0") // or the latest version
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
+
+
 
 
     implementation(libs.appcompat)
