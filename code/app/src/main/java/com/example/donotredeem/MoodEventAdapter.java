@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.graphics.Movie;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +18,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.example.donotredeem.Fragments.EditMoodEvent;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -193,7 +196,8 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                     Toast.makeText(context, "Mood event deleted", Toast.LENGTH_SHORT).show();
                 } else if ("edit".equalsIgnoreCase(action.getText().toString())) {
                     // Handle edit action if needed.
-                    Toast.makeText(context, "Edit action clicked", Toast.LENGTH_SHORT).show();
+                    MoodEvent moodEvent = getItem(position);
+                    launchEditMoodEventFragment(moodEvent);
                 }
                 // Close the swipe menu
                 swipeLayout.close();
@@ -252,6 +256,33 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                 })
                 .addOnFailureListener(e -> Log.e("MoodEventAdapter", "Error retrieving user document", e));
     }
+    private void launchEditMoodEventFragment(MoodEvent moodEvent) {
+        AppCompatActivity activity = (AppCompatActivity) context;
+
+        EditMoodEvent editFragment = new EditMoodEvent();
+        Bundle args = new Bundle();
+
+        // Pass MoodEvent data individually as Strings
+        args.putString("moodEventId", moodEvent.getMoodEventId());
+        args.putString("emotionalState", moodEvent.getEmotionalState());
+        args.putString("date", moodEvent.getDate());
+        args.putString("time", moodEvent.getTime());
+        args.putString("place", moodEvent.getPlace());
+        args.putString("situation", moodEvent.getSituation());
+        args.putString("trigger", moodEvent.getTrigger());
+        args.putString("explainText", moodEvent.getExplainText());
+        args.putString("explainPicture", moodEvent.getExplainPicture());
+
+        editFragment.setArguments(args);
+
+        // Replace current fragment with EditMoodEvent
+        activity.getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.profile_fragment_container, editFragment, "EditMoodEvent")
+                .addToBackStack(null)
+                .commit();
+    }
+
 
 
 }
