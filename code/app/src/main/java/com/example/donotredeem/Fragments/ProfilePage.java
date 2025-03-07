@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +31,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +42,11 @@ public class ProfilePage extends Fragment {
     private ArrayList<MoodEvent> moodHistoryList;
     private FirebaseFirestore db;
     private String loggedInUsername;
+
+    private TextView displayname;
+    private TextView follower;
+    private TextView following;
+    private TextView bio;
 
 
     MoodEvent[] moodEvents = {
@@ -67,25 +74,15 @@ public class ProfilePage extends Fragment {
         }
 
         if (loggedInUsername == null) {
-            // No user logged in, redirect to login screen
             redirectToLogin();
         } else {
-            // Fetch user details from Firestore
-            Log.d("HistoryDebug", "Fetching user details for: " + loggedInUsername);
             fetchUserMoodEvents(loggedInUsername);
-            Display(moodHistoryList); // Assuming you want to display it after adding
-        }
-
-        Display(moodHistoryList);
-
-
-        if (moodHistoryList.size() > 3 ){
-            moodHistoryList = new ArrayList<>(moodHistoryList.subList(0, 3));
         }
 
         adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
         recent_list.setAdapter(adapter);
 
+        
         DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
         LinearLayout sidePanel = view.findViewById(R.id.side_panel);
 
@@ -162,42 +159,97 @@ public class ProfilePage extends Fragment {
                 });
 
     }
-
     private void fetchMoodEvents(List<DocumentReference> moodRefs) {
-        moodHistoryList.clear(); // Clear the list to avoid duplicates
+        ArrayList<MoodEvent> tempList = new ArrayList<>();
+        final int[] fetchedCount = {0}; // Counter to track fetched events
+
         for (DocumentReference moodRef : moodRefs) {
-            moodRef.get()
-                    .addOnSuccessListener(documentSnapshot -> {
-                        if (documentSnapshot.exists()) {
-                            try {
-                                MoodEvent moodEvent;
-                                moodEvent = documentSnapshot.toObject(MoodEvent.class);
-//
-                                // You can also add this to a list or display it as needed
-                                moodHistoryList.add(moodEvent);
-                                if (moodHistoryList.size() > 2 ){
-                                    moodHistoryList = new ArrayList<>(moodHistoryList.subList(0, 2));
-                                }
-                                Display(moodHistoryList);
-
-
-                            } catch (Exception e) {
-                                Log.e("MoodHistory", "Error creating MoodEvent from document snapshot", e);
-                            }
-                        } else {
-                            Log.e("MoodHistory", "No document found at reference: " + moodRef.getPath());
+            moodRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    try {
+                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
+                        if (moodEvent != null) {
+                            tempList.add(moodEvent);
                         }
+                    } catch (Exception e) {
+                        Log.e("MoodHistory", "Error converting document", e);
+                    }
+                }
 
-                    })
-                    .addOnFailureListener(e -> Log.e("MoodHistory", "Error fetching mood event", e));
+                fetchedCount[0]++;
+                if (fetchedCount[0] == moodRefs.size()) {
+                    // All events fetched, now sort and display
+                    moodHistoryList.clear();
+                    moodHistoryList.addAll(tempList);
+
+                    // Sort first
+                    sortMoodEvents();
+
+                    // Keep only the 2 most recent
+                    if (moodHistoryList.size() > 2) {
+                        moodHistoryList = new ArrayList<>(moodHistoryList.subList(0, 2));
+                    }
+
+                    Display();
+                }
+            }).addOnFailureListener(e -> {
+                Log.e("MoodHistory", "Error fetching document", e);
+                fetchedCount[0]++;
+            });
+        }
+    }
+    private void sortMoodEvents() {
+        moodHistoryList.sort((event1, event2) -> {
+            try {
+                LocalDate date1 = parseStringToDate(event1.getDate());
+                LocalDate date2 = parseStringToDate(event2.getDate());
+
+                int dateCompare = date2.compareTo(date1); // Reverse chronological order
+                if (dateCompare != 0) return dateCompare;
+
+                LocalTime time1 = parseStringToTime(event1.getTime());
+                LocalTime time2 = parseStringToTime(event2.getTime());
+
+                return time2.compareTo(time1); // Reverse chronological order
+            } catch (Exception e) {
+                Log.e("Sorting", "Error comparing events", e);
+                return 0;
+            }
+        });
+    }
+
+    private void Display() {
+        if (adapter == null) {
+            adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
+            recent_list.setAdapter(adapter);
+        } else {
+            adapter.clear();
+            adapter.addAll(moodHistoryList);
+            adapter.notifyDataSetChanged();
+        }
+    }
+    private LocalDate parseStringToDate(String dateString) {
+        try {
+            // Use pattern matching for "DD-MM-YYYY" format
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return LocalDate.parse(dateString, formatter);
+        } catch (Exception e) {
+            Log.e("Profile Page", "Invalid date format: " + dateString, e);
+            return LocalDate.MIN;
         }
     }
 
-    private void Display(ArrayList<MoodEvent> moodHistoryList){
-        adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
-        recent_list.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+    private LocalTime parseStringToTime(String timeString) {
+        try {
+            // Handle both with and without seconds
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm[:ss]");
+            return LocalTime.parse(timeString, formatter);
+        } catch (Exception e) {
+            Log.e("Profile Page", "Invalid time format: " + timeString, e);
+            return LocalTime.MIN;
+        }
     }
+
 
     private void redirectToLogin() {
         Intent intent = new Intent(getActivity(), LogIn.class);
