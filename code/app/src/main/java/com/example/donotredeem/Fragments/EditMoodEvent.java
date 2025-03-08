@@ -73,7 +73,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-
+/**
+ * A Fragment that allows users to edit an existing mood event. This fragment provides functionality to modify mood details, including description, location, date, time, and trigger.
+ * It also allows users to upload a new image, select a mood emoji, and specify the social context of the event.
+ * This fragment interacts with Firebase Firestore to update the mood event in the database and Firebase Storage to upload images.
+ */
 public class EditMoodEvent extends Fragment {
 
     private ImageView image;
@@ -121,12 +125,19 @@ public class EditMoodEvent extends Fragment {
 
     private String firebaseImageUrl = null;
 
+    /**
+     * Default constructor for the EditMoodEvent fragment.
+     */
     public EditMoodEvent() {
         // Required empty public constructor
     }
 
-
-
+    /**
+     * Initializes the fragment by setting up Firebase, location services, and activity result launchers.
+     * This method is called when the fragment is created.
+     *
+     * @param savedInstanceState Bundle containing any saved state for the fragment.
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,6 +165,15 @@ public class EditMoodEvent extends Fragment {
         });
     }
 
+    /**
+     * Inflates the layout for the fragment and binds all UI elements (buttons, text fields, etc.) to the appropriate views.
+     * Also pre-populates fields with the data from the passed arguments.
+     *
+     * @param inflater           The LayoutInflater used to inflate the fragment's view.
+     * @param container          The container in which the fragment's UI will be attached.
+     * @param savedInstanceState Bundle containing any saved instance state.
+     * @return The inflated and populated view for the fragment.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -445,6 +465,10 @@ public class EditMoodEvent extends Fragment {
         return view;
     }
 
+    /**
+     * Displays a dialog to allow the user to choose the source of an image (camera or gallery).
+     * The dialog includes two buttons: one for capturing a photo using the camera and one for selecting an image from the gallery.
+     */
     private void showSourceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -464,6 +488,11 @@ public class EditMoodEvent extends Fragment {
         dialog.show();
     }
 
+    /**
+     * Checks whether the app has permission to access the camera.
+     * If permission is granted, it launches the camera intent to capture an image.
+     * If permission is not granted, it requests the necessary permission from the user.
+     */
     private void checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
             try {
@@ -481,6 +510,11 @@ public class EditMoodEvent extends Fragment {
         }
     }
 
+    /**
+     * Checks whether the app has permission to access the gallery.
+     * If permission is granted, it opens the gallery to select an image.
+     * If permission is not granted, it requests the necessary permission from the user.
+     */
     private void checkGalleryPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
             Intent galleryOpenIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -491,6 +525,11 @@ public class EditMoodEvent extends Fragment {
         }
     }
 
+    /**
+     * Checks whether the app has permission to access the user's location.
+     * If permission is granted, it retrieves the current location and updates the location EditText.
+     * If permission is not granted, it requests the necessary permission from the user.
+     */
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
@@ -519,6 +558,13 @@ public class EditMoodEvent extends Fragment {
         }
     }
 
+    /**
+     * Creates a temporary image file for storing the captured image.
+     * This method is used by the camera intent.
+     *
+     * @return A File object representing the created image file.
+     * @throws IOException If an error occurs while creating the image file.
+     */
     private File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
@@ -530,7 +576,10 @@ public class EditMoodEvent extends Fragment {
         return imageFile;
     }
 
-    // Uploads new image and then updates the mood event in Firestore
+    /**
+     * Uploads a new image to Firebase Storage and updates the associated mood event in Firestore.
+     * If no new image is selected, it updates the event with the existing image URL.
+     */
     private void uploadImageAndUpdateMood() {
         // If imageUri is null, use the existing firebaseImageUrl
         if (imageUri == null) {
@@ -583,9 +632,18 @@ public class EditMoodEvent extends Fragment {
                 .addOnFailureListener(e -> Log.e("Firebase", "Image upload failed", e));
     }
 
-
-
-    // Updates the mood event in Firestore using the existing moodEventId
+    /**
+     * Updates the mood event in Firestore with the provided information.
+     *
+     * @param desc The description of the mood event.
+     * @param trigger The trigger associated with the mood event.
+     * @param date The date of the mood event.
+     * @param locationText The location of the mood event.
+     * @param imageUrl The URL of the image associated with the mood event.
+     * @param mood The selected mood of the event.
+     * @param social The social situation of the event.
+     * @param time The time of the event.
+     */
     private void updateMoodEventInFirestore(String desc, String trigger,
                                             String date, String locationText, String imageUrl,
                                             String mood, String social, String time) {
@@ -603,7 +661,12 @@ public class EditMoodEvent extends Fragment {
                         Toast.makeText(getContext(), "Error updating data!", Toast.LENGTH_SHORT).show());
     }
 
-    // Emoji and social highlighting
+    /**
+     * Highlights the selected emoji button and updates the selected mood name.
+     * If the same emoji is selected, it is unselected.
+     *
+     * @param selected The ImageButton representing the selected emoji.
+     */
     private void highlightSelectedEmoji(ImageButton selected) {
         if (selectedEmoji != null) {
             selectedEmoji.setBackground(null);
@@ -624,6 +687,12 @@ public class EditMoodEvent extends Fragment {
         }
     }
 
+    /**
+     * Retrieves the mood associated with the specified button ID.
+     *
+     * @param buttonId The ID of the selected emoji button.
+     * @return The corresponding MoodType for the button ID.
+     */
     private MoodType getMoodForButtonId(int buttonId) {
         for (int i = 0; i < emojiButtonIds.length; i++) {
             if (emojiButtonIds[i] == buttonId) {
@@ -633,6 +702,13 @@ public class EditMoodEvent extends Fragment {
         return null;
     }
 
+
+    /**
+     * Highlights the selected social button and updates the selected social situation.
+     * If the same social situation is selected, it is unselected.
+     *
+     * @param selected The ImageButton representing the selected social button.
+     */
     private void highlightSelectedSocial(ImageButton selected) {
         if (selectedSocialButton != null) {
             selectedSocialButton.setBackground(null);
@@ -653,6 +729,12 @@ public class EditMoodEvent extends Fragment {
         }
     }
 
+    /**
+     * Retrieves the social situation associated with the specified button ID.
+     *
+     * @param buttonId The ID of the selected social button.
+     * @return The corresponding SocialSituation for the button ID.
+     */
     private SocialSituation getSocialSituationForButtonId(int buttonId) {
         for (int i = 0; i < socialButtonIds.length; i++) {
             if (socialButtonIds[i] == buttonId) {
