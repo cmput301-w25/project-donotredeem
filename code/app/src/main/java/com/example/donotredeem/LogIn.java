@@ -26,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -73,7 +74,7 @@ public class LogIn extends AppCompatActivity {
      * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied. Otherwise, it is null.
      */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_page);
 
@@ -110,14 +111,13 @@ public class LogIn extends AppCompatActivity {
                 String password = editTextPassword.getText().toString();
 
                 if (TextUtils.isEmpty(username)) {
-                    //Toast.makeText(LogIn.this, "Enter username", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    //Toast.makeText(LogIn.this, "Enter password", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
 
                 // Firestore query to check if the username exists and password matches
                 Log.d(TAG, "Fetching user: " + username);
@@ -132,7 +132,13 @@ public class LogIn extends AppCompatActivity {
                                 String storedPassword = document.getString("password");
                                 if (storedPassword != null && storedPassword.equals(password)) {
                                     // Password matches, allow login
-                                    //Toast.makeText(LogIn.this, "Login successful.", Toast.LENGTH_SHORT).show();
+//                                    findViewById(android.R.id.content).post(() ->
+//                                            Snackbar.make(findViewById(android.R.id.content), "Login successfully.", Snackbar.LENGTH_LONG).show()
+//                                    );
+
+
+                                    View parentLayout = findViewById(R.id.please);
+                                    Snackbar.make(parentLayout, "Login successfully.", Snackbar.LENGTH_LONG).show();
 
                                     SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -145,16 +151,17 @@ public class LogIn extends AppCompatActivity {
 
                                 } else {
                                     Log.e(TAG,"Incorrect password.");
-                                    //Toast.makeText(LogIn.this, "Incorrect password.", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 Log.e(TAG, "User not found: " + username);
-                                //Toast.makeText(LogIn.this, "User not found.", Toast.LENGTH_SHORT).show();
+//                                Toast.makeText(LogIn.this, "User not found.", Toast.LENGTH_LONG).show();
+                                Snackbar.make(findViewById(android.R.id.content), "User not found.", Snackbar.LENGTH_LONG).show();
+
                             }
                         } else {
                             Log.e(TAG, "Firestore error: ", task.getException());
-                            //Toast.makeText(LogIn.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 });
             }
