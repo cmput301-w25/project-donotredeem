@@ -66,7 +66,6 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
      */
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
-        
         /**
          * Constructs an ImageViewHolder and initializes the ImageView.
          *
