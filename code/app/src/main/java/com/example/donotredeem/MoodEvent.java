@@ -9,7 +9,9 @@ import androidx.annotation.Nullable;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
-
+/**
+ * Represents a mood event with details such as emotional state, time, place, and additional information.
+ */
 public class MoodEvent {
 
     private String date;
@@ -22,65 +24,18 @@ public class MoodEvent {
     private String explainPicture;
     private String moodEventId;
 
-
-//    // Constructor
-//    public MoodEvent(String emotionalState, LocalDate date, LocalTime time,
-//                     String place, Location location, String situation,
-//                     String trigger, String explainText, String explainPicture) {
-//
-//        // Required Field
-//        if (emotionalState == null || emotionalState.trim().isEmpty()) {
-//            throw new IllegalArgumentException("Emotional state is required.");
-//        }
-//        this.emotionalState = emotionalState;
-//
-//        // user date and time, if not given then system date and time
-//        this.date = (date != null) ? date : LocalDate.now();
-//        this.time = (time != null) ? time : LocalTime.now();
-//
-//        // Defaults to user-entered place or empty string
-//        this.place = (place != null) ? place : "";
-//
-//        // Get location if available
-//        if (location != null) {
-//            this.latitude = location.getLatitude();
-//            this.longitude = location.getLongitude();
-//        } else {
-//            this.latitude = 0.0;
-//            this.longitude = 0.0;
-//        }
-//
-//        // Optional fields, need to provide null values if not there
-//        this.situation = situation;
-//        this.trigger = trigger;
-//        this.explainText = explainText;
-//        this.explainPicture = explainPicture;
-//    }
-//
-//    public MoodEvent(String emotionalState, LocalDate date, LocalTime time,
-//                     String place,
-//                     String trigger, String explainText) {
-//
-//        // Required Field
-//        if (emotionalState == null || emotionalState.trim().isEmpty()) {
-//            throw new IllegalArgumentException("Emotional state is required.");
-//        }
-//        this.emotionalState = emotionalState;
-//
-//        // user date and time, if not given then system date and time
-//        this.date = LocalDate.of(2024, 3, 2);
-//        this.time = LocalTime.of(12, 30);
-//
-//        // Defaults to user-entered place or empty string
-//        this.place = (place != null) ? place : "";
-//
-//
-//        // Optional fields, need to provide null values if not there
-//        this.trigger = trigger;
-//        this.explainText = explainText;
-//    }
-
-    //    heer testing
+    /**
+     * Constructs a MoodEvent with all possible fields.
+     *
+     * @param emotionalState The emotional state of the user.
+     * @param date The date of the mood event.
+     * @param time The time of the mood event.
+     * @param place The place where the mood event occurred.
+     * @param situation The social situation during the event (optional).
+     * @param trigger The trigger that caused the mood event (optional).
+     * @param explainText Additional explanation text (optional).
+     * @param explainPicture A picture URI representing the event (optional).
+     */
     public MoodEvent(String emotionalState, String date, String time,
                      String place, @Nullable String situation,
                      @Nullable String trigger, @Nullable String explainText, @Nullable String explainPicture) {
@@ -103,6 +58,19 @@ public class MoodEvent {
         this.explainPicture = explainPicture;
     }
 
+    /**
+     * Constructs a MoodEvent with all possible fields.
+     *
+     * @param moodEventId The unique ID of the mood event.
+     * @param emotionalState The emotional state of the user.
+     * @param date The date of the mood event.
+     * @param time The time of the mood event.
+     * @param place The place where the mood event occurred.
+     * @param situation The social situation during the event (optional).
+     * @param trigger The trigger that caused the mood event (optional).
+     * @param explainText Additional explanation text (optional).
+     * @param explainPicture A picture URI representing the event (optional).
+     */
     public MoodEvent(String moodEventId, String emotionalState, String date, String time,
                      String place, @Nullable String situation,
                      @Nullable String trigger, @Nullable String explainText, @Nullable String explainPicture) {
@@ -119,88 +87,66 @@ public class MoodEvent {
         this.explainText = explainText;
         this.explainPicture = explainPicture;
     }
-
+    /**
+     * Default constructor required for Firestore deserialization.
+     */
     public MoodEvent(){};
 
-//    public MoodEvent(String emotionalState, LocalDate date, LocalTime time,
-//                     String place, String situation,
-//                     String trigger, String explainText) {
-//
-//        // Required Field
-//        if (emotionalState == null || emotionalState.trim().isEmpty()) {
-//            throw new IllegalArgumentException("Emotional state is required.");
-//        }
-//        this.emotionalState = emotionalState;
-//        this.time = (time != null) ? time : LocalTime.now();
-//        this.date = (date != null) ? date : LocalDate.now();
-//
-//        // Defaults to user-entered place or empty string
-//        this.place = (place != null) ? place : "";
-//
-//        this.situation = situation;
-//        // Optional fields, need to provide null values if not there
-//        this.trigger = trigger;
-//        this.explainText = explainText;
-//    }
-//
-//    public MoodEvent(String emotionalState, LocalDate date, LocalTime time,
-//                     String place,
-//                     String trigger) {
-//
-//        // Required Field
-//        if (emotionalState == null || emotionalState.trim().isEmpty()) {
-//            throw new IllegalArgumentException("Emotional state is required.");
-//        }
-//        this.emotionalState = emotionalState;
-//
-//        // user date and time, if not given then system date and time
-//        this.date = LocalDate.of(2024, 3, 2);
-//        this.time = LocalTime.of(12, 30);
-//
-//        // Defaults to user-entered place or empty string
-//        this.place = (place != null) ? place : "";
-//
-//
-//        // Optional fields, need to provide null values if not there
-//        this.trigger = trigger;
-//    }
-
-
-
-
-
     // Getters
+    /**
+     * @return The date of the mood event.
+     */
     public String getDate() {
         return date;
     }
-
+    /**
+     * @return The time of the mood event.
+     */
     public String getTime() {
         return time;
     }
-
+    /**
+     * @return The place where the mood event occurred.
+     */
     public String getPlace() {
         return place;
     }
 
-
+    /**
+     * @return The emotional state of the user.
+     */
     public String getEmotionalState() {
         return emotionalState;
     }
-
+    /**
+     * @return The social situation during the mood event.
+     */
     public String getSituation() {
         return situation;
     }
-
+    /**
+     * @return The trigger that caused the mood event.
+     */
     public String getTrigger() {
         return trigger;
     }
-
+    /**
+     * @return Additional text explaining the mood event.
+     */
     public String getExplainText() {
         return explainText;
     }
-
+    /**
+     * @return A URI string representing an image related to the mood event.
+     */
     public String getExplainPicture() {
         return explainPicture;
+    }
+    /**
+     * @return The unique ID of the mood event.
+     */
+    public String getMoodEventId() {
+        return moodEventId;
     }
 
     // Setters
@@ -236,9 +182,7 @@ public class MoodEvent {
     public void setExplainPicture(String explainPicture) {
         this.explainPicture = explainPicture;
     }
-    public String getMoodEventId() {
-        return moodEventId;
-    }
+
 
     public void setMoodEventId(String moodEventId) {
         this.moodEventId = moodEventId;
