@@ -13,10 +13,22 @@ import androidx.fragment.app.Fragment;
 
 import com.example.donotredeem.R;
 
+/**
+ * Fragment representing the Birthday screen.
+ * Contains a button to navigate to the Activities fragment.
+ */
 public class Birthday extends Fragment {
 
     private Button nextButton;
 
+    /**
+     * Inflates the fragment layout and initializes UI components.
+     *
+     * @param inflater  The LayoutInflater used to inflate the layout.
+     * @param container The parent ViewGroup (if applicable).
+     * @param savedInstanceState The saved state of the fragment (if any).
+     * @return The root View of the fragment.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

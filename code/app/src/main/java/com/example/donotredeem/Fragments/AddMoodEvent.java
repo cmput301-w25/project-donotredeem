@@ -75,6 +75,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * A Fragment that allows users to add a mood event, including selecting an emoji mood, social setting,
+ * location, and uploading an image. The event details are saved to Firebase Firestore and Firebase Storage.
+ */
 public class AddMoodEvent extends Fragment {
 
     private ImageView image;
@@ -113,6 +117,10 @@ public class AddMoodEvent extends Fragment {
 
     int[] socialButtonIds = {R.id.alone_social, R.id.pair_social, R.id.crowd_social};
 
+    /**
+     * Initializes the fragment, sets up Firebase, and prepares image handling via camera and gallery.
+     * @param savedInstanceState Saved instance state bundle.
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,8 +130,6 @@ public class AddMoodEvent extends Fragment {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference().child("mood_images");
-        //test firestore
-        //testFirestore();
 
         // https://developer.android.com/develop/sensors-and-location/location/retrieve-current
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
@@ -131,11 +137,6 @@ public class AddMoodEvent extends Fragment {
         //the code below is taken from https://developer.android.com/media/camera/camera-deprecated/photobasics
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
-
-                // Bundle extras = result.getData().getExtras();
-//                Bitmap imageBitmap = (Bitmap) extras.get("data");
-//                imageUri = getImageUriFromBitmap(requireContext(), imageBitmap); // Convert to URI
-//                image.setImageURI(imageUri);
                 image.setImageURI(imageUri);
 
             }
@@ -151,6 +152,11 @@ public class AddMoodEvent extends Fragment {
 
     }
 
+    /**
+     * Creates a temporary image file to store captured images.
+     * @return The created image file.
+     * @throws IOException If file creation fails.
+     */
     private File createImageFile() throws IOException {
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -168,6 +174,13 @@ public class AddMoodEvent extends Fragment {
     }
 
 
+    /**
+     * Inflates the fragment's layout and sets up the user interface elements for mood event creation.
+     * @param inflater The LayoutInflater to inflate the fragment's view.
+     * @param container The parent view that the fragment's UI will be attached to.
+     * @param savedInstanceState Saved instance state bundle.
+     * @return The inflated view.
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -207,7 +220,6 @@ public class AddMoodEvent extends Fragment {
 
 
         EditText addTrigger = view.findViewById(R.id.trigger);
-//        EditText social = view.findViewById(R.id.social);
         Button submit = view.findViewById(R.id.button);
 
         image = view.findViewById(R.id.imageView);
@@ -478,6 +490,10 @@ public class AddMoodEvent extends Fragment {
         return view;
     }
 
+    /**
+     * Displays a dialog to choose between camera or gallery options.
+     * Opens the respective permission checks for camera or gallery.
+     */
     private void showSourceDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -503,14 +519,13 @@ public class AddMoodEvent extends Fragment {
         dialog.show();
     }
 
+
+    /**
+     * Checks if the camera permission is granted. If granted, attempts to capture an image using the camera.
+     * If not granted, requests camera permission.
+     */
     private void checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-
-            //https://developer.android.com/media/camera/camera-intents
-            //startActivityForResult is deprecated version
-
-//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
-//            cameraLauncher.launch(takePictureIntent);
             try {
 
                 File imageFile = createImageFile();
@@ -533,7 +548,10 @@ public class AddMoodEvent extends Fragment {
 
     }
 
-    //add selected photo thing
+    /**
+     * Checks if the gallery permission is granted. If granted, opens the gallery to pick an image.
+     * If not granted, requests gallery permission.
+     */
     private void checkGalleryPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
 
@@ -549,6 +567,10 @@ public class AddMoodEvent extends Fragment {
         }
     }
 
+    /**
+     * Checks if the location permission is granted. If granted, retrieves the user's current location and displays it.
+     * If not granted, requests location permission.
+     */
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
@@ -565,8 +587,6 @@ public class AddMoodEvent extends Fragment {
 
                     double latitude = locationResult.getLastLocation().getLatitude();
                     double longitude = locationResult.getLastLocation().getLongitude();
-//                    String currentLocation = latitude + ", " + longitude;
-//                    location.setText(currentLocation);
                     Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
 
                     List<Address> addresses = null;
@@ -596,7 +616,18 @@ public class AddMoodEvent extends Fragment {
         }
     }
 
-    // Uploads image to Firebase Storage and then saves mood data to Firestore
+    /**
+     * Uploads an image to Firebase Storage and saves mood event data to Firestore.
+     *
+     * @param desc         Description of the mood event.
+     * @param trigger      Trigger for the mood event.
+     * @param date         Date of the mood event.
+     * @param locationText Location of the mood event.
+     * @param imageUri     URI of the image.
+     * @param mood         The mood associated with the event.
+     * @param social       Social situation associated with the event.
+     * @param time         Time of the mood event.
+     */
     private void uploadImageAndSaveMood(String desc, String trigger,
                                         String date, String locationText, Uri imageUri,
                                         String mood, String social, String time) {
@@ -619,7 +650,18 @@ public class AddMoodEvent extends Fragment {
 
 
 
-        // Saves mood event data to Firestore
+        /**
+         * Saves the mood event data to Firestore.
+         *
+         * @param desc         Description of the mood event.
+         * @param trigger      Trigger for the mood event.
+         * @param date         Date of the mood event.
+         * @param locationText Location of the mood event.
+         * @param imageUrl     URL of the uploaded image (can be null).
+         * @param mood         The mood associated with the event.
+         * @param social       Social situation associated with the event.
+         * @param time         Time of the mood event.
+         */
         private void saveMoodToFirestore(String desc, String trigger,
                                          String date, String locationText, String imageUrl,
                                          String mood, String social, String time) {
@@ -651,61 +693,12 @@ public class AddMoodEvent extends Fragment {
         }
 
 
-    //Quality bad
-//    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
-//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-//        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "CameraImage", null);
-//        return Uri.parse(path);
-//    }
-
-//    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
-//        try {
-//            // Create an image file in external storage
-//            File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "captured_image.jpg");
-//
-//            // Write bitmap to file with high quality
-//            FileOutputStream fos = new FileOutputStream(file);
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-//            fos.flush();
-//            fos.close();
-//
-//            // Get the file's URI using FileProvider
-//            return FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-//
-//
-
-
-    // Helper method to convert a Bitmap into a URI using the MediaStore.
-//    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
-//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-//        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "CameraImage", null);
-//        return Uri.parse(path);
-//    }
-//    private void testFirestore() {
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        Log.d("AddMoodEvent", "testFirestore called");
-//        Map<String, Object> testData = new HashMap<>();
-//        testData.put("first", "Ada");
-//        testData.put("last", "Lovelace");
-//        testData.put("born", 1815);
-//
-//        db.collection("Users")
-//                .add(testData)
-//                .addOnSuccessListener(documentReference -> {
-//                    Log.d(TAG, "Test document added with ID: " + documentReference.getId());
-//                })
-//                .addOnFailureListener(e -> {
-//                    Log.w(TAG, "Error adding test document", e);
-//                });
-//    }
-
+    /**
+     * Highlights the selected emoji button and resets the previous selection if any.
+     * If the same emoji button is clicked again, it will unselect it.
+     *
+     * @param selected The selected ImageButton.
+     */
     private void highlightSelectedEmoji(ImageButton selected) {
         if (selectedEmoji != null) {
             selectedEmoji.setBackground(null); // Remove highlight from previous selection
@@ -728,6 +721,12 @@ public class AddMoodEvent extends Fragment {
         }
     }
 
+    /**
+     * Retrieves the MoodType for the given button ID.
+     *
+     * @param buttonId The ID of the selected button.
+     * @return The corresponding MoodType.
+     */
     private MoodType getMoodForButtonId(int buttonId) {
 
         for (int i = 0; i < emojiButtonIds.length; i++) {
@@ -739,6 +738,12 @@ public class AddMoodEvent extends Fragment {
         return null;
     }
 
+    /**
+     * Highlights the selected social situation button and resets the previous selection if any.
+     * If the same social situation button is clicked again, it will unselect it.
+     *
+     * @param selected The selected ImageButton.
+     */
     private void highlightSelectedSocial(ImageButton selected) {
         if (selectedSocialButton != null) {
             selectedSocialButton.setBackground(null);
@@ -762,6 +767,12 @@ public class AddMoodEvent extends Fragment {
 
     }
 
+    /**
+     * Retrieves the SocialSituation for the given button ID.
+     *
+     * @param buttonId The ID of the selected button.
+     * @return The corresponding SocialSituation.
+     */
     private SocialSituation getSocialSituationForButtonId(int buttonId) {
         for (int i = 0; i < socialButtonIds.length; i++) {
             if (socialButtonIds[i] == buttonId) {

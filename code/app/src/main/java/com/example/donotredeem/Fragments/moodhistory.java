@@ -34,7 +34,11 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * The {@code moodhistory} class represents a fragment that displays a history of mood events for a logged-in user.
+ * This fragment retrieves mood events from Firebase Firestore and presents them in a sorted ListView.
+ * It also provides functionality to filter mood events using the {@link FilterFragment}.
+ */
 public class moodhistory extends Fragment implements FilterFragment.FilterMoodListener{
     private ListView listView;
     private MoodEventAdapter adapter;
@@ -43,12 +47,26 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
     private ArrayList<MoodEvent> moodHistoryList;
     private SharedPreferences sharedPreferences;
 
+    /**
+     * Applies a filtered list of mood events to the display.
+     *
+     * @param filteredList The filtered list of mood events
+     */
     @Override
     public void filterMood(ArrayList<MoodEvent> filteredList) {
         Display(filteredList);
 
     }
 
+    /**
+     * Inflates the fragment layout and initializes UI elements.
+     * Retrieves the logged-in username and fetches mood events from Firestore.
+     *
+     * @param inflater LayoutInflater object to inflate the view
+     * @param container Parent view that the fragment's UI will be attached to
+     * @param savedInstanceState Bundle containing the saved state of the fragment
+     * @return The created View for the fragment
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,6 +118,11 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
         return view;
     }
 
+    /**
+     * Fetches mood events for the logged-in user from Firestore.
+     *
+     * @param username The logged-in user's username
+     */
     private void fetchUserMoodEvents(String username) {
         if (username == null) {
             Log.e("MoodHistory", "No username found in SharedPreferences");
@@ -126,6 +149,12 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
                     }
                 });
     }
+
+    /**
+     * Fetches the mood event documents referenced by the user document.
+     *
+     * @param moodRefs List of Firestore document references to mood events
+     */
     private void fetchMoodEvents(List<DocumentReference> moodRefs) {
         ArrayList<MoodEvent> tempList = new ArrayList<>();
         final int[] fetchedCount = {0};
@@ -156,6 +185,11 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
         }
     }
 
+    /**
+     * Sorts and displays the mood event list in reverse chronological order.
+     *
+     * @param moodHistoryList The list of mood events to display
+     */
     private void Display(ArrayList<MoodEvent> moodHistoryList) {
         // Create a defensive copy to avoid ConcurrentModificationException
         ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
@@ -185,13 +219,19 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
         adapter.notifyDataSetChanged();
     }
 
+    /** Redirects the user to the login screen. */
     private void redirectToLogin() {
         Intent intent = new Intent(getActivity(), LogIn.class);
         startActivity(intent);
         requireActivity().finish();
     }
 
-
+    /**
+     * Parses a date string into a {@link LocalDate}.
+     *
+     * @param dateString The date string in "dd/MM/yyyy" format
+     * @return The parsed {@link LocalDate}, or {@link LocalDate#MIN} on error
+     */
     private LocalDate parseStringToDate(String dateString) {
         try {
             // Use pattern matching for "DD-MM-YYYY" format
@@ -203,6 +243,12 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
         }
     }
 
+    /**
+     * Parses a date string into a {@link LocalDate}.
+     *
+     * @param timeString The date string in 'HH:mm[:ss]' format
+     * @return The parsed {@link LocalTime}, or {@link LocalTime#MIN} on error
+     */
     private LocalTime parseStringToTime(String timeString) {
         try {
             // Handle both with and without seconds
@@ -216,39 +262,3 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
 
 }
 
-
-
-
-
-//    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
-//        for (DocumentReference moodRef : moodRefs) {
-//            moodRef.get()
-//                    .addOnSuccessListener(documentSnapshot -> {
-//                        if (documentSnapshot.exists()) {
-//                            try {
-//
-//                                MoodEvent moodEvent;
-//                                moodEvent = documentSnapshot.toObject(MoodEvent.class);
-////
-//                                // You can also add this to a list or display it as needed
-//                                moodHistoryList.add(moodEvent);
-//                                Display(moodHistoryList);
-//
-//
-//                            } catch (Exception e) {
-//                                Log.e("MoodHistory", "Error creating MoodEvent from document snapshot", e);
-//                            }
-//                        } else {
-//                            Log.e("MoodHistory", "No document found at reference: " + moodRef.getPath());
-//                        }
-//
-//                    })
-//                    .addOnFailureListener(e -> Log.e("MoodHistory", "Error fetching mood event", e));
-//        }
-//    }
-
-//    private void Display(ArrayList<MoodEvent> moodHistoryList){
-//        adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
-//        listView.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
-//    }

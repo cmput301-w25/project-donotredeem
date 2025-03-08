@@ -36,6 +36,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Fragment that represents the user's profile page. It displays the user's recent mood history
+ * and provides navigation to other sections of the app, such as editing the profile and viewing mood history.
+ * This fragment interacts with Firebase Firestore to fetch user mood events and displays them in a ListView.
+ */
 public class ProfilePage extends Fragment {
     private ListView recent_list;
     private MoodEventAdapter adapter;
@@ -56,6 +61,17 @@ public class ProfilePage extends Fragment {
             new MoodEvent("Shy", "12/12/2023", "10:00", "Mall", null,null,null,"Shopping"),
             new MoodEvent("Angry", "12/12/2023", "10:00", "Office", null, null,"A difficult meeting happened",null),
             new MoodEvent("Fear", "12/12/2023", "10:00", "Beach", null, null,"Relaxed watching the sunset",null)};
+
+    /**
+     * Creates and returns the view hierarchy associated with the fragment.
+     * Initializes views, fetches mood events for the logged-in user,
+     * and sets up navigation for the side panel.
+     *
+     * @param inflater The LayoutInflater object to inflate the layout
+     * @param container The parent view group to contain the inflated view
+     * @param savedInstanceState A Bundle containing the saved state (if available)
+     * @return The root view of the fragment
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile, container, false);
@@ -130,7 +146,11 @@ public class ProfilePage extends Fragment {
         return view;
     }
 
-
+    /**
+     * Fetches mood events for the logged-in user from Firebase Firestore.
+     *
+     * @param username The username of the logged-in user
+     */
     private void fetchUserMoodEvents(String username) {
         if (username == null) {
             Log.e("MoodHistory", "No username found in SharedPreferences");
@@ -159,6 +179,13 @@ public class ProfilePage extends Fragment {
                 });
 
     }
+
+    /**
+     * Fetches mood events from the provided list of document references.
+     * The events are then added to the moodHistoryList and displayed.
+     *
+     * @param moodRefs The list of document references for mood events
+     */
     private void fetchMoodEvents(List<DocumentReference> moodRefs) {
         ArrayList<MoodEvent> tempList = new ArrayList<>();
         final int[] fetchedCount = {0}; // Counter to track fetched events
@@ -198,6 +225,10 @@ public class ProfilePage extends Fragment {
             });
         }
     }
+
+    /**
+     * Sorts the mood events list by date and time in reverse chronological order.
+     */
     private void sortMoodEvents() {
         moodHistoryList.sort((event1, event2) -> {
             try {
@@ -218,6 +249,10 @@ public class ProfilePage extends Fragment {
         });
     }
 
+    /**
+     * Displays the mood events in the list view, either by creating a new adapter
+     * or updating the existing one.
+     */
     private void Display() {
         if (adapter == null) {
             adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
@@ -228,6 +263,13 @@ public class ProfilePage extends Fragment {
             adapter.notifyDataSetChanged();
         }
     }
+
+    /**
+     * Parses a string representing a date in "dd/MM/yyyy" format into a LocalDate object.
+     *
+     * @param dateString The date string to be parsed
+     * @return The LocalDate representation of the string, or LocalDate.MIN if parsing fails
+     */
     private LocalDate parseStringToDate(String dateString) {
         try {
             // Use pattern matching for "DD-MM-YYYY" format
@@ -239,6 +281,12 @@ public class ProfilePage extends Fragment {
         }
     }
 
+    /**
+     * Parses a string representing a time in "HH:mm[:ss]" format into a LocalTime object.
+     *
+     * @param timeString The time string to be parsed
+     * @return The LocalTime representation of the string, or LocalTime.MIN if parsing fails
+     */
     private LocalTime parseStringToTime(String timeString) {
         try {
             // Handle both with and without seconds
@@ -250,7 +298,9 @@ public class ProfilePage extends Fragment {
         }
     }
 
-
+    /**
+     * Redirects the user to the login page if the username is not found in SharedPreferences.
+     */
     private void redirectToLogin() {
         Intent intent = new Intent(getActivity(), LogIn.class);
         startActivity(intent);

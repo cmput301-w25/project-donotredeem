@@ -36,7 +36,14 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
+/**
+ * LogIn activity for the application.
+ *
+ * This activity allows users to log in using either a username/password combination or Google Sign-In.
+ * It verifies user credentials by querying Firestore and, on a successful login, saves the username in SharedPreferences.
+ * After authentication, the user is directed to the MainActivity.
+ *
+ */
 public class LogIn extends AppCompatActivity {
     EditText editTextUsername, editTextPassword;
     Button buttonLogIn, buttonGoogleSignIn;
@@ -45,6 +52,10 @@ public class LogIn extends AppCompatActivity {
     GoogleSignInClient mGoogleSignInClient;
     TextView textview;
 
+    /**
+     * Called when the activity is starting.
+     * Checks if a user is already signed in; if so, proceeds to MainActivity.
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -56,6 +67,12 @@ public class LogIn extends AppCompatActivity {
         }
     }
 
+    /**
+     * Called when the activity is first created.
+     * Initializes Firebase, UI components, and configures Google Sign-In.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied. Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -94,12 +111,10 @@ public class LogIn extends AppCompatActivity {
                 String password = editTextPassword.getText().toString();
 
                 if (TextUtils.isEmpty(username)) {
-                    Toast.makeText(LogIn.this, "Enter username", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(LogIn.this, "Enter password", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -135,7 +150,7 @@ public class LogIn extends AppCompatActivity {
                                     finish();
 
                                 } else {
-                                    Toast.makeText(LogIn.this, "Incorrect password.", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG,"Incorrect password.");
                                 }
                             } else {
                                 Log.e(TAG, "User not found: " + username);
@@ -145,7 +160,6 @@ public class LogIn extends AppCompatActivity {
                             }
                         } else {
                             Log.e(TAG, "Firestore error: ", task.getException());
-                            Toast.makeText(LogIn.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -161,12 +175,21 @@ public class LogIn extends AppCompatActivity {
             }
         });
     }
-
+    /**
+     * Initiates the Google Sign-In process by launching the sign-in intent.
+     */
     private void signInWithGoogle() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, 9001);
     }
-
+    /**
+     * Called when an activity you launched exits.
+     * Processes the Google Sign-In result.
+     *
+     * @param requestCode The integer request code originally supplied to startActivityForResult(), allowing you to identify who this result came from.
+     * @param resultCode The integer result code returned by the child activity through its setResult().
+     * @param data An Intent, which can return result data to the caller (varies by activity).
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -182,7 +205,12 @@ public class LogIn extends AppCompatActivity {
             }
         }
     }
-
+    /**
+     * Authenticates with Firebase using the Google ID token.
+     *
+     * @param idToken The Google ID token obtained from Google Sign-In.
+     *
+     */
     private void firebaseAuthWithGoogle(String idToken) {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
         mAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {

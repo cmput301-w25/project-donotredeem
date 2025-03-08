@@ -13,6 +13,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.donotredeem.R;
 
+/**
+ * IN PROGRESS...
+ */
 public class Recurrence extends Fragment {
     private Button nextButton;
     @Nullable

@@ -1,85 +1,56 @@
 package com.example.donotredeem;
 
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.Button;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.example.donotredeem.R;
+import java.util.Arrays;
+import java.util.List;
 
+
+/**
+ * Activity that manages the mood selection view, displaying a carousel of mood-related images
+ * and providing navigation options for the user to proceed or skip the mood selection process.
+ */
 public class MoodSelectionActivity extends AppCompatActivity {
     private ViewPager2 viewPager;
-    private int[] moodImages = {
-            R.drawable.main_happy,
-            R.drawable.main_sad,
-            R.drawable.main_fear,
-            R.drawable.main_angry,
-            R.drawable.main_confused,
-            R.drawable.main_disgusted,
-            R.drawable.main_shameful,
-            R.drawable.main_surprised,
-            R.drawable.main_shy,
-            R.drawable.main_tired
-    };
+    private Button nextButton;
+    private Button skipButton;
 
+    /**
+     * Called when the activity is created. Initializes the mood image carousel and the navigation buttons.
+     * It sets up the ViewPager2 with a list of mood-related images and prepares buttons for the next action.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,
+     *                           this Bundle contains the data it most recently supplied.
+     */
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test4);
 
         viewPager = findViewById(R.id.viewPager);
-        viewPager.setAdapter(new MoodPagerAdapter());
-        viewPager.setCurrentItem(Integer.MAX_VALUE / 2, false);
+        nextButton = findViewById(R.id.next_button);
+        skipButton = findViewById(R.id.skip_button);
 
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            @Override
-            public void onPageSelected(int position) {
-                int actualPosition = position % moodImages.length;
-                if (actualPosition < 0) {
-                    actualPosition += moodImages.length;
-                }
-                // Use actualPosition for selection
-            }
-        });
-    }
+        List<Integer> imageList = Arrays.asList(
+                R.drawable.main_happy, R.drawable.main_sad, R.drawable.main_fear,
+                R.drawable.main_angry, R.drawable.main_confused, R.drawable.main_disgusted,
+                R.drawable.main_shameful, R.drawable.main_surprised, R.drawable.main_shy,
+                R.drawable.main_tired
+        );
 
-    private class MoodPagerAdapter extends RecyclerView.Adapter<MoodViewHolder> {
-        @Override
-        public int getItemCount() {
-            return Integer.MAX_VALUE;
-        }
+        ImageAdapter adapter = new ImageAdapter(imageList);
+        viewPager.setAdapter(adapter);
 
-        @Override
-        public void onBindViewHolder(@NonNull MoodViewHolder holder, int position) {
-            int actualPosition = position % moodImages.length;
-            if (actualPosition < 0) {
-                actualPosition += moodImages.length;
-            }
-            holder.imageView.setImageResource(moodImages[actualPosition]);
-        }
+        // Start from a middle position to allow infinite looping
+        int startPosition = Integer.MAX_VALUE / 2;
+        startPosition = startPosition - (startPosition % imageList.size()); // Align with list
+        viewPager.setCurrentItem(startPosition, false);
 
-        // Rest of the adapter remains the same
-        @NonNull
-        @Override
-        public MoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_image, parent, false);
-            return new MoodViewHolder(view);
-        }
-    }
 
-    private static class MoodViewHolder extends RecyclerView.ViewHolder {
-        ImageView imageView;
-
-        MoodViewHolder(View itemView) {
-            super(itemView);
-            imageView = itemView.findViewById(R.id.moodImage);
-        }
     }
 }

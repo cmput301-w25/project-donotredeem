@@ -36,14 +36,21 @@ import java.util.ArrayList;
 import github.com.st235.swipetoactionlayout.SwipeAction;
 import github.com.st235.swipetoactionlayout.SwipeMenuListener;
 import github.com.st235.swipetoactionlayout.SwipeToActionLayout;
-
+/**
+ * Adapter class for displaying MoodEvent objects in a ListView.
+ * Supports swipe actions for editing and deleting events.
+ */
 public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
     private Context context;
     private ArrayList<MoodEvent> Events;
     private FirebaseFirestore db;
     private SwipeToActionLayout swipeToActionLayout;
-
+    /**
+     * Constructor for MoodEventAdapter.
+     * @param context The context of the activity or fragment.
+     * @param Events The list of MoodEvent objects to display.
+     */
     public MoodEventAdapter(Context context, ArrayList<MoodEvent> Events){
         super(context,0,Events);
         this.context = context;
@@ -102,14 +109,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             ThisPictureDescription.setImageResource(R.drawable.rounded_background);
         }
 
-
-//        if (imageUri != null) {
-//            Log.d("image", "image uri is not null");
-//            ThisPictureDescription.setImageURI(imageUri);
-//        } else {
-//            ThisPictureDescription.setImageResource(R.drawable.cat); // Default image
-//        }
-
         String mood = Current_Mood_Event.getEmotionalState();
         String situation = Current_Mood_Event.getSituation();
         db = FirebaseFirestore.getInstance();
@@ -151,14 +150,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             // Hide the image if there's no picture description
             ThisTextDescription.setVisibility(View.GONE);
         }
-
-//BITMAP IMAGES NOT WORKING WE NEED TO CHANGE TO URI EVERYWHERE
-//        if (Current_Mood_Event.getImageUri() != null && !Current_Mood_Event.getImageUri().isEmpty()) {
-//            ThisPictureDescription.setVisibility(View.VISIBLE);
-//            ThisPictureDescription.setImageURI(Uri.parse(Current_Mood_Event.getImageUri()));
-//        } else {
-//            ThisPictureDescription.setVisibility(View.GONE);
-//        }
 
         SwipeToActionLayout swipeLayout = MainView.findViewById(R.id.swipe_layout);
 
@@ -209,6 +200,10 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         return MainView;
 
     }
+    /**
+     * Deletes a mood event from Firestore.
+     * @param moodEvent The mood event to be deleted.
+     */
     private void deleteMoodEventFromFirestore(MoodEvent moodEvent) {
         if (moodEvent != null && moodEvent.getMoodEventId() != null) {
             String moodEventId = moodEvent.getMoodEventId();
@@ -226,7 +221,10 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         }
     }
 
-
+    /**
+     * Removes the mood event reference from the user's document.
+     * @param moodEventId The ID of the mood event to be removed.
+     */
     private void removeMoodRefFromUser(String moodEventId) {
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         String username = sharedPreferences.getString("username", null);
@@ -256,6 +254,10 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                 })
                 .addOnFailureListener(e -> Log.e("MoodEventAdapter", "Error retrieving user document", e));
     }
+    /**
+     * Launches the EditMoodEvent fragment with the selected mood event's details.
+     * @param moodEvent The mood event to be edited.
+     */
     private void launchEditMoodEventFragment(MoodEvent moodEvent) {
         AppCompatActivity activity = (AppCompatActivity) context;
 
@@ -282,7 +284,4 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                 .addToBackStack(null)
                 .commit();
     }
-
-
-
 }
