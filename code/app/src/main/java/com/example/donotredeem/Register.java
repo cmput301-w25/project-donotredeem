@@ -19,7 +19,16 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
-
+/**
+ * Activity for registering a new user.
+ *
+ * This activity guides the user through multiple registration pages,
+ * collecting essential details such as name, email, phone number, username, and password.
+ * It uses Firebase Authentication to create a new account and Firestore to store user data.
+ * The registration process also checks for username uniqueness and saves the username locally
+ * in SharedPreferences upon successful registration.
+ *
+ */
 public class Register extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -34,6 +43,12 @@ public class Register extends AppCompatActivity {
 
     private int currentPage = 1; // Keeps track of the page user is on
 
+    /**
+     * Called when the activity is first created.
+     * Initializes Firebase Authentication and Firestore, and displays the first registration page.
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down, this Bundle contains the data it most recently supplied. Otherwise, it is null.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +57,14 @@ public class Register extends AppCompatActivity {
         showPage(currentPage);
     }
 
+    /**
+     * Displays the appropriate registration page based on the given page number.
+     *
+     * Depending on the current page, different layouts are set.
+     * When the last page is reached, user registration is initiated.
+     *
+     * @param page The registration page number to display.
+     */
     private void showPage(int page) {
         switch (page) {
             case 1:
@@ -98,6 +121,11 @@ public class Register extends AppCompatActivity {
         });
     }
 
+    /**
+     * Stores the user input data from the current registration page.
+     *
+     * @param page The current registration page number.
+     */
     private void storeData(int page) {
         switch (page) {
             case 1:
@@ -126,7 +154,13 @@ public class Register extends AppCompatActivity {
 //                break;
         }
     }
-
+    /**
+     * Checks if the username is unique and registers the user.
+     *
+     * The method first checks Firestore to see if the username already exists.
+     * If the username is unique, it creates a new user using Firebase Authentication and then saves the user's data in Firestore. Upon success, the username is stored in SharedPreferences.
+     *
+     */
     private void registerUser() {
         if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
             Toast.makeText(this, "Email, Password, and Username are required!", Toast.LENGTH_LONG).show();
@@ -163,7 +197,16 @@ public class Register extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * Saves the registered user's data to Firestore.
+     *
+     * The user data is stored in a Map and written to a Firestore document under the \"User\" collection.
+     * Additionally, the username is saved locally using SharedPreferences.
+     * Upon success, the user is navigated to the MainActivity.
+     *
+     *
+     * @param firebaseUser The FirebaseUser object representing the newly registered user.
+     */
         private void saveUserData(FirebaseUser firebaseUser) {
         Map<String, Object> user = new HashMap<>();
         user.put("name", name);
