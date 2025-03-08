@@ -284,7 +284,4 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                 .addToBackStack(null)
                 .commit();
     }
-
-
-
 }

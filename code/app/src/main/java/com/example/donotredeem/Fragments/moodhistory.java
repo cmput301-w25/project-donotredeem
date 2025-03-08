@@ -262,39 +262,3 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
 
 }
 
-
-
-
-
-//    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
-//        for (DocumentReference moodRef : moodRefs) {
-//            moodRef.get()
-//                    .addOnSuccessListener(documentSnapshot -> {
-//                        if (documentSnapshot.exists()) {
-//                            try {
-//
-//                                MoodEvent moodEvent;
-//                                moodEvent = documentSnapshot.toObject(MoodEvent.class);
-////
-//                                // You can also add this to a list or display it as needed
-//                                moodHistoryList.add(moodEvent);
-//                                Display(moodHistoryList);
-//
-//
-//                            } catch (Exception e) {
-//                                Log.e("MoodHistory", "Error creating MoodEvent from document snapshot", e);
-//                            }
-//                        } else {
-//                            Log.e("MoodHistory", "No document found at reference: " + moodRef.getPath());
-//                        }
-//
-//                    })
-//                    .addOnFailureListener(e -> Log.e("MoodHistory", "Error fetching mood event", e));
-//        }
-//    }
-
-//    private void Display(ArrayList<MoodEvent> moodHistoryList){
-//        adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
-//        listView.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
-//    }

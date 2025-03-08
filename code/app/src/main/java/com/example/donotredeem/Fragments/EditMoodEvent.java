@@ -178,17 +178,6 @@ public class EditMoodEvent extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
-//        FirebaseAuth auth = FirebaseAuth.getInstance();
-//        if (auth.getCurrentUser() == null) {
-//            auth.signInAnonymously().addOnCompleteListener(task -> {
-//                if (task.isSuccessful()) {
-//                    Log.d("Auth", "Signed in anonymously");
-//                } else {
-//                    Log.e("Auth", "Anonymous sign-in failed", task.getException());
-//                }
-//            });
-//        }
         // Inflate the layout (assumed to be similar to add_mood.xml)
         View view = inflater.inflate(R.layout.edit_mood, container, false);
 

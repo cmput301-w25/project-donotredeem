@@ -130,8 +130,6 @@ public class AddMoodEvent extends Fragment {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference().child("mood_images");
-        //test firestore
-        //testFirestore();
 
         // https://developer.android.com/develop/sensors-and-location/location/retrieve-current
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
@@ -139,11 +137,6 @@ public class AddMoodEvent extends Fragment {
         //the code below is taken from https://developer.android.com/media/camera/camera-deprecated/photobasics
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
-
-                // Bundle extras = result.getData().getExtras();
-//                Bitmap imageBitmap = (Bitmap) extras.get("data");
-//                imageUri = getImageUriFromBitmap(requireContext(), imageBitmap); // Convert to URI
-//                image.setImageURI(imageUri);
                 image.setImageURI(imageUri);
 
             }
@@ -227,7 +220,6 @@ public class AddMoodEvent extends Fragment {
 
 
         EditText addTrigger = view.findViewById(R.id.trigger);
-//        EditText social = view.findViewById(R.id.social);
         Button submit = view.findViewById(R.id.button);
 
         image = view.findViewById(R.id.imageView);
@@ -534,12 +526,6 @@ public class AddMoodEvent extends Fragment {
      */
     private void checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-
-            //https://developer.android.com/media/camera/camera-intents
-            //startActivityForResult is deprecated version
-
-//            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE );
-//            cameraLauncher.launch(takePictureIntent);
             try {
 
                 File imageFile = createImageFile();
@@ -601,8 +587,6 @@ public class AddMoodEvent extends Fragment {
 
                     double latitude = locationResult.getLastLocation().getLatitude();
                     double longitude = locationResult.getLastLocation().getLongitude();
-//                    String currentLocation = latitude + ", " + longitude;
-//                    location.setText(currentLocation);
                     Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
 
                     List<Address> addresses = null;
@@ -708,61 +692,6 @@ public class AddMoodEvent extends Fragment {
                             Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
         }
 
-
-    //Quality bad
-//    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
-//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-//        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "CameraImage", null);
-//        return Uri.parse(path);
-//    }
-
-//    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
-//        try {
-//            // Create an image file in external storage
-//            File file = new File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "captured_image.jpg");
-//
-//            // Write bitmap to file with high quality
-//            FileOutputStream fos = new FileOutputStream(file);
-//            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-//            fos.flush();
-//            fos.close();
-//
-//            // Get the file's URI using FileProvider
-//            return FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//    }
-//
-//
-
-
-    // Helper method to convert a Bitmap into a URI using the MediaStore.
-//    private Uri getImageUriFromBitmap(Context context, Bitmap bitmap) {
-//        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-//        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), bitmap, "CameraImage", null);
-//        return Uri.parse(path);
-//    }
-//    private void testFirestore() {
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        Log.d("AddMoodEvent", "testFirestore called");
-//        Map<String, Object> testData = new HashMap<>();
-//        testData.put("first", "Ada");
-//        testData.put("last", "Lovelace");
-//        testData.put("born", 1815);
-//
-//        db.collection("Users")
-//                .add(testData)
-//                .addOnSuccessListener(documentReference -> {
-//                    Log.d(TAG, "Test document added with ID: " + documentReference.getId());
-//                })
-//                .addOnFailureListener(e -> {
-//                    Log.w(TAG, "Error adding test document", e);
-//                });
-//    }
 
     /**
      * Highlights the selected emoji button and resets the previous selection if any.
