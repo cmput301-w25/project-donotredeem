@@ -137,7 +137,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             // If picture description is available, show the image
             ThisPictureDescription.setVisibility(View.VISIBLE);
             // Set the image resource if available
-            ThisPictureDescription.setImageResource(R.drawable.sad); // Use actual image from the data if needed
         } else {
             // Hide the image if there's no picture description
             ThisPictureDescription.setVisibility(View.GONE);
@@ -280,7 +279,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         // Replace current fragment with EditMoodEvent
         activity.getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.profile_fragment_container, editFragment, "EditMoodEvent")
+                .replace(R.id.fragment_container, editFragment, "EditMoodEvent")
                 .addToBackStack(null)
                 .commit();
     }

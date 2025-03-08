@@ -40,9 +40,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.donotredeem.MoodEvent;
+import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
 import com.example.donotredeem.SocialSituation;
@@ -79,7 +82,7 @@ import java.util.UUID;
  * This fragment interacts with Firebase Firestore to update the mood event in the database and Firebase Storage to upload images.
  */
 public class EditMoodEvent extends Fragment {
-
+    public int FromWhere;
     private ImageView image;
     private EditText description, locationEdit, dateEdit, timeEdit, triggerEdit;
     private Button submit;
@@ -393,6 +396,9 @@ public class EditMoodEvent extends Fragment {
 
 
         submit.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
+            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
             View fragmentRoot = view.findViewById(R.id.fragment_root);
             String descText = description.getText().toString();
             String triggerText = triggerEdit.getText().toString();
@@ -444,6 +450,19 @@ public class EditMoodEvent extends Fragment {
             } else {
                 getParentFragmentManager().beginTransaction().remove(EditMoodEvent.this).commit();
             }
+                for (Fragment fragment : fragments) {
+                    if (fragment != null) {
+                        fragmentTransaction.remove(fragment); // Remove each fragment
+                    }
+                }
+
+                fragmentTransaction.commit(); // Commit the transaction
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, new moodhistory())
+                        .addToBackStack(null)
+                        .commit();
+
         });
 
 
@@ -456,7 +475,30 @@ public class EditMoodEvent extends Fragment {
             slideOut.setAnimationListener(new Animation.AnimationListener() {
                 @Override public void onAnimationStart(Animation animation) { }
                 @Override public void onAnimationEnd(Animation animation) {
+
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
+                    List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
+
+
+                    // Get and remove each fragment
+                    for (Fragment fragment : fragments) {
+                        if (fragment != null) {
+                            fragmentTransaction.remove(fragment); // Remove each fragment
+                        }
+                    }
+
+                    fragmentTransaction.commit(); // Commit the transaction
+
+
                     getParentFragmentManager().beginTransaction().remove(EditMoodEvent.this).commit();
+
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, new moodhistory())
+                            .addToBackStack(null)
+                            .commit();
+
                 }
                 @Override public void onAnimationRepeat(Animation animation) { }
             });

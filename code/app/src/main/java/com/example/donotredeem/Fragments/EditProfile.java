@@ -14,11 +14,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
 import com.example.donotredeem.R;
 import com.google.firebase.firestore.auth.User;
+
+import java.util.List;
 
 /**
  * Fragment for editing the user's profile details such as username, email, phone number, and bio.
@@ -85,7 +89,30 @@ public class EditProfile extends Fragment {
         });
 
         cancel.setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager().popBackStack();
+//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//            fragmentManager.beginTransaction()
+//                    .replace(R.id.fragment_container, new ProfilePage())
+//                    .addToBackStack(null)
+//                    .commit();
+
+
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
+            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
+
+            // Get and remove each fragment
+            for (Fragment fragment : fragments) {
+                if (fragment != null) {
+                    fragmentTransaction.remove(fragment); // Remove each fragment
+                }
+            }
+
+            fragmentTransaction.commit(); // Commit the transaction
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new ProfilePage())
+                    .addToBackStack(null)
+                    .commit();
         });
         return view;
     }

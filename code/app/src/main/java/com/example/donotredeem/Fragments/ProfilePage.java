@@ -54,13 +54,6 @@ public class ProfilePage extends Fragment {
     private TextView bio;
 
 
-    MoodEvent[] moodEvents = {
-            new MoodEvent("Happy", "12/12/2023", "10:00", "Park", "Alone", null, "Good weather", null),
-            new MoodEvent("Sad", "12/12/2023", "10:00", "Home", "Crowd", "Bad news", null, null),
-            new MoodEvent("Sad", "12/12/2023", "10:00", "Home", "Pair","Bad news", "Received some disappointing news", null),
-            new MoodEvent("Shy", "12/12/2023", "10:00", "Mall", null,null,null,"Shopping"),
-            new MoodEvent("Angry", "12/12/2023", "10:00", "Office", null, null,"A difficult meeting happened",null),
-            new MoodEvent("Fear", "12/12/2023", "10:00", "Beach", null, null,"Relaxed watching the sunset",null)};
 
     /**
      * Creates and returns the view hierarchy associated with the fragment.
@@ -111,34 +104,72 @@ public class ProfilePage extends Fragment {
             drawerLayout.closeDrawer(sidePanel);
         });
 
+
+        //testing heer
+
         sidePanel.findViewById(R.id.nav_history).setOnClickListener(v -> {
             drawerLayout.closeDrawer(sidePanel);
 
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            Fragment existingFragment = fragmentManager.findFragmentByTag("moodhistory");
+//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//            Fragment existingFragment = fragmentManager.findFragmentByTag("moodhistory");
+//
+//            if (existingFragment == null) { // Only add if not already in stack
+//                moodhistory historyFragment = new moodhistory();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.fragment_container, historyFragment, "moodhistory")
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
+            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
 
-            if (existingFragment == null) { // Only add if not already in stack
-                moodhistory historyFragment = new moodhistory();
-                fragmentManager.beginTransaction()
-                        .add(R.id.profile_fragment_container, historyFragment, "moodhistory")
-                        .addToBackStack(null)
-                        .commit();
+            // Get and remove each fragment
+            for (Fragment fragment : fragments) {
+                if (fragment != null) {
+                    fragmentTransaction.remove(fragment); // Remove each fragment
+                }
             }
+
+            fragmentTransaction.commit(); // Commit the transaction
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new moodhistory())
+                    .addToBackStack(null)
+                    .commit();
         });
 
         sidePanel.findViewById(R.id.nav_profile).setOnClickListener(v -> {
             drawerLayout.closeDrawer(sidePanel);
 
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            Fragment existingFragment = fragmentManager.findFragmentByTag("EditProfile");
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
+            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
 
-            if (existingFragment == null) { // Only add if not already in stack
-                EditProfile profileFragment = new EditProfile();
-                fragmentManager.beginTransaction()
-                        .add(R.id.profile_fragment_container, profileFragment, "EditProfile")
-                        .addToBackStack(null)
-                        .commit();
+            // Get and remove each fragment
+            for (Fragment fragment : fragments) {
+                if (fragment != null) {
+                    fragmentTransaction.remove(fragment); // Remove each fragment
+                }
             }
+
+            fragmentTransaction.commit(); // Commit the transaction
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new EditProfile())
+                    .addToBackStack(null)
+                    .commit();
+
+//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//            Fragment existingFragment = fragmentManager.findFragmentByTag("EditProfile");
+//
+//            if (existingFragment == null) { // Only add if not already in stack
+//                EditProfile profileFragment = new EditProfile();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.fragment_container, profileFragment, "EditProfile")
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
         });
 
 
@@ -213,11 +244,12 @@ public class ProfilePage extends Fragment {
                     sortMoodEvents();
 
                     // Keep only the 2 most recent
-                    if (moodHistoryList.size() > 2) {
+                    if (moodHistoryList.size() >2) {
                         moodHistoryList = new ArrayList<>(moodHistoryList.subList(0, 2));
                     }
 
-                    Display();
+
+                    Display( moodHistoryList);
                 }
             }).addOnFailureListener(e -> {
                 Log.e("MoodHistory", "Error fetching document", e);
@@ -253,15 +285,33 @@ public class ProfilePage extends Fragment {
      * Displays the mood events in the list view, either by creating a new adapter
      * or updating the existing one.
      */
-    private void Display() {
-        if (adapter == null) {
-            adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
-            recent_list.setAdapter(adapter);
-        } else {
-            adapter.clear();
-            adapter.addAll(moodHistoryList);
-            adapter.notifyDataSetChanged();
-        }
+    private void Display(ArrayList<MoodEvent> moodHistoryList) {
+        // Create a defensive copy to avoid ConcurrentModificationException
+        ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
+
+        sortedList.sort((event1, event2) -> {
+            try {
+                LocalDate date1 = parseStringToDate(event1.getDate());
+                LocalDate date2 = parseStringToDate(event2.getDate());
+
+                // First compare dates
+                int dateCompare = date2.compareTo(date1); // Reverse chronological
+                if (dateCompare != 0) return dateCompare;
+
+                // If dates equal, compare times
+                LocalTime time1 = parseStringToTime(event1.getTime());
+                LocalTime time2 = parseStringToTime(event2.getTime());
+                return time2.compareTo(time1); // Reverse chronological
+            } catch (Exception e) {
+                Log.e("Sorting", "Error comparing events", e);
+                return 0;
+            }
+        });
+
+        // Update adapter with sorted list
+        adapter = new MoodEventAdapter(requireContext(), sortedList);
+        recent_list.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
 
     /**
