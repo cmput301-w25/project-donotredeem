@@ -11,6 +11,9 @@ import androidx.fragment.app.Fragment;
 
 import com.example.donotredeem.R;
 
+/**
+ * IN PROGRESS...
+ */
 public class Requests extends Fragment {
 //    @Nullable
 //    @Override
