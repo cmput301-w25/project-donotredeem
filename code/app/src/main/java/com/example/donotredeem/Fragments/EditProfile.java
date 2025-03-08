@@ -21,10 +21,9 @@ import com.example.donotredeem.R;
 import com.google.firebase.firestore.auth.User;
 
 /**
- * edit_user
- * this fragment updates the details of the user such as name , email, phone number etc.
+ * Fragment for editing the user's profile details such as username, email, phone number, and bio.
+ * Retrieves user data from SharedPreferences and Firestore, allowing updates and saving changes.
  */
-
 public class EditProfile extends Fragment {
 
     String username;
@@ -38,6 +37,14 @@ public class EditProfile extends Fragment {
     private ImageButton cancel;
     Users userProfile = new Users();
 
+    /**
+     * Inflates the fragment layout, initializes UI components, and retrieves user details.
+     *
+     * @param inflater  The LayoutInflater used to inflate the layout.
+     * @param container The parent ViewGroup (if applicable).
+     * @param savedInstanceState The saved state of the fragment (if any).
+     * @return The root View of the fragment.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.edit_profile, container, false);
@@ -83,6 +90,11 @@ public class EditProfile extends Fragment {
         return view;
     }
 
+    /**
+     * Populates the UI fields with the user's existing details.
+     *
+     * @param user The user object containing profile details.
+     */
     public void setDetails(Users user){
         editUsername.setText(user.getUsername());
         editPassword.setText(user.getPassword());
