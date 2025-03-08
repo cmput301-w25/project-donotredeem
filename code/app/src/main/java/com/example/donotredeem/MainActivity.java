@@ -33,14 +33,35 @@ import com.google.firebase.auth.FirebaseUser;
 import androidx.fragment.app.Fragment;
 
 import org.w3c.dom.Text;
-
+/**
+ * MainActivity serves as the primary activity for the application and provides
+ * navigation between various fragments using button interactions.
+ *
+ * The activity initializes with the MainPage fragment and supports transitions to:
+ *
+ *     AddMoodEvent: Opens a fragment for adding a new mood event with slide animations.
+ *     Map: Displays a map fragment.
+ *     MainPage: Returns to the main page fragment.
+ *     Requests: Displays a fragment for viewing requests (e.g., mood-related requests).
+ *     ProfilePage: Displays the user's profile page fragment.
+ *
+ *
+ */
 public class MainActivity extends AppCompatActivity {
     private ImageButton addEvent, mapButton, homeButton, heartButton, profilePage;
     FirebaseAuth auth;
     Button button;
     TextView textView;
     FirebaseUser user;
-
+    /**
+     * Called when the activity is starting.
+     *
+     * This method sets up the initial fragment (MainPage) and initializes the UI components.
+     * It also sets click listeners for various navigation buttons to transition between fragments.
+     *
+     *
+     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,then this Bundle contains the data it most recently supplied. Otherwise, it is null.
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
