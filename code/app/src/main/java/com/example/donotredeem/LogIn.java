@@ -110,12 +110,12 @@ public class LogIn extends AppCompatActivity {
                 String password = editTextPassword.getText().toString();
 
                 if (TextUtils.isEmpty(username)) {
-                    Toast.makeText(LogIn.this, "Enter username", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(LogIn.this, "Enter username", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (TextUtils.isEmpty(password)) {
-                    Toast.makeText(LogIn.this, "Enter password", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(LogIn.this, "Enter password", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -132,7 +132,7 @@ public class LogIn extends AppCompatActivity {
                                 String storedPassword = document.getString("password");
                                 if (storedPassword != null && storedPassword.equals(password)) {
                                     // Password matches, allow login
-                                    Toast.makeText(LogIn.this, "Login successful.", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(LogIn.this, "Login successful.", Toast.LENGTH_SHORT).show();
 
                                     SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
                                     SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -144,15 +144,16 @@ public class LogIn extends AppCompatActivity {
                                     finish();
 
                                 } else {
-                                    Toast.makeText(LogIn.this, "Incorrect password.", Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG,"Incorrect password.");
+                                    //Toast.makeText(LogIn.this, "Incorrect password.", Toast.LENGTH_SHORT).show();
                                 }
                             } else {
                                 Log.e(TAG, "User not found: " + username);
-                                Toast.makeText(LogIn.this, "User not found.", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(LogIn.this, "User not found.", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             Log.e(TAG, "Firestore error: ", task.getException());
-                            Toast.makeText(LogIn.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(LogIn.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
