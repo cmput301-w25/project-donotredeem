@@ -90,7 +90,7 @@ public class ViewMood extends DialogFragment {
             // Set background color based on emotional state
             if (colorId != 0) { // Ensure the color resource exists
                 int color = ContextCompat.getColor(requireContext(), colorId);
-                drawable.setColorFilter(color, PorterDuff.Mode.SRC_IN);
+                view.setBackgroundColor(color);
             } else {
                 view.setBackgroundColor(getResources().getColor(R.color.white));
             }
