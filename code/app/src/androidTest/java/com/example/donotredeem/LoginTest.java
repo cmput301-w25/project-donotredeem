@@ -93,100 +93,6 @@ public class LoginTest {
         Thread.sleep(2000);
     }
 
-<<<<<<< Updated upstream
-    @Test
-    public void SuccessfulLoginBecauseUserExists() throws InterruptedException {
-        Thread.sleep(2000);
-        onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
-        onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
-
-        onView(withId(R.id.btnLogin)).perform(click());
-
-        onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
-//        //onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
-//        Thread.sleep(5000);
-//
-////      onView(withText("Login successfully."))
-////                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-//        onView(withText("Login successfully."))
-//                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
-////        Thread.sleep(2000);
-////        onView(withId(com.google.android.material.R.id.snackbar_text))
-////                .check(matches(withText("Login successfully.")))
-////                .check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void UserDoesNotExist() {
-
-        onView(withId(R.id.etUsername)).perform(ViewActions.typeText("UserDoesNotExist"));
-        onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password3"));
-
-        onView(withId(R.id.btnLogin)).perform(click());
-
-        onView(withText("User not found."))
-                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-
-    }
-
-    @Test
-    public void UserExistButPasswordIsWrong() {
-
-        onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
-        onView(withId(R.id.etPassword)).perform(ViewActions.typeText("WrongPassword"));
-
-        onView(withId(R.id.btnLogin)).perform(click());
-
-        onView(withText("Incorrect password."))
-                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-
-
-    }
-
-    @Test
-    public void SignUpWithAUsernameAlreadyInUse() {
-
-        onView(withId(R.id.button4)).perform(click());
-        onView(withId(R.id.sign_up_id)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.sign_up_name_text)).perform(ViewActions.typeText("New name"));
-        onView(withId(R.id.sign_up_email_text)).perform(ViewActions.typeText("email@gmail.com"));
-        onView(withId(R.id.sign_up_phone_number_text)).perform(ViewActions.typeText("9876543210"));
-        onView(withId(R.id.sign_up_done)).perform(click());
-
-        onView(withId(R.id.sign_up_id_2)).check(matches(isDisplayed()));
-        onView(withId(R.id.sign_up_username_text)).perform(ViewActions.typeText("User1"));
-        onView(withId(R.id.sign_up_password_text)).perform(ViewActions.typeText("New password"));
-
-        onView(withText("Username already taken!"))
-                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-
-
-    }
-
-    @Test
-    public void SignUpWithAnEmailAlreadyInUse() {
-
-        onView(withId(R.id.button4)).perform(click());
-        onView(withId(R.id.sign_up_id)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.sign_up_name_text)).perform(ViewActions.typeText("New name"));
-        onView(withId(R.id.sign_up_email_text)).perform(ViewActions.typeText("user1@gmail.com"));
-        onView(withId(R.id.sign_up_phone_number_text)).perform(ViewActions.typeText("7317555555"));
-        onView(withId(R.id.sign_up_done)).perform(click());
-
-        onView(withId(R.id.sign_up_id_2)).check(matches(isDisplayed()));
-        onView(withId(R.id.sign_up_username_text)).perform(ViewActions.typeText("New user"));
-        onView(withId(R.id.sign_up_password_text)).perform(ViewActions.typeText("New password"));
-
-        onView(withText("Registration failed."))
-                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-
-    }
-
-=======
->>>>>>> Stashed changes
-
     @After
     public void tearDown() {
 //        Espresso.unregisterIdlingResources(LogIn.firebaseIdlingResource);
@@ -213,19 +119,19 @@ public class LoginTest {
 
 
 
-@Test
-public void SuccessfulLoginBecauseUserExists() throws InterruptedException {
-    // Enter username and password
-    Thread.sleep(2000);
-    onView(withId(R.id.etUsername)).perform(typeText("User1"), closeSoftKeyboard());
-    onView(withId(R.id.etPassword)).perform(typeText("Password1"), closeSoftKeyboard());
-    onView(withId(R.id.btnLogin)).perform(click());
-    Thread.sleep(500);
-    onView(withId(com.google.android.material.R.id.snackbar_text))
-            .check(matches(withText("Login successfully.")))
-            .check(matches(isDisplayed()));
-    Thread.sleep(2000);
-}
+    @Test
+    public void SuccessfulLoginBecauseUserExists() throws InterruptedException {
+        // Enter username and password
+        Thread.sleep(2000);
+        onView(withId(R.id.etUsername)).perform(typeText("User1"), closeSoftKeyboard());
+        onView(withId(R.id.etPassword)).perform(typeText("Password1"), closeSoftKeyboard());
+        onView(withId(R.id.btnLogin)).perform(click());
+        Thread.sleep(500);
+        onView(withId(com.google.android.material.R.id.snackbar_text))
+                .check(matches(withText("Login successfully.")))
+                .check(matches(isDisplayed()));
+        Thread.sleep(2000);
+    }
 
     @Test
     public void UserDoesNotExist() throws InterruptedException {
@@ -303,6 +209,4 @@ public void SuccessfulLoginBecauseUserExists() throws InterruptedException {
                 .check(matches(isDisplayed()));
         Thread.sleep(2000);
     }
-
-
 }
