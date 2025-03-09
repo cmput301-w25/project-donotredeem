@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.donotredeem.Fragments.EditMoodEvent;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -183,7 +184,9 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                     // Delete the mood event from Firestore and update User's MoodRef array
                     deleteMoodEventFromFirestore(moodEvent);
 
-                    Toast.makeText(context, "Mood event deleted", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "Mood event deleted", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(MainView, "Mood event deleted", Snackbar.LENGTH_SHORT).show();
+
                 } else if ("edit".equalsIgnoreCase(action.getText().toString())) {
                     // Handle edit action if needed.
                     MoodEvent moodEvent = getItem(position);

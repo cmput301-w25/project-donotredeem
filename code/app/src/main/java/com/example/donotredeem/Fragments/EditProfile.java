@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
 import com.example.donotredeem.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.auth.User;
 
 import java.util.List;
@@ -70,7 +71,8 @@ public class EditProfile extends Fragment {
             }
             @Override
             public void onUserProfileFetchError(Exception e) {
-                Toast.makeText(getContext(), "Failed to fetch profile", Toast.LENGTH_SHORT).show();
+                //oast.makeText(getContext(), "Failed to fetch profile", Toast.LENGTH_SHORT).show();
+                Snackbar.make(getView(), "Failed to fetch profile", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -78,7 +80,8 @@ public class EditProfile extends Fragment {
             @Override
             public void onClick(View v) {
                 if (editUsername.getText().toString().isEmpty() || editEmail.getText().toString().isEmpty()) {
-                    Toast.makeText(getContext(), "Please enter name and email", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Please enter name and email", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), "Please enter name and email", Snackbar.LENGTH_SHORT).show();
                 }
                 userProfile.setUsername(editUsername.getText().toString());
                 userProfile.setPassword(editPassword.getText().toString());

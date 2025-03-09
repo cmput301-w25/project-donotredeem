@@ -537,7 +537,8 @@ public class EditMoodEvent extends Fragment {
             }
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
-            Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getView(), "Camera permission denied", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -552,7 +553,8 @@ public class EditMoodEvent extends Fragment {
             galleryLauncher.launch(galleryOpenIntent);
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, GALLERY_REQUEST);
-            Toast.makeText(requireContext(), "Gallery permission denied", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(requireContext(), "Gallery permission denied", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getView(), "Gallery permission denied", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -585,7 +587,8 @@ public class EditMoodEvent extends Fragment {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
-            Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getView(), "Location permission denied", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -686,10 +689,12 @@ public class EditMoodEvent extends Fragment {
         MoodEvent updatedMoodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
         moodEventRef.set(updatedMoodEvent)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getContext(), "Mood Event Updated!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Mood Event Updated!", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), "Mood Event Updated!", Snackbar.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Error updating data!", Toast.LENGTH_SHORT).show());
+                        //Toast.makeText(getContext(), "Error updating data!", Toast.LENGTH_SHORT).show());
+                        Snackbar.make(getView(), "Error updating data!", Snackbar.LENGTH_SHORT).show());
     }
 
     /**
