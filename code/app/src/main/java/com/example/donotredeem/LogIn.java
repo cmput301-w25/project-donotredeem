@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -14,8 +15,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.test.espresso.idling.CountingIdlingResource;
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 import com.google.android.gms.auth.api.identity.Identity;
@@ -67,6 +72,10 @@ public class LogIn extends AppCompatActivity {
         }
     }
 
+
+    public static final CountingIdlingResource firebaseIdlingResource =
+            new CountingIdlingResource("Firebase_Call");
+
     /**
      * Called when the activity is first created.
      * Initializes Firebase, UI components, and configures Google Sign-In.
@@ -103,7 +112,6 @@ public class LogIn extends AppCompatActivity {
                 .requestEmail()
                 .build();
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
         buttonLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,28 +148,40 @@ public class LogIn extends AppCompatActivity {
                                     View parentLayout = findViewById(R.id.please);
                                     Snackbar.make(parentLayout, "Login successfully.", Snackbar.LENGTH_LONG).show();
 
-                                    SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                    editor.putString("username", username);
-                                    editor.apply();
-
-                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                    startActivity(intent);
-                                    finish();
+//                                    SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+//                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+//                                    editor.putString("username", username);
+//                                    editor.apply();
+//
+//                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                                    startActivity(intent);
+//                                    finish();
+                                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                                        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString("username", username);
+                                        editor.apply();
+                                        startActivity(new Intent(LogIn.this, MainActivity.class));
+                                        finish();
+                                    }, 2000);
 
                                 } else {
                                     Log.e(TAG,"Incorrect password.");
+                                    View parentLayout = findViewById(R.id.please);
+                                    Snackbar.make(parentLayout, "Incorrect password.", Snackbar.LENGTH_LONG).show();
                                 }
                             } else {
                                 Log.e(TAG, "User not found: " + username);
 //                                Toast.makeText(LogIn.this, "User not found.", Toast.LENGTH_LONG).show();
-                                Snackbar.make(findViewById(android.R.id.content), "User not found.", Snackbar.LENGTH_LONG).show();
+                                View parentLayout = findViewById(R.id.please);
+                                Snackbar.make(parentLayout, "User not found.", Snackbar.LENGTH_LONG).show();
+                                //Snackbar.make(findViewById(android.R.id.content), "User not found.", Snackbar.LENGTH_LONG).show();
 
                             }
                         } else {
                             Log.e(TAG, "Firestore error: ", task.getException());
                         }
-
+                        //firebaseIdlingResource.decrement();
                     }
                 });
             }

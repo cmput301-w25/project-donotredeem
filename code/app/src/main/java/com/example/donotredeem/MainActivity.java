@@ -48,6 +48,8 @@ import org.w3c.dom.Text;
  *
  */
 public class MainActivity extends AppCompatActivity {
+
+    public static String past_location;
     private ImageButton addEvent, mapButton, homeButton, heartButton, profilePage;
     FirebaseAuth auth;
     Button button;

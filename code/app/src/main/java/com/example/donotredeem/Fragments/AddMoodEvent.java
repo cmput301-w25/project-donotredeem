@@ -42,6 +42,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodType;
@@ -456,6 +458,21 @@ public class AddMoodEvent extends Fragment {
 
                 getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
             }
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
+            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
+            for (Fragment fragment : fragments) {
+                if (fragment != null) {
+                    fragmentTransaction.remove(fragment); // Remove each fragment
+                }
+            }
+
+            fragmentTransaction.commit(); // Commit the transaction
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new moodhistory())
+                    .addToBackStack(null)
+                    .commit();
         });
 
 
@@ -475,6 +492,21 @@ public class AddMoodEvent extends Fragment {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
+                    List<Fragment> fragments = fragmentManager.getFragments();
+                    for (Fragment fragment : fragments) {
+                        if (fragment != null) {
+                            fragmentTransaction.remove(fragment); // Remove each fragment
+                        }
+                    }
+
+                    fragmentTransaction.commit(); // Commit the transaction
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, new moodhistory())
+                            .addToBackStack(null)
+                            .commit();
                     getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
                 }
 
