@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.donotredeem.LogIn;
+import com.example.donotredeem.MainActivity;
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.R;
@@ -68,6 +69,8 @@ public class ProfilePage extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile, container, false);
+
+        MainActivity.past_location = "moodhistory";
 
         recent_list = view.findViewById(R.id.recent_history);
         db = FirebaseFirestore.getInstance();

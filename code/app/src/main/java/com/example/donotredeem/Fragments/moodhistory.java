@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.donotredeem.LogIn;
+import com.example.donotredeem.MainActivity;
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.R;
@@ -42,6 +43,7 @@ import java.util.List;
  * It also provides functionality to filter mood events using the {@link FilterFragment}.
  */
 public class moodhistory extends Fragment implements FilterFragment.FilterMoodListener{
+
     private ListView listView;
     private MoodEventAdapter adapter;
     private FirebaseFirestore db;
@@ -73,6 +75,8 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mood_history, container, false);
+
+        MainActivity.past_location = "moodhistory";
 
         listView = view.findViewById(R.id.history_list);
         moodHistoryList = new ArrayList<MoodEvent>();
@@ -118,6 +122,8 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
                     .addToBackStack(null)
                     .commit();
         });
+
+
 
         ImageButton filter_btn = view.findViewById(R.id.filter_icon);
 
