@@ -31,7 +31,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -85,6 +84,7 @@ public class FilterMoodTest {
         }
 
         Thread.sleep(2000);
+
 
         String moodEventId1 = UUID.randomUUID().toString();
         MoodEvent moodEvent1 = new MoodEvent(moodEventId1, "Happy", "03/08/2025", "14:30",
