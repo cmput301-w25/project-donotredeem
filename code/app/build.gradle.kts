@@ -64,7 +64,6 @@ dependencies {
     implementation("net.bytebuddy:byte-buddy:1.17.1")
     androidTestImplementation("org.mockito:mockito-android:5.7.0")
 
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
