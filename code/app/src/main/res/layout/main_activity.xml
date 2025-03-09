@@ -70,6 +70,8 @@
         android:contentDescription="Open Profile Page"
         android:padding="10dp"
         android:scaleType="fitCenter"
+        android:clickable="true"
+        android:focusable="true"
         android:src="@drawable/user"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

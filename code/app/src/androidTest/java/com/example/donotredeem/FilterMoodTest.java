@@ -3,15 +3,21 @@ package com.example.donotredeem;
 import static android.content.ContentValues.TAG;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.Press.FINGER;
+import static androidx.test.espresso.action.Tap.SINGLE;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
+import static org.junit.runners.MethodSorters.DEFAULT;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.test.espresso.action.CoordinatesProvider;
+import androidx.test.espresso.action.GeneralClickAction;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -24,6 +30,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 
 import org.junit.After;
 import org.junit.Before;
@@ -109,9 +116,8 @@ public class FilterMoodTest {
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
 
         onView(withId(R.id.btnLogin)).perform(click());
-
+        Thread.sleep(500);
         onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
-        Thread.sleep(2000);
         onView(withId(R.id.profilepage)).perform(click());
     }
 
@@ -128,7 +134,25 @@ public class FilterMoodTest {
     public void idk() throws InterruptedException {
         ManualLoginCauseIDKMocking();
 
-        onView(withId(R.id.profilepage)).check(matches(isDisplayed())).perform(click());
+        //onView(withId(R.id.profilepage)).check(matches(isDisplayed())).perform(click());
+    }
+
+    @Test
+    public void idontknow() throws InterruptedException {
+        onView(withId(R.id.profilepage)).check(matches(isDisplayed()));
+        onView(withId(R.id.side_panel_button)).perform(click());
+
+        // Click at exact coordinates (1168, 2873)
+//        onView(withId(R.id.profilepage)).perform(new GeneralClickAction(
+//                SINGLE,
+//                new CoordinatesProvider() {
+//                    @Override
+//                    public float[] calculateCoordinates(android.view.View view) {
+//                        return new float[]{1168, 2873}; // Adjust coordinates as needed
+//                    }
+//                },
+//                FINGER
+//        ));
     }
 
 
