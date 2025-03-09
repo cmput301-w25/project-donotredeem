@@ -14,11 +14,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
 import com.example.donotredeem.R;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.auth.User;
+
+import java.util.List;
 
 /**
  * Fragment for editing the user's profile details such as username, email, phone number, and bio.
@@ -66,7 +71,8 @@ public class EditProfile extends Fragment {
             }
             @Override
             public void onUserProfileFetchError(Exception e) {
-                Toast.makeText(getContext(), "Failed to fetch profile", Toast.LENGTH_SHORT).show();
+                //oast.makeText(getContext(), "Failed to fetch profile", Toast.LENGTH_SHORT).show();
+                Snackbar.make(getView(), "Failed to fetch profile", Snackbar.LENGTH_SHORT).show();
             }
         });
 
@@ -74,7 +80,8 @@ public class EditProfile extends Fragment {
             @Override
             public void onClick(View v) {
                 if (editUsername.getText().toString().isEmpty() || editEmail.getText().toString().isEmpty()) {
-                    Toast.makeText(getContext(), "Please enter name and email", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Please enter name and email", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), "Please enter name and email", Snackbar.LENGTH_SHORT).show();
                 }
                 userProfile.setUsername(editUsername.getText().toString());
                 userProfile.setPassword(editPassword.getText().toString());
@@ -85,7 +92,30 @@ public class EditProfile extends Fragment {
         });
 
         cancel.setOnClickListener(v -> {
-            requireActivity().getSupportFragmentManager().popBackStack();
+//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//            fragmentManager.beginTransaction()
+//                    .replace(R.id.fragment_container, new ProfilePage())
+//                    .addToBackStack(null)
+//                    .commit();
+
+
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
+            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
+
+            // Get and remove each fragment
+            for (Fragment fragment : fragments) {
+                if (fragment != null) {
+                    fragmentTransaction.remove(fragment); // Remove each fragment
+                }
+            }
+
+            fragmentTransaction.commit(); // Commit the transaction
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, new ProfilePage())
+                    .addToBackStack(null)
+                    .commit();
         });
         return view;
     }

@@ -201,7 +201,8 @@ public class LogIn extends AppCompatActivity {
                 firebaseAuthWithGoogle(account.getIdToken());
             } catch (Exception e) {
                 Log.w(TAG, "Google Sign-In failed", e);
-                Toast.makeText(this, "Google Sign-In Failed", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Google Sign-In Failed", Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(android.R.id.content), "Google Sign-In Failed", Snackbar.LENGTH_SHORT).show();
             }
         }
     }
@@ -217,12 +218,16 @@ public class LogIn extends AppCompatActivity {
             if (task.isSuccessful()) {
                 Log.d(TAG, "signInWithCredential:success");
                 FirebaseUser user = mAuth.getCurrentUser();
-                Toast.makeText(LogIn.this, "Google Sign-In Successful", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(LogIn.this, "Google Sign-In Successful", Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(android.R.id.content), "Google Sign-In Successful", Snackbar.LENGTH_LONG).show();
+
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                 finish();
             } else {
                 Log.w(TAG, "signInWithCredential:failure", task.getException());
-                Toast.makeText(LogIn.this, "Google Authentication failed.", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(LogIn.this, "Google Authentication failed.", Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(android.R.id.content), "Google Authentication failed.", Snackbar.LENGTH_LONG).show();
+
             }
         });
     }

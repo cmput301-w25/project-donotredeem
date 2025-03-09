@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, new Map())
+                        .replace(R.id.fragment_container, new Map())
                         .addToBackStack(null) // Adds this transaction to the back stack
                         .commit();
             }
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, new MainPage())
+                        .replace(R.id.fragment_container, new MainPage())
                         .addToBackStack(null) // Adds this transaction to the back stack
                         .commit();
             }
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, new Requests())
+                        .replace(R.id.fragment_container, new Requests())
                         .addToBackStack(null) // Adds this transaction to the back stack
                         .commit();
             }
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 getSupportFragmentManager().beginTransaction()
-                        .add(R.id.fragment_container, new ProfilePage())
+                        .replace(R.id.fragment_container, new ProfilePage())
                         .addToBackStack(null) // Adds this transaction to the back stack
                         .commit();
 

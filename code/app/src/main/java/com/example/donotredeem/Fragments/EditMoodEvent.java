@@ -40,9 +40,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.donotredeem.MoodEvent;
+import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
 import com.example.donotredeem.SocialSituation;
@@ -79,7 +82,7 @@ import java.util.UUID;
  * This fragment interacts with Firebase Firestore to update the mood event in the database and Firebase Storage to upload images.
  */
 public class EditMoodEvent extends Fragment {
-
+    public int FromWhere;
     private ImageView image;
     private EditText description, locationEdit, dateEdit, timeEdit, triggerEdit;
     private Button submit;
@@ -382,6 +385,9 @@ public class EditMoodEvent extends Fragment {
 
 
         submit.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
+            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
             View fragmentRoot = view.findViewById(R.id.fragment_root);
             String descText = description.getText().toString();
             String triggerText = triggerEdit.getText().toString();
@@ -433,6 +439,19 @@ public class EditMoodEvent extends Fragment {
             } else {
                 getParentFragmentManager().beginTransaction().remove(EditMoodEvent.this).commit();
             }
+                for (Fragment fragment : fragments) {
+                    if (fragment != null) {
+                        fragmentTransaction.remove(fragment); // Remove each fragment
+                    }
+                }
+
+                fragmentTransaction.commit(); // Commit the transaction
+
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, new moodhistory())
+                        .addToBackStack(null)
+                        .commit();
+
         });
 
 
@@ -445,7 +464,30 @@ public class EditMoodEvent extends Fragment {
             slideOut.setAnimationListener(new Animation.AnimationListener() {
                 @Override public void onAnimationStart(Animation animation) { }
                 @Override public void onAnimationEnd(Animation animation) {
+
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
+                    List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
+
+
+                    // Get and remove each fragment
+                    for (Fragment fragment : fragments) {
+                        if (fragment != null) {
+                            fragmentTransaction.remove(fragment); // Remove each fragment
+                        }
+                    }
+
+                    fragmentTransaction.commit(); // Commit the transaction
+
+
                     getParentFragmentManager().beginTransaction().remove(EditMoodEvent.this).commit();
+
+
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, new moodhistory())
+                            .addToBackStack(null)
+                            .commit();
+
                 }
                 @Override public void onAnimationRepeat(Animation animation) { }
             });
@@ -495,7 +537,8 @@ public class EditMoodEvent extends Fragment {
             }
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
-            Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getView(), "Camera permission denied", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -510,7 +553,8 @@ public class EditMoodEvent extends Fragment {
             galleryLauncher.launch(galleryOpenIntent);
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, GALLERY_REQUEST);
-            Toast.makeText(requireContext(), "Gallery permission denied", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(requireContext(), "Gallery permission denied", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getView(), "Gallery permission denied", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -543,7 +587,8 @@ public class EditMoodEvent extends Fragment {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
-            Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
+            Snackbar.make(getView(), "Location permission denied", Snackbar.LENGTH_SHORT).show();
         }
     }
 
@@ -644,10 +689,12 @@ public class EditMoodEvent extends Fragment {
         MoodEvent updatedMoodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
         moodEventRef.set(updatedMoodEvent)
                 .addOnSuccessListener(aVoid -> {
-                    Toast.makeText(getContext(), "Mood Event Updated!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Mood Event Updated!", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(getView(), "Mood Event Updated!", Snackbar.LENGTH_SHORT).show();
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(getContext(), "Error updating data!", Toast.LENGTH_SHORT).show());
+                        //Toast.makeText(getContext(), "Error updating data!", Toast.LENGTH_SHORT).show());
+                        Snackbar.make(getView(), "Error updating data!", Snackbar.LENGTH_SHORT).show());
     }
 
     /**

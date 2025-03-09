@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
 import com.example.donotredeem.Fragments.EditMoodEvent;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -137,7 +138,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             // If picture description is available, show the image
             ThisPictureDescription.setVisibility(View.VISIBLE);
             // Set the image resource if available
-            ThisPictureDescription.setImageResource(R.drawable.sad); // Use actual image from the data if needed
         } else {
             // Hide the image if there's no picture description
             ThisPictureDescription.setVisibility(View.GONE);
@@ -184,7 +184,9 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                     // Delete the mood event from Firestore and update User's MoodRef array
                     deleteMoodEventFromFirestore(moodEvent);
 
-                    Toast.makeText(context, "Mood event deleted", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "Mood event deleted", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(MainView, "Mood event deleted", Snackbar.LENGTH_SHORT).show();
+
                 } else if ("edit".equalsIgnoreCase(action.getText().toString())) {
                     // Handle edit action if needed.
                     MoodEvent moodEvent = getItem(position);
@@ -280,7 +282,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         // Replace current fragment with EditMoodEvent
         activity.getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.profile_fragment_container, editFragment, "EditMoodEvent")
+                .replace(R.id.fragment_container, editFragment, "EditMoodEvent")
                 .addToBackStack(null)
                 .commit();
     }
