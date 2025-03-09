@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -163,7 +165,9 @@ public class Register extends AppCompatActivity {
      */
     private void registerUser() {
         if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
-            Toast.makeText(this, "Email, Password, and Username are required!", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Email, Password, and Username are required!", Toast.LENGTH_LONG).show();
+            Snackbar.make(findViewById(android.R.id.content), "Email, Password, and Username are required!", Snackbar.LENGTH_LONG).show();
+
             return;
         }
 
@@ -173,7 +177,9 @@ public class Register extends AppCompatActivity {
                 DocumentSnapshot document = task.getResult();
                 if (document.exists()) {
                     // Username already exists
-                    Toast.makeText(Register.this, "Username already taken!", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(Register.this, "Username already taken!", Toast.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Username already taken!", Snackbar.LENGTH_LONG).show();
+
                     currentPage = 2;
                     showPage(currentPage);
                 } else {
@@ -187,12 +193,16 @@ public class Register extends AppCompatActivity {
                                     }
                                 } else {
                                     Log.e("Register", "Registration failed: " + authTask.getException().getMessage());
-                                    Toast.makeText(Register.this, "Registration failed.", Toast.LENGTH_SHORT).show();
+                                    //Toast.makeText(Register.this, "Registration failed.", Toast.LENGTH_SHORT).show();
+                                    Snackbar.make(findViewById(android.R.id.content), "Registration failed.", Snackbar.LENGTH_LONG).show();
+
                                 }
                             });
                 }
             } else {
-                Toast.makeText(Register.this, "Error checking username uniqueness!", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Register.this, "Error checking username uniqueness!", Toast.LENGTH_SHORT).show();
+                Snackbar.make(findViewById(android.R.id.content), "Error checking username uniqueness!", Snackbar.LENGTH_LONG).show();
+
             }
         });
     }
@@ -231,13 +241,17 @@ public class Register extends AppCompatActivity {
                     editor.putString("username", username);
                     editor.apply();
 
-                    Toast.makeText(Register.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(Register.this, "Registration Successful!", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Registration Successful!", Snackbar.LENGTH_LONG).show();
+
                     startActivity(new Intent(Register.this, MainActivity.class));
                     finish();
                 })
                 .addOnFailureListener(e -> {
                     Log.e("Register", "Error writing document", e);
-                    Toast.makeText(Register.this, "Error saving user data!", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(Register.this, "Error saving user data!", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(findViewById(android.R.id.content), "Error saving user data!", Snackbar.LENGTH_LONG).show();
+
                 });
     }
 }

@@ -21,11 +21,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.example.donotredeem.Fragments.EditMoodEvent;
-import com.example.donotredeem.Fragments.ViewMood;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -185,7 +184,9 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                     // Delete the mood event from Firestore and update User's MoodRef array
                     deleteMoodEventFromFirestore(moodEvent);
 
-                    Toast.makeText(context, "Mood event deleted", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "Mood event deleted", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(MainView, "Mood event deleted", Snackbar.LENGTH_SHORT).show();
+
                 } else if ("edit".equalsIgnoreCase(action.getText().toString())) {
                     // Handle edit action if needed.
                     MoodEvent moodEvent = getItem(position);
@@ -195,32 +196,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                 swipeLayout.close();
             }
         });
-
-
-//
-
-        Details.setOnClickListener(v -> {
-            if (Current_Mood_Event != null) {
-                Bundle bundle = new Bundle();
-
-                bundle.putString("emotionalState", mood);
-                bundle.putString("date", Current_Mood_Event.getDate().toString());
-                bundle.putString("time", Current_Mood_Event.getTime().toString());
-                bundle.putString("place", Current_Mood_Event.getPlace());
-                bundle.putString("situation", situation);
-                bundle.putString("trigger", Current_Mood_Event.getTrigger());
-                bundle.putString("explainText", Current_Mood_Event.getExplainText());
-                bundle.putString("explainPicture", imageUri);
-
-                // Create the DialogFragment instance and set arguments
-                ViewMood viewMoodDialog = new ViewMood();
-                viewMoodDialog.setArguments(bundle);
-
-                // Show as a DialogFragment
-                viewMoodDialog.show(((AppCompatActivity) context).getSupportFragmentManager(), "ViewMoodDialog");
-            }
-        });
-
 
 
 
