@@ -4,6 +4,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -51,10 +52,6 @@ import java.util.Objects;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AddMoodEventTest {
 
-    @Mock
-    FirebaseAuth mockAuth;
-    @Mock
-    FirebaseUser mockUser;
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
@@ -174,50 +171,39 @@ public class AddMoodEventTest {
 
     }
 
-//    @Test
-//    public void TimeRequired() {
-//        onView(withId(R.id.add_button)).perform(click());
-//        onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
-//
-//        onView(withId(R.id.emoji_happy)).perform(click());
-//        onView(withId(R.id.desc)).perform(click());
-//        onView(withId(R.id.desc)).perform(ViewActions.typeText("I hate testing"));
-//
-//        onView(withId(R.id.button)).perform(scrollTo(), click());
-//        onView(withId(R.id.dateButton)).perform(click());
-//
-//
-//    }
+    @Test
+    public void TimeRequired() {
+        onView(withId(R.id.add_button)).perform(click());
+        onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
 
-//
-//        onView(withId(R.id.emoji_happy)).perform(scrollTo());
-//        onView(withId(R.id.emoji_happy)).check(matches(isDisplayed()));
-//        onView(withId(R.id.emoji_happy)).perform(click());
-//
-//        onView(withId(R.id.button)).perform(scrollTo(), click());
-//        onView(withText("Provide either a description or an image!"))
-//                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-//
-//        onView(withId(R.id.desc)).perform(scrollTo(),click());
-//        onView(withId(R.id.desc)).perform(ViewActions.typeText("Description is required."));
-//        onView(withId(R.id.button)).perform(scrollTo(), click());
-//
-//        onView(withText("Please select a date!"))
-//                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-//
-//        onView(withId(R.id.dateButton)).perform(scrollTo(),click());
-//        onView(withId(R.id.button)).perform(scrollTo(), click());
-//        onView(withText("Please select a time!"))
-//                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-//
-//        onView(withId(R.id.timeButton)).perform(scrollTo(),click());
-//        onView(withId(R.id.button)).perform(scrollTo(), click());
-//
-//        onView(withText("Mood Event Saved!"))
-//                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+        onView(withId(R.id.emoji_happy)).perform(click());
+        onView(withId(R.id.desc)).perform(click());
+        onView(withId(R.id.desc)).perform(ViewActions.typeText("I hate testing"));
+
+        onView(withId(R.id.button)).perform(scrollTo(), click());
+        onView(withId(R.id.dateButton)).perform(click());
+
+        onView(withId(R.id.button)).perform(scrollTo(), click());
+
+        onView(withText("Please select a time!"))
+                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
 
 
+    }
 
+    @Test
+    public void DescriptionConstraints() {
+        onView(withId(R.id.add_button)).perform(click());
+        onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.desc)).perform(click());
+        onView(withId(R.id.desc)).perform(ViewActions.typeText("This description is more than three words."));
+        onView(withId(R.id.desc)).check(matches(hasErrorText("Max 3 words or less than 20 characters")));
+
+        onView(withId(R.id.desc)).perform(ViewActions.replaceText("Thisdescriptionislonger than20characters"));
+        onView(withId(R.id.desc)).check(matches(hasErrorText("Max 3 words or less than 20 characters")));
+
+    }
 
     @After
     public void tearDown() {

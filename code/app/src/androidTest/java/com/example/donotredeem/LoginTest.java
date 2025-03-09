@@ -143,7 +143,7 @@ public class LoginTest {
         onView(withId(R.id.sign_up_username_text)).perform(ViewActions.typeText("User1"));
         onView(withId(R.id.sign_up_password_text)).perform(ViewActions.typeText("New password"));
 
-        onView(withText("Username name already taken!"))
+        onView(withText("Username already taken!"))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
 
 
