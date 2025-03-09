@@ -62,7 +62,7 @@ public class LoginTest {
         String androidLocalhost = "10.0.2.2";
         int portNumber = 8080;
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
-//        Espresso.registerIdlingResources(FirestoreIdlingResource.getIdlingResource());
+
     }
 
     @Before
@@ -86,17 +86,19 @@ public class LoginTest {
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
 
         onView(withId(R.id.btnLogin)).perform(click());
-        //onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
-        Thread.sleep(5000);
 
-//      onView(withText("Login successfully."))
-//                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-        onView(withText("Login successfully."))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
-//        Thread.sleep(2000);
-//        onView(withId(com.google.android.material.R.id.snackbar_text))
-//                .check(matches(withText("Login successfully.")))
-//                .check(matches(isDisplayed()));
+        onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
+//        //onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
+//        Thread.sleep(5000);
+//
+////      onView(withText("Login successfully."))
+////                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+//        onView(withText("Login successfully."))
+//                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()));
+////        Thread.sleep(2000);
+////        onView(withId(com.google.android.material.R.id.snackbar_text))
+////                .check(matches(withText("Login successfully.")))
+////                .check(matches(isDisplayed()));
     }
 
     @Test
@@ -107,7 +109,6 @@ public class LoginTest {
 
         onView(withId(R.id.btnLogin)).perform(click());
 
-//
         onView(withText("User not found."))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
 
@@ -121,33 +122,53 @@ public class LoginTest {
 
         onView(withId(R.id.btnLogin)).perform(click());
 
-        onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
+        onView(withText("Incorrect password."))
+                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
 
-//        onView(withText("Incorrect password."))
-//                .inRoot(new ToastMatcher())
-//                .check(matches(isDisplayed()));
 
     }
 
     @Test
     public void SignUpWithAUsernameAlreadyInUse() {
 
+        onView(withId(R.id.button4)).perform(click());
+        onView(withId(R.id.sign_up_id)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.sign_up_name_text)).perform(ViewActions.typeText("New name"));
+        onView(withId(R.id.sign_up_email_text)).perform(ViewActions.typeText("email@gmail.com"));
+        onView(withId(R.id.sign_up_phone_number_text)).perform(ViewActions.typeText("9876543210"));
+        onView(withId(R.id.sign_up_done)).perform(click());
+
+        onView(withId(R.id.sign_up_id_2)).check(matches(isDisplayed()));
+        onView(withId(R.id.sign_up_username_text)).perform(ViewActions.typeText("User1"));
+        onView(withId(R.id.sign_up_password_text)).perform(ViewActions.typeText("New password"));
+
+        onView(withText("Username name already taken!"))
+                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+
+
     }
 
     @Test
     public void SignUpWithAnEmailAlreadyInUse() {
 
+        onView(withId(R.id.button4)).perform(click());
+        onView(withId(R.id.sign_up_id)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.sign_up_name_text)).perform(ViewActions.typeText("New name"));
+        onView(withId(R.id.sign_up_email_text)).perform(ViewActions.typeText("user1@gmail.com"));
+        onView(withId(R.id.sign_up_phone_number_text)).perform(ViewActions.typeText("7317555555"));
+        onView(withId(R.id.sign_up_done)).perform(click());
+
+        onView(withId(R.id.sign_up_id_2)).check(matches(isDisplayed()));
+        onView(withId(R.id.sign_up_username_text)).perform(ViewActions.typeText("New user"));
+        onView(withId(R.id.sign_up_password_text)).perform(ViewActions.typeText("New password"));
+
+        onView(withText("Registration failed."))
+                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+
     }
 
-    @Test
-    public void WrongEmailFormatting() {
-
-    }
-
-    @Test
-    public void PasswordWithLessThan6CharsNotAllowed() {
-
-    }
 
     @After
     public void tearDown() {
@@ -173,8 +194,4 @@ public class LoginTest {
         }
     }
 
-
 }
-
-
-

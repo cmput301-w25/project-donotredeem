@@ -484,6 +484,7 @@ public class AddMoodEvent extends Fragment {
                 }
 
             });
+            Snackbar.make(getView(), "Mood event not saved!", Snackbar.LENGTH_LONG).show();
         });
 
 
@@ -672,7 +673,9 @@ public class AddMoodEvent extends Fragment {
             MoodEvent moodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
             moodEventRef.set(moodEvent)
                     .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(getContext(), "Mood Event Saved!", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getContext(), "Mood Event Saved!", Toast.LENGTH_SHORT).show();
+                        Snackbar.make(getView(), "Mood Event Saved!", Snackbar.LENGTH_LONG).show();
+
 
                         // Retrieve the logged-in username from SharedPreferences
                         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
