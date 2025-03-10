@@ -691,7 +691,7 @@ public class EditMoodEvent extends Fragment {
         DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
         MoodEvent updatedMoodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
 
-        final int totalTasks = 2;
+        final int totalTasks = 1;
         final int[] completedTasks = {0};
 
         moodEventRef.set(updatedMoodEvent)
@@ -703,28 +703,29 @@ public class EditMoodEvent extends Fragment {
                 .addOnFailureListener(e -> {
                     Log.e(TAG, "Error updating mood event", e);
                     showError("Error updating data!");
+                    return;
                 });
 
-        if (isAdded() && getActivity() != null) {
-            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-            String loggedInUsername = sharedPreferences.getString("username", null);
-
-            if (loggedInUsername != null) {
-                DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
-                userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
-                        .addOnSuccessListener(aVoid -> {
-                            Log.d(TAG, "User document updated with mood event reference");
-                            incrementAndCheck(completedTasks, totalTasks);
-                        })
-                        .addOnFailureListener(e -> {
-                            Log.e(TAG, "Failed to update user document", e);
-                            showError("Error updating user document!");
-                        });
-            } else {
-                Log.e(TAG, "Logged-in username not found in SharedPreferences");
-                showError("User not found!");
-            }
-        }
+//        if (isAdded() && getActivity() != null) {
+//            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+//            String loggedInUsername = sharedPreferences.getString("username", null);
+//
+//            if (loggedInUsername != null) {
+//                DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
+//                userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
+//                        .addOnSuccessListener(aVoid -> {
+//                            Log.d(TAG, "User document updated with mood event reference");
+//                            incrementAndCheck(completedTasks, totalTasks);
+//                        })
+//                        .addOnFailureListener(e -> {
+//                            Log.e(TAG, "Failed to update user document", e);
+//                            showError("Error updating user document!");
+//                        });
+//            } else {
+//                Log.e(TAG, "Logged-in username not found in SharedPreferences");
+//                showError("User not found!");
+//            }
+//        }
     }
 
     private void incrementAndCheck(int[] completedTasks, int totalTasks) {
