@@ -75,6 +75,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -105,6 +106,7 @@ public class AddMoodEvent extends Fragment {
     private FirebaseStorage storage;
     private StorageReference storageRef;
     private Uri imageUri;
+    private View fragmentRoot;
 
     public AddMoodEvent() {
         // Required empty public constructor
@@ -187,7 +189,7 @@ public class AddMoodEvent extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.add_mood, container, false);
-
+        View fragmentRoot = view.findViewById(R.id.fragment_root);
         EditText description = view.findViewById(R.id.desc);
         description.addTextChangedListener(new TextWatcher() {
             @Override
@@ -397,7 +399,7 @@ public class AddMoodEvent extends Fragment {
             emojiButton.setOnClickListener(v -> highlightSelectedEmoji((ImageButton) v));
         }
 
-        View fragmentRoot = view.findViewById(R.id.fragment_root);
+        //View fragmentRoot = view.findViewById(R.id.fragment_root);
 
         submit.setOnClickListener(v -> {
             String descText = description.getText().toString();
@@ -433,25 +435,25 @@ public class AddMoodEvent extends Fragment {
                 saveMoodToFirestore(descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial, timeText);
             }
 
-            if (fragmentRoot != null) {
-                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-                fragmentRoot.startAnimation(slideOut);
-
-                slideOut.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {}
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        requireActivity().getSupportFragmentManager().popBackStack(); //go back to whatever it was bruh
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {}
-                });
-            } else {
-                requireActivity().getSupportFragmentManager().popBackStack();
-            }
+//            if (fragmentRoot != null) {
+//                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+//                fragmentRoot.startAnimation(slideOut);
+//
+//                slideOut.setAnimationListener(new Animation.AnimationListener() {
+//                    @Override
+//                    public void onAnimationStart(Animation animation) {}
+//
+//                    @Override
+//                    public void onAnimationEnd(Animation animation) {
+//                        requireActivity().getSupportFragmentManager().popBackStack(); //go back to whatever it was bruh
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animation animation) {}
+//                });
+//            } else {
+//                //requireActivity().getSupportFragmentManager().popBackStack();
+//            }
         });
 
         ImageButton close = view.findViewById(R.id.closeButton);
@@ -663,6 +665,37 @@ public class AddMoodEvent extends Fragment {
          * @param social       Social situation associated with the event.
          * @param time         Time of the mood event.
          */
+//        private void saveMoodToFirestore(String desc, String trigger,
+//                                         String date, String locationText, String imageUrl,
+//                                         String mood, String social, String time) {
+//            // Generate a unique moodEventId
+//            String moodEventId = UUID.randomUUID().toString();
+//            DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
+//
+//            MoodEvent moodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
+//            moodEventRef.set(moodEvent)
+//                    .addOnSuccessListener(aVoid -> {
+//                        //Toast.makeText(getContext(), "Mood Event Saved!", Toast.LENGTH_SHORT).show();
+//                        //Snackbar.make(requireView(), "Mood Event Saved!", Snackbar.LENGTH_LONG).show();
+//
+//                        // Retrieve the logged-in username from SharedPreferences
+//                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+//                        String loggedInUsername = sharedPreferences.getString("username", null);
+//
+//                        if (loggedInUsername != null) {
+//                            DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
+//                            // Store the moodEventRef (DocumentReference) instead of a String
+//                            userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
+//                                    .addOnSuccessListener(aVoid1 -> Log.d(TAG, "User document updated with mood event reference"))
+//                                    .addOnFailureListener(e -> Log.e(TAG, "Failed to update user document", e));
+//                        } else {
+//                            Log.e(TAG, "Logged-in username not found in SharedPreferences");
+//                        }
+//                    })
+//                    .addOnFailureListener(e ->
+//                            //Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
+//                            Snackbar.make(getView(), "Error saving data!", Snackbar.LENGTH_SHORT).show());
+//        }
         private void saveMoodToFirestore(String desc, String trigger,
                                          String date, String locationText, String imageUrl,
                                          String mood, String social, String time) {
@@ -671,30 +704,95 @@ public class AddMoodEvent extends Fragment {
             DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
 
             MoodEvent moodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
+
+            // We'll wait for two tasks: saving the mood event and updating the user doc.
+            final int totalTasks = 2;
+            final int[] completedTasks = {0};
+
             moodEventRef.set(moodEvent)
                     .addOnSuccessListener(aVoid -> {
-                        //Toast.makeText(getContext(), "Mood Event Saved!", Toast.LENGTH_SHORT).show();
-                        Snackbar.make(getView(), "Mood Event Saved!", Snackbar.LENGTH_LONG).show();
-
-
-                        // Retrieve the logged-in username from SharedPreferences
-                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-                        String loggedInUsername = sharedPreferences.getString("username", null);
-
-                        if (loggedInUsername != null) {
-                            DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
-                            // Store the moodEventRef (DocumentReference) instead of a String
-                            userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
-                                    .addOnSuccessListener(aVoid1 -> Log.d(TAG, "User document updated with mood event reference"))
-                                    .addOnFailureListener(e -> Log.e(TAG, "Failed to update user document", e));
-                        } else {
-                            Log.e(TAG, "Logged-in username not found in SharedPreferences");
-                        }
+                        Log.d(TAG, "Mood event saved!");
+                        Snackbar.make(requireView(), "Mood Event Saved!", Snackbar.LENGTH_LONG).show();
+                        incrementAndCheck(completedTasks, totalTasks);
                     })
-                    .addOnFailureListener(e ->
-                            //Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
-                            Snackbar.make(getView(), "Error saving data!", Snackbar.LENGTH_SHORT).show());
+                    .addOnFailureListener(e -> {
+                        Log.e(TAG, "Error saving mood event", e);
+                        showError("Error saving data!");
+                    });
+
+            if (isAdded() && getActivity() != null) {
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+                String loggedInUsername = sharedPreferences.getString("username", null);
+
+
+                if (loggedInUsername != null) {
+                    DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
+                    userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(TAG, "User document updated with mood event reference");
+                                incrementAndCheck(completedTasks, totalTasks);
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(TAG, "Failed to update user document", e);
+                                showError("Error updating user document!");
+                            });
+                } else {
+                    Log.e(TAG, "Logged-in username not found in SharedPreferences");
+                    showError("User not found!");
+                }
+            }
         }
+
+    /**
+     * Increments the counter and checks if all tasks have finished.
+     */
+    private void incrementAndCheck(int[] completedTasks, int totalTasks) {
+        completedTasks[0]++;
+        if (completedTasks[0] == totalTasks) {
+            // All tasks complete – now run the exit animation and pop the fragment.
+            popFragment();
+        }
+    }
+
+    /**
+     * Runs an exit animation and then pops the fragment from the back stack.
+     */
+    private void popFragment() {
+        if (isAdded() && getActivity() != null) {
+            requireActivity().runOnUiThread(() -> {
+                if (fragmentRoot != null) {
+                    Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+                    fragmentRoot.startAnimation(slideOut);
+                    slideOut.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {}
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            if (isAdded() && getActivity() != null) {
+                                requireActivity().getSupportFragmentManager().popBackStack();
+                            }
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {}
+                    });
+                } else {
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                }
+            });
+        }
+    }
+
+    /**
+     * Helper method to show error messages.
+     */
+    private void showError(String message) {
+        if (isAdded() && getView() != null) {
+            Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
 
 
     /**
