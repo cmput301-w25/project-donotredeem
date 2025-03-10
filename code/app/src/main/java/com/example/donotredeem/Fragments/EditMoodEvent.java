@@ -112,6 +112,8 @@ public class EditMoodEvent extends Fragment {
     private StorageReference storageRef;
     private Uri imageUri;
 
+    private View fragmentRoot;
+
     // For emoji/social selection (IDs as in AddMoodEvent)
     int[] emojiButtonIds = {
             R.id.emoji_happy, R.id.emoji_sad, R.id.emoji_fear,
@@ -183,6 +185,7 @@ public class EditMoodEvent extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         // Inflate the layout (assumed to be similar to add_mood.xml)
         View view = inflater.inflate(R.layout.edit_mood, container, false);
+        View fragmentRoot = view.findViewById(R.id.fragment_root_edit);
 
         // Bind UI elements
         description = view.findViewById(R.id.desc);
@@ -386,7 +389,7 @@ public class EditMoodEvent extends Fragment {
 
         submit.setOnClickListener(v -> {
 
-            View fragmentRoot = view.findViewById(R.id.fragment_root_edit);
+            //View fragmentRoot = view.findViewById(R.id.fragment_root_edit);
             String descText = description.getText().toString();
             String triggerText = triggerEdit.getText().toString();
             String dateText = dateEdit.getText().toString();
@@ -420,31 +423,31 @@ public class EditMoodEvent extends Fragment {
                         selectedMoodName, selectedSocial, timeText);
             }
 
-            if (fragmentRoot != null) {
-                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-                fragmentRoot.startAnimation(slideOut);
-
-                slideOut.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {}
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        requireActivity().getSupportFragmentManager().popBackStack(); //go back to whatever it was bruh
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {}
-                });
-            } else {
-                requireActivity().getSupportFragmentManager().popBackStack();
-            }
+//            if (fragmentRoot != null) {
+//                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+//                fragmentRoot.startAnimation(slideOut);
+//
+//                slideOut.setAnimationListener(new Animation.AnimationListener() {
+//                    @Override
+//                    public void onAnimationStart(Animation animation) {}
+//
+//                    @Override
+//                    public void onAnimationEnd(Animation animation) {
+//                        requireActivity().getSupportFragmentManager().popBackStack(); //go back to whatever it was bruh
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animation animation) {}
+//                });
+//            } else {
+//                requireActivity().getSupportFragmentManager().popBackStack();
+//            }
 
         });
 
 
         closeButton.setOnClickListener(v -> {
-            View fragmentRoot = view.findViewById(R.id.fragment_root_edit);
+            //View fragmentRoot = view.findViewById(R.id.fragment_root_edit);
 
             if (fragmentRoot != null) {
                 Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
@@ -659,24 +662,111 @@ public class EditMoodEvent extends Fragment {
      * @param social The social situation of the event.
      * @param time The time of the event.
      */
+//    private void updateMoodEventInFirestore(String desc, String trigger,
+//                                            String date, String locationText, String imageUrl,
+//                                            String mood, String social, String time) {
+//        if (moodEventId == null) {
+//            Log.e(TAG, "MoodEventId is null, cannot update");
+//            return;
+//        }
+//        DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
+//        MoodEvent updatedMoodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
+//        moodEventRef.set(updatedMoodEvent)
+//                .addOnSuccessListener(aVoid -> {
+//                    //Toast.makeText(getContext(), "Mood Event Updated!", Toast.LENGTH_SHORT).show();
+//                    Snackbar.make(getView(), "Mood Event Updated!", Snackbar.LENGTH_SHORT).show();
+//                })
+//                .addOnFailureListener(e ->
+//                        //Toast.makeText(getContext(), "Error updating data!", Toast.LENGTH_SHORT).show());
+//                        Snackbar.make(getView(), "Error updating data!", Snackbar.LENGTH_SHORT).show());
+//    }
     private void updateMoodEventInFirestore(String desc, String trigger,
                                             String date, String locationText, String imageUrl,
                                             String mood, String social, String time) {
         if (moodEventId == null) {
             Log.e(TAG, "MoodEventId is null, cannot update");
+            showError("Mood Event ID is missing!");
             return;
         }
         DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
         MoodEvent updatedMoodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
+
+        final int totalTasks = 2;
+        final int[] completedTasks = {0};
+
         moodEventRef.set(updatedMoodEvent)
                 .addOnSuccessListener(aVoid -> {
-                    //Toast.makeText(getContext(), "Mood Event Updated!", Toast.LENGTH_SHORT).show();
-                    Snackbar.make(getView(), "Mood Event Updated!", Snackbar.LENGTH_SHORT).show();
+                    Log.d(TAG, "Mood event updated!");
+                    Snackbar.make(requireView(), "Mood Event Updated!", Snackbar.LENGTH_LONG).show();
+                    incrementAndCheck(completedTasks, totalTasks);
                 })
-                .addOnFailureListener(e ->
-                        //Toast.makeText(getContext(), "Error updating data!", Toast.LENGTH_SHORT).show());
-                        Snackbar.make(getView(), "Error updating data!", Snackbar.LENGTH_SHORT).show());
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error updating mood event", e);
+                    showError("Error updating data!");
+                });
+
+        if (isAdded() && getActivity() != null) {
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+            String loggedInUsername = sharedPreferences.getString("username", null);
+
+            if (loggedInUsername != null) {
+                DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
+                userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d(TAG, "User document updated with mood event reference");
+                            incrementAndCheck(completedTasks, totalTasks);
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e(TAG, "Failed to update user document", e);
+                            showError("Error updating user document!");
+                        });
+            } else {
+                Log.e(TAG, "Logged-in username not found in SharedPreferences");
+                showError("User not found!");
+            }
+        }
     }
+
+    private void incrementAndCheck(int[] completedTasks, int totalTasks) {
+        completedTasks[0]++;
+        if (completedTasks[0] == totalTasks) {
+            popFragment();
+        }
+    }
+
+    private void popFragment() {
+        if (isAdded() && getActivity() != null) {
+            requireActivity().runOnUiThread(() -> {
+                if (fragmentRoot != null) {
+                    Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+                    fragmentRoot.startAnimation(slideOut);
+                    slideOut.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {}
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            if (isAdded() && getActivity() != null) {
+                                requireActivity().getSupportFragmentManager().popBackStack();
+                            }
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {}
+                    });
+                } else {
+                    requireActivity().getSupportFragmentManager().popBackStack();
+                }
+            });
+        }
+    }
+
+    private void showError(String message) {
+        if (isAdded() && getView() != null) {
+            Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
 
     /**
      * Highlights the selected emoji button and updates the selected mood name.
