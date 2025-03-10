@@ -50,7 +50,7 @@ import java.util.UUID;
 
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class MoodHistoryTest {
+public class CheckMoodHistoryDisplay {
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
@@ -152,8 +152,9 @@ public class MoodHistoryTest {
 
     }
 
+
     @Test
-    public void checkMoodHistoryExists() throws InterruptedException {
+    public void checkMoodHistorydisplay() throws InterruptedException {
         onView(withId(R.id.profilepage)).perform(click());
 
         Thread.sleep(1000);
@@ -165,7 +166,14 @@ public class MoodHistoryTest {
         Thread.sleep(1000);
         onView(withId(R.id.nav_history)).perform(click());
         onView(withId(R.id.mood_id)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.Emotional_State), withText("Happy")))
+                .check(matches(isDisplayed()));
         Thread.sleep(2000);
     }
+
+
+
+
+
 
 }
