@@ -7,6 +7,7 @@ import static androidx.test.espresso.action.Press.FINGER;
 import static androidx.test.espresso.action.Tap.SINGLE;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
@@ -69,123 +70,85 @@ public class FilterMoodTest {
                 "settings put global animator_duration_scale 0");
     }
 
-//    @Before
-//    public void seedDatabase() throws InterruptedException {
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//        CollectionReference usersRef = db.collection("User");
-//
-//        Users[] user_data = {
-//                new Users("User1", "Password1", "user1@gmail.com", "This is my bio."),
-//                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio")
-//        };
-//
-//        for (Users user : user_data) {
-//            usersRef.document(user.getUsername()).set(user);
-//        }
-//
-//        Thread.sleep(2000);
-//
-//
-//        String moodEventId1 = UUID.randomUUID().toString();
-//        MoodEvent moodEvent1 = new MoodEvent(moodEventId1, "Happy", "03/08/2025", "14:30",
-//                "University Campus", "Alone", "Saw a cute dog", "Feeling great!", "SomethingUrl");
-//
-//        DocumentReference moodEventRef1 = db.collection("MoodEvents").document(moodEventId1);
-//        moodEventRef1.set(moodEvent1);
-//
-//        String moodEventId2 = UUID.randomUUID().toString();
-//        MoodEvent moodEvent2 = new MoodEvent(moodEventId2, "Angry", "03/08/2025", "15:00",
-//                "Library", "Alone", "Loud noise", "Annoyed by the noise!", "AnotherUrl");
-//
-//        DocumentReference moodEventRef2 = db.collection("MoodEvents").document(moodEventId2);
-//        moodEventRef2.set(moodEvent2);
-//
-//        String loggedInUsername = "User1";
-//        DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
-//        userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventId1, moodEventId2))
-//
-//                .addOnSuccessListener(aVoid -> Log.d(TAG, "User document updated with mood events"))
-//                .addOnFailureListener(e -> Log.e(TAG, "Failed to update user document", e));
-//
-//        Thread.sleep(2000);
-//    }
-@Before
-public void seedDatabase() throws InterruptedException {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference usersRef = db.collection("User");
+    @Before
+    public void seedDatabase() throws InterruptedException {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference usersRef = db.collection("User");
 
-    Users[] user_data = {
-            new Users("User1", "Password1", "user1@gmail.com", "This is my bio."),
-            new Users("User2", "Password2", "user2@gmail.com", "This is not my bio")
-    };
+        Users[] user_data = {
+                new Users("User1", "Password1", "user1@gmail.com", "This is my bio."),
+                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio")
+        };
 
-    // Add users to Firestore
-    for (Users user : user_data) {
-        usersRef.document(user.getUsername()).set(user);
+        // Add users to Firestore
+        for (Users user : user_data) {
+            usersRef.document(user.getUsername()).set(user);
+        }
+
+        Thread.sleep(2000); // Ensure Firestore has time to process requests
+
+        // Create mood events
+        String moodEventId1 = UUID.randomUUID().toString();
+        MoodEvent moodEvent1 = new MoodEvent(moodEventId1, "Happy", "03/08/2025", "14:30",
+                "University Campus", "Alone", "Saw a cute dog", "Feeling great!", "SomethingUrl");
+
+        DocumentReference moodEventRef1 = db.collection("MoodEvents").document(moodEventId1);
+        moodEventRef1.set(moodEvent1);
+
+        String moodEventId2 = UUID.randomUUID().toString();
+        MoodEvent moodEvent2 = new MoodEvent(moodEventId2, "Angry", "03/08/2025", "15:00",
+                "Library", "Alone", "Loud noise", "Annoyed by the noise!", "AnotherUrl");
+
+        DocumentReference moodEventRef2 = db.collection("MoodEvents").document(moodEventId2);
+        moodEventRef2.set(moodEvent2);
+
+        String loggedInUsername = "User1";
+        DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
+        userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef1, moodEventRef2))
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "User document updated with mood events"))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to update user document", e));
+
+        Thread.sleep(2000); // Wait for Firestore updates to complete
+
+        ManualLoginCauseIDKMocking();
     }
 
-    Thread.sleep(2000); // Ensure Firestore has time to process requests
 
-    // Create mood events
-    String moodEventId1 = UUID.randomUUID().toString();
-    MoodEvent moodEvent1 = new MoodEvent(moodEventId1, "Happy", "03/08/2025", "14:30",
-            "University Campus", "Alone", "Saw a cute dog", "Feeling great!", "SomethingUrl");
-
-    DocumentReference moodEventRef1 = db.collection("MoodEvents").document(moodEventId1);
-    moodEventRef1.set(moodEvent1);
-
-    String moodEventId2 = UUID.randomUUID().toString();
-    MoodEvent moodEvent2 = new MoodEvent(moodEventId2, "Angry", "03/08/2025", "15:00",
-            "Library", "Alone", "Loud noise", "Annoyed by the noise!", "AnotherUrl");
-
-    DocumentReference moodEventRef2 = db.collection("MoodEvents").document(moodEventId2);
-    moodEventRef2.set(moodEvent2);
-
-    String loggedInUsername = "User1";
-    DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
-    userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef1, moodEventRef2))
-            .addOnSuccessListener(aVoid -> Log.d(TAG, "User document updated with mood events"))
-            .addOnFailureListener(e -> Log.e(TAG, "Failed to update user document", e));
-
-    Thread.sleep(2000); // Wait for Firestore updates to complete
-
-    ManualLoginCauseIDKMocking();
-}
-
-    @Test
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
 
         onView(withId(R.id.btnLogin)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(5000);
         onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
-        onView(withId(R.id.profilepage)).perform(click());
-        Thread.sleep(2000);
+        Thread.sleep(5000);
 
-    }
-
-//    @Test
-//    public void idk() throws InterruptedException {
-//         ManualLoginCauseIDKMocking();
-////        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
-////        Log.d(TAG, "What2");
-////        onView(withId(R.id.side_panel_button)).perform(click());
-////        Log.d(TAG, "What3");
-////        onView(withId(R.id.nav_history)).perform(click());
-//    }
-    @Test
-    public void idk() throws InterruptedException {
-        //ManualLoginCauseIDKMocking();
-
-        onView(withId(R.id.profilepage)).check(matches(isDisplayed())).perform(click());
     }
 
     @Test
     public void idontknow() throws InterruptedException {
-        onView(withId(R.id.profilepage)).check(matches(isDisplayed()));
+
+
+//        onView(withId(R.id.profilepage)).check(matches(isCompletelyDisplayed())); // Verifies full visibility
+//        Thread.sleep(1000);
+        onView(withId(R.id.profilepage)).perform(click());
+
+        Thread.sleep(1000);
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+
         onView(withId(R.id.side_panel_button)).perform(click());
-        Thread.sleep(500);
+
+        // Click at exact coordinates (1168, 2873)
+//        onView(withId(R.id.profilepage)).perform(new GeneralClickAction(
+//                SINGLE,
+//                new CoordinatesProvider() {
+//                    @Override
+//                    public float[] calculateCoordinates(android.view.View view) {
+//                        return new float[]{1168, 2873}; // Adjust coordinates as needed
+//                    }
+//                },
+//                FINGER
+//        ));
     }
 
 
