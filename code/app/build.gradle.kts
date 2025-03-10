@@ -41,9 +41,12 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))
     implementation("com.google.firebase:firebase-auth:23.2.0")
     implementation("com.google.firebase:firebase-firestore")
-    implementation ("com.google.firebase:firebase-firestore:25.1.2")
+    //implementation ("com.google.firebase:firebase-firestore:24.9.1")
     implementation ("com.google.firebase:firebase-storage:21.0.1")
     implementation ("com.google.android.gms:play-services-auth:20.5.0")
+    //implementation(libs.protobuf.javalite)
+    implementation("com.google.protobuf:protobuf-javalite:3.25.1")
+
 
     //image
     implementation ("com.github.bumptech.glide:glide:4.12.0")
@@ -59,6 +62,10 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.5.2")
 
     androidTestImplementation("androidx.fragment:fragment-testing:1.3.6")
+    androidTestImplementation(libs.espresso.contrib){
+        exclude(group = "com.google.protobuf", module = "protobuf-lite")
+    }
+    androidTestImplementation(libs.google.protobuf.javalite.v32112)
 
     testImplementation("org.mockito:mockito-core:5.7.0")
     testImplementation("org.mockito:mockito-inline:5.2.0")

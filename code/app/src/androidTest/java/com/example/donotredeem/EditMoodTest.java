@@ -2,25 +2,37 @@ package com.example.donotredeem;
 
 import static android.content.ContentValues.TAG;
 
+import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.Press.FINGER;
 import static androidx.test.espresso.action.Tap.SINGLE;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.hamcrest.CoreMatchers.anything;
+import static org.hamcrest.Matchers.allOf;
 import static org.junit.runners.MethodSorters.DEFAULT;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
+import android.widget.ListView;
 
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.IdlingRegistry;
 import androidx.test.espresso.action.CoordinatesProvider;
 import androidx.test.espresso.action.GeneralClickAction;
 import androidx.test.espresso.action.ViewActions;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
@@ -81,14 +93,12 @@ public class EditMoodTest {
                 new Users("User2", "Password2", "user2@gmail.com", "This is not my bio")
         };
 
-        // Add users to Firestore
         for (Users user : user_data) {
             usersRef.document(user.getUsername()).set(user);
         }
 
         Thread.sleep(2000);
 
-        // Create mood events
         String moodEventId1 = UUID.randomUUID().toString();
         MoodEvent moodEvent1 = new MoodEvent(moodEventId1, "Happy", "03/08/2025", "14:30",
                 "University Campus", "Alone", "Saw a cute dog", "Feeling great!", "SomethingUrl");
@@ -96,27 +106,20 @@ public class EditMoodTest {
         DocumentReference moodEventRef1 = db.collection("MoodEvents").document(moodEventId1);
         moodEventRef1.set(moodEvent1);
 
-        String moodEventId2 = UUID.randomUUID().toString();
-        MoodEvent moodEvent2 = new MoodEvent(moodEventId2, "Angry", "03/08/2025", "15:00",
-                "Library", "Alone", "Loud noise", "Annoyed by the noise!", "AnotherUrl");
-
-        DocumentReference moodEventRef2 = db.collection("MoodEvents").document(moodEventId2);
-        moodEventRef2.set(moodEvent2);
-
-        String loggedInUsername = "User1";
+        String loggedInUsername = user_data[0].getUsername();
         DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
-        userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef1, moodEventRef2))
+        userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef1))
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "User document updated with mood events"))
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update user document", e));
 
-        Thread.sleep(2000); // Wait for Firestore updates to complete
+        Thread.sleep(2000);
 
         ManualLoginCauseIDKMocking();
     }
 
-
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
+        Thread.sleep(5000);
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
 
         onView(withId(R.id.btnLogin)).perform(click());
@@ -129,7 +132,6 @@ public class EditMoodTest {
     @Test
     public void EditingAMood() throws InterruptedException {
 
-
         onView(withId(R.id.profilepage)).perform(click());
 
         Thread.sleep(1000);
@@ -141,9 +143,31 @@ public class EditMoodTest {
         onView(withId(R.id.nav_history)).perform(click());
         Thread.sleep(1000);
         onView(withId(R.id.mood_id)).check(matches(isDisplayed()));
+        onData(anything())
+                .inAdapterView(allOf(withId(R.id.history_list), isAssignableFrom(ListView.class)))
+                .atPosition(0)
+                .perform(swipeLeft());
+
+        onView(withId(R.id.edit_button_moodhistory)).perform(click());
+        onView(withId(R.id.edit_id)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+
+        onView(withId(R.id.desc)).perform(click());
+        onView(withId(R.id.desc)).perform(ViewActions.clearText());
+        onView(withId(R.id.desc)).perform(ViewActions.typeText("This is editing"));
+        onView(withId(R.id.desc)).perform(ViewActions.closeSoftKeyboard());
+        Thread.sleep(2000);
+        onView(withId(R.id.dateButton)).perform(click());
+        Thread.sleep(2000);
+        onView(withId(R.id.timeButton)).perform(click());
+
+        Thread.sleep(2000);
+        onView(withId(R.id.button)).perform(scrollTo(),click());
+        Thread.sleep(5000);
+        //onView(withId(R.id.mood_id)).check(matches(isDisplayed()));
 //
-//        onView(withId(R.id.recyclerViewMoodHistory))
-//                .perform(RecyclerViewActions.actionOnItemAtPosition(0, swipeLeft())); // Swipes the first card
+//        onView(allOf(withId(R.id.Additional_details), withText("This is editing"))).check(matches(isDisplayed()));
+
 
     }
 

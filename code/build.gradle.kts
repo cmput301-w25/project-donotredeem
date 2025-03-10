@@ -13,3 +13,8 @@ buildscript {
         classpath ("com.google.gms:google-services:4.4.2")
     }
 }
+configurations.all {
+    resolutionStrategy {
+        force ("com.google.protobuf:protobuf-javalite:3.25.1")
+    }
+}

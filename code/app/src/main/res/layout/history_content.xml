@@ -217,6 +217,8 @@
 
             </androidx.cardview.widget.CardView>
         </FrameLayout>
+
+
     </github.com.st235.swipetoactionlayout.SwipeToActionLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

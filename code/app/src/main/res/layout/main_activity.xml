@@ -7,6 +7,14 @@
     android:id="@+id/main_activity"
     android:background="#222121">
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewMoodHistory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/history_content"/>
+
+
 
     <ImageButton
         android:id="@+id/grid_button"
