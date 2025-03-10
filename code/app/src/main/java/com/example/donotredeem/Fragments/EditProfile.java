@@ -92,30 +92,8 @@ public class EditProfile extends Fragment {
         });
 
         cancel.setOnClickListener(v -> {
-//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//            fragmentManager.beginTransaction()
-//                    .replace(R.id.fragment_container, new ProfilePage())
-//                    .addToBackStack(null)
-//                    .commit();
-
-
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
-            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
-
-            // Get and remove each fragment
-            for (Fragment fragment : fragments) {
-                if (fragment != null) {
-                    fragmentTransaction.remove(fragment); // Remove each fragment
-                }
-            }
-
-            fragmentTransaction.commit(); // Commit the transaction
-
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new ProfilePage())
-                    .addToBackStack(null)
-                    .commit();
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.popBackStack();
         });
         return view;
     }

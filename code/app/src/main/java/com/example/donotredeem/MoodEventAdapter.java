@@ -305,7 +305,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
         editFragment.setArguments(args);
 
-        // Replace current fragment with EditMoodEvent
         activity.getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, editFragment, "EditMoodEvent")

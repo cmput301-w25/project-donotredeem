@@ -100,82 +100,49 @@ public class ProfilePage extends Fragment {
 
         view.findViewById(R.id.side_panel_button).setOnClickListener(v -> {
             // Open the drawer (side panel)
-            drawerLayout.openDrawer(sidePanel);
+            drawerLayout.openDrawer(sidePanel); //side panel box
         });
 
         sidePanel.findViewById(R.id.panel_close).setOnClickListener(v -> {
-            drawerLayout.closeDrawer(sidePanel);
+            drawerLayout.closeDrawer(sidePanel); //side panel closing
         });
 
 
-        //testing heer
-
         sidePanel.findViewById(R.id.nav_history).setOnClickListener(v -> {
-            drawerLayout.closeDrawer(sidePanel);
+            drawerLayout.closeDrawer(sidePanel); //history in panel
 
-//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//            Fragment existingFragment = fragmentManager.findFragmentByTag("moodhistory");
-//
-//            if (existingFragment == null) { // Only add if not already in stack
-//                moodhistory historyFragment = new moodhistory();
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container, historyFragment, "moodhistory")
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
-            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
 
-            // Get and remove each fragment
-            for (Fragment fragment : fragments) {
-                if (fragment != null) {
-                    fragmentTransaction.remove(fragment); // Remove each fragment
-                }
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment existingFragment = fragmentManager.findFragmentByTag("moodhistory");
+
+
+            if (existingFragment == null) {
+                moodhistory historyFragment = new moodhistory();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, historyFragment, "moodhistory")
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                fragmentManager.popBackStack("moodhistory", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
-
-            fragmentTransaction.commit(); // Commit the transaction
-
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new moodhistory())
-                    .addToBackStack(null)
-                    .commit();
         });
 
         sidePanel.findViewById(R.id.nav_profile).setOnClickListener(v -> {
-            drawerLayout.closeDrawer(sidePanel);
+            drawerLayout.closeDrawer(sidePanel); //edit profile in panel
 
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
-            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            Fragment existingFragment = fragmentManager.findFragmentByTag("EditProfile");
 
-            // Get and remove each fragment
-            for (Fragment fragment : fragments) {
-                if (fragment != null) {
-                    fragmentTransaction.remove(fragment); // Remove each fragment
-                }
+            if (existingFragment == null) {
+                EditProfile profileFragment = new EditProfile();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, profileFragment, "EditProfile")
+                        .addToBackStack(null)
+                        .commit();
+            } else {
+                fragmentManager.popBackStack("EditProfile", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
-
-            fragmentTransaction.commit(); // Commit the transaction
-
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new EditProfile())
-                    .addToBackStack(null)
-                    .commit();
-
-//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//            Fragment existingFragment = fragmentManager.findFragmentByTag("EditProfile");
-//
-//            if (existingFragment == null) { // Only add if not already in stack
-//                EditProfile profileFragment = new EditProfile();
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container, profileFragment, "EditProfile")
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
         });
-
-
 
         return view;
     }

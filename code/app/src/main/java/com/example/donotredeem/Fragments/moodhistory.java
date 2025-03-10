@@ -102,25 +102,10 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
         }
 
         view.findViewById(R.id.cancel_history).setOnClickListener(v -> {
-//            requireActivity().getSupportFragmentManager().popBackStack();
 
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
-            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.popBackStack();
 
-        // Get and remove each fragment
-            for (Fragment fragment : fragments) {
-                if (fragment != null) {
-                    fragmentTransaction.remove(fragment); // Remove each fragment
-                }
-            }
-
-            fragmentTransaction.commit(); // Commit the transaction
-
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new ProfilePage())
-                    .addToBackStack(null)
-                    .commit();
         });
 
 

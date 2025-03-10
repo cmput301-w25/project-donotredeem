@@ -385,10 +385,8 @@ public class EditMoodEvent extends Fragment {
 
 
         submit.setOnClickListener(v -> {
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
-            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
-            View fragmentRoot = view.findViewById(R.id.fragment_root);
+
+            View fragmentRoot = view.findViewById(R.id.fragment_root_edit);
             String descText = description.getText().toString();
             String triggerText = triggerEdit.getText().toString();
             String dateText = dateEdit.getText().toString();
@@ -421,6 +419,33 @@ public class EditMoodEvent extends Fragment {
                 updateMoodEventInFirestore(descText, triggerText, dateText, locationText, firebaseImageUrl,
                         selectedMoodName, selectedSocial, timeText);
             }
+
+            if (fragmentRoot != null) {
+                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+                fragmentRoot.startAnimation(slideOut);
+
+                slideOut.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {}
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        requireActivity().getSupportFragmentManager().popBackStack(); //go back to whatever it was bruh
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {}
+                });
+            } else {
+                requireActivity().getSupportFragmentManager().popBackStack();
+            }
+
+        });
+
+
+        closeButton.setOnClickListener(v -> {
+            View fragmentRoot = view.findViewById(R.id.fragment_root_edit);
+
             if (fragmentRoot != null) {
                 Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
                 fragmentRoot.startAnimation(slideOut);
@@ -429,69 +454,25 @@ public class EditMoodEvent extends Fragment {
                     @Override
                     public void onAnimationStart(Animation animation) {
                     }
+
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        getParentFragmentManager().beginTransaction().remove(EditMoodEvent.this).commit();
+                        getParentFragmentManager().popBackStack(); //go to previous fragment
                     }
+
                     @Override
-                    public void onAnimationRepeat(Animation animation) {}
-                });
-            } else {
-                getParentFragmentManager().beginTransaction().remove(EditMoodEvent.this).commit();
-            }
-                for (Fragment fragment : fragments) {
-                    if (fragment != null) {
-                        fragmentTransaction.remove(fragment); // Remove each fragment
-                    }
-                }
+                    public void onAnimationRepeat(Animation animation) {
 
-                fragmentTransaction.commit(); // Commit the transaction
-
-                fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new moodhistory())
-                        .addToBackStack(null)
-                        .commit();
-
-        });
-
-
-
-        // Close button to dismiss the fragment
-        closeButton.setOnClickListener(v -> {
-            View fragmentRoot = view.findViewById(R.id.fragment_root);
-            Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-            fragmentRoot.startAnimation(slideOut);
-            slideOut.setAnimationListener(new Animation.AnimationListener() {
-                @Override public void onAnimationStart(Animation animation) { }
-                @Override public void onAnimationEnd(Animation animation) {
-
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
-                    List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
-
-
-                    // Get and remove each fragment
-                    for (Fragment fragment : fragments) {
-                        if (fragment != null) {
-                            fragmentTransaction.remove(fragment); // Remove each fragment
                         }
-                    }
+                    });
 
-                    fragmentTransaction.commit(); // Commit the transaction
-
-
-                    getParentFragmentManager().beginTransaction().remove(EditMoodEvent.this).commit();
-
-
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, new moodhistory())
-                            .addToBackStack(null)
-                            .commit();
-
+                } else {
+                    getParentFragmentManager().popBackStack();
                 }
-                @Override public void onAnimationRepeat(Animation animation) { }
+
+                Snackbar.make(getView(), "Mood event not saved!", Snackbar.LENGTH_LONG).show();
             });
-        });
+
 
         return view;
     }

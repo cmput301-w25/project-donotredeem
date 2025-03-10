@@ -47,7 +47,8 @@ dependencies {
 
     //image
     implementation ("com.github.bumptech.glide:glide:4.12.0")
-    implementation(libs.espresso.core) // or the latest version
+    implementation(libs.espresso.core)
+    testImplementation(libs.ext.junit) // or the latest version
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 
 

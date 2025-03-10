@@ -78,18 +78,19 @@ public class AddMoodEventTest {
         Thread.sleep(2000);
     }
 
-    public void ManualLoginCauseIDKMocking() {
+    public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
 
         onView(withId(R.id.btnLogin)).perform(click());
+        Thread.sleep(2000);
 
         onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
         onView(withId(R.id.add_button)).perform(click());
     }
 
     @Test
-    public void CorrectSubmissionOfAddMoodEvent() {
+    public void CorrectSubmissionOfAddMoodEvent() throws InterruptedException {
         ManualLoginCauseIDKMocking();
         onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
 

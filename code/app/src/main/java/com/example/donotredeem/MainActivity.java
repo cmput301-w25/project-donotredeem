@@ -86,18 +86,18 @@ public class MainActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment existingFragment = fragmentManager.findFragmentByTag("AddMoodEvent");
 
-                if (existingFragment == null) {
-                    AddMoodEvent addMoodEvent = new AddMoodEvent();
+                if (existingFragment == null) { //this is checking if add mood event already exists or not
+                    AddMoodEvent addMoodEvent = new AddMoodEvent(); //else we add
                     fragmentManager.beginTransaction()
                             .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
                             .add(R.id.fragment_container, addMoodEvent, "AddMoodEvent")
-                            .addToBackStack("AddMoodEvent")
+                            .addToBackStack("AddMoodEvent") //its in backstack, so pressing back = removal
                             .commit();
                 } else {
-                    View fragmentView = existingFragment.getView();
-                    if (fragmentView != null) {
+                    View fragmentView = existingFragment.getView(); //add is there and dumb user click plus button again
+                    if (fragmentView != null) { //we can see add mood ie is viewable
                         Animation slideOut = AnimationUtils.loadAnimation(view.getContext(), R.anim.slide_out_bottom);
-                        fragmentView.startAnimation(slideOut);
+                        fragmentView.startAnimation(slideOut); //so removal
 
                         slideOut.setAnimationListener(new Animation.AnimationListener() {
                             @Override
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void onAnimationEnd(Animation animation) {
-                                fragmentManager.popBackStack("AddMoodEvent", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                fragmentManager.popBackStack("AddMoodEvent", FragmentManager.POP_BACK_STACK_INCLUSIVE); //real
                             }
 
                             @Override
@@ -116,20 +116,20 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        fragmentManager.popBackStack("AddMoodEvent", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        fragmentManager.popBackStack("AddMoodEvent", FragmentManager.POP_BACK_STACK_INCLUSIVE); //ok interesting if i am on other view, this thing will happen in back lmao wth
                     }
                 }
             }
         });
 
 
-
         mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                removeAddMoodEventIfExists();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new Map())
-                        .addToBackStack(null) // Adds this transaction to the back stack
+                        .addToBackStack(null)
                         .commit();
             }
         });
@@ -137,9 +137,10 @@ public class MainActivity extends AppCompatActivity {
         homeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                removeAddMoodEventIfExists();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new MainPage())
-                        .addToBackStack(null) // Adds this transaction to the back stack
+                        .addToBackStack(null)
                         .commit();
             }
         });
@@ -147,9 +148,10 @@ public class MainActivity extends AppCompatActivity {
         heartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                removeAddMoodEventIfExists();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new Requests())
-                        .addToBackStack(null) // Adds this transaction to the back stack
+                        .addToBackStack(null)
                         .commit();
             }
         });
@@ -157,14 +159,46 @@ public class MainActivity extends AppCompatActivity {
         profilePage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                removeAddMoodEventIfExists();
+                removeHistoryIfExists();
+                removeProfileIfExists();
+
+                getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new ProfilePage())
-                        .addToBackStack(null) // Adds this transaction to the back stack
+                        .addToBackStack(null)
                         .commit();
-
             }
         });
 
+    }
+
+    private void removeAddMoodEventIfExists() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment addMoodEvent = fragmentManager.findFragmentByTag("AddMoodEvent");
+
+        if (addMoodEvent != null) {
+            fragmentManager.popBackStack("AddMoodEvent", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
+    private void removeHistoryIfExists() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment moodHistory = fragmentManager.findFragmentByTag("moodhistory");
+
+        if (moodHistory != null) {
+            fragmentManager.popBackStack("moodhistory", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
+    private void removeProfileIfExists() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment editProfile = fragmentManager.findFragmentByTag("EditProfile");
+
+        if (editProfile != null) {
+            fragmentManager.popBackStack("EditProfile", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 
 }

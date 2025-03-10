@@ -144,7 +144,6 @@ public class AddMoodEvent extends Fragment {
             }
         });
 
-        // change bitmap to uri after database is added
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
                 imageUri = result.getData().getData();
@@ -399,13 +398,13 @@ public class AddMoodEvent extends Fragment {
         }
 
         View fragmentRoot = view.findViewById(R.id.fragment_root);
+
         submit.setOnClickListener(v -> {
             String descText = description.getText().toString();
             String triggerText = addTrigger.getText().toString();
             String dateText = date.getText().toString();
             String locationText = location.getText().toString();
             String timeText = time.getText().toString();
-
 
             if (selectedMoodName == null || selectedMoodName.isEmpty()) {
                 Snackbar.make(getView(), "Please select a mood!", Snackbar.LENGTH_SHORT).show();
@@ -426,10 +425,10 @@ public class AddMoodEvent extends Fragment {
                 return;
             }
 
-            if (imageUri != null) { //gallery or camera
+            if (imageUri != null) {
                 Log.d("AddMoodEvent", "Uploading image: " + imageUri.toString());
                 uploadImageAndSaveMood(descText, triggerText, dateText, locationText, imageUri, selectedMoodName, selectedSocial, timeText);
-            } else { //no pic by user
+            } else {
                 Log.e("AddMoodEvent", "Image URI is null, cannot upload!");
                 saveMoodToFirestore(descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial, timeText);
             }
@@ -440,85 +439,48 @@ public class AddMoodEvent extends Fragment {
 
                 slideOut.setAnimationListener(new Animation.AnimationListener() {
                     @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
+                    public void onAnimationStart(Animation animation) {}
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
+                        requireActivity().getSupportFragmentManager().popBackStack(); //go back to whatever it was bruh
                     }
 
                     @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
+                    public void onAnimationRepeat(Animation animation) {}
                 });
             } else {
-
-                getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
+                requireActivity().getSupportFragmentManager().popBackStack();
             }
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager(); // Get the FragmentManager
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
-            List<Fragment> fragments = fragmentManager.getFragments(); // Get the current fragments
-            for (Fragment fragment : fragments) {
-                if (fragment != null) {
-                    fragmentTransaction.remove(fragment); // Remove each fragment
-                }
-            }
-
-            fragmentTransaction.commit(); // Commit the transaction
-
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, new moodhistory())
-                    .addToBackStack(null)
-                    .commit();
         });
-
 
         ImageButton close = view.findViewById(R.id.closeButton);
 
         close.setOnClickListener(v -> {
+            if (fragmentRoot != null) {
+                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+                fragmentRoot.startAnimation(slideOut);
 
-            Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-            fragmentRoot.startAnimation(slideOut);
-
-            slideOut.setAnimationListener(new Animation.AnimationListener() {
-
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction(); // Begin transaction on fragmentManager
-                    List<Fragment> fragments = fragmentManager.getFragments();
-                    for (Fragment fragment : fragments) {
-                        if (fragment != null) {
-                            fragmentTransaction.remove(fragment); // Remove each fragment
-                        }
+                slideOut.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
                     }
 
-                    fragmentTransaction.commit(); // Commit the transaction
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        getParentFragmentManager().popBackStack(); //go to previous fragment
+                    }
 
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.fragment_container, new moodhistory())
-                            .addToBackStack(null)
-                            .commit();
-                    getParentFragmentManager().beginTransaction().remove(AddMoodEvent.this).commit();
-                }
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+                });
+            } else {
+                getParentFragmentManager().popBackStack();
+            }
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-
-            });
             Snackbar.make(getView(), "Mood event not saved!", Snackbar.LENGTH_LONG).show();
         });
-
 
         return view;
     }
