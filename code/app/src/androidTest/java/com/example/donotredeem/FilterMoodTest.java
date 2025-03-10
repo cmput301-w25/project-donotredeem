@@ -6,11 +6,15 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.Press.FINGER;
 import static androidx.test.espresso.action.Tap.SINGLE;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 import static org.junit.runners.MethodSorters.DEFAULT;
 
 import android.content.Context;
@@ -114,44 +118,6 @@ public class FilterMoodTest {
     }
 
 
-    public void ManualLoginCauseIDKMocking() throws InterruptedException {
-        onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
-        onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
-
-        onView(withId(R.id.btnLogin)).perform(click());
-        Thread.sleep(5000);
-        onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
-        Thread.sleep(5000);
-
-    }
-
-    @Test
-    public void idontknow() throws InterruptedException {
-
-
-//        onView(withId(R.id.profilepage)).check(matches(isCompletelyDisplayed())); // Verifies full visibility
-//        Thread.sleep(1000);
-        onView(withId(R.id.profilepage)).perform(click());
-
-        Thread.sleep(1000);
-        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
-
-        onView(withId(R.id.side_panel_button)).perform(click());
-
-        // Click at exact coordinates (1168, 2873)
-//        onView(withId(R.id.profilepage)).perform(new GeneralClickAction(
-//                SINGLE,
-//                new CoordinatesProvider() {
-//                    @Override
-//                    public float[] calculateCoordinates(android.view.View view) {
-//                        return new float[]{1168, 2873}; // Adjust coordinates as needed
-//                    }
-//                },
-//                FINGER
-//        ));
-    }
-
-
     @After
     public void tearDown() {
         String projectId = "login-register-de540";
@@ -175,6 +141,48 @@ public class FilterMoodTest {
             }
         }
     }
+
+
+    public void ManualLoginCauseIDKMocking() throws InterruptedException {
+        onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
+        onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
+
+        onView(withId(R.id.btnLogin)).perform(click());
+        Thread.sleep(5000);
+        onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
+        Thread.sleep(5000);
+
+    }
+
+
+    @Test
+    public void FilterMoodTest() throws InterruptedException {
+        onView(withId(R.id.profilepage)).perform(click());
+
+        Thread.sleep(1000);
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+
+        onView(withId(R.id.profilepage)).check(matches(isDisplayed()));
+        onView(withId(R.id.side_panel_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.nav_history)).perform(click());
+        onView(withId(R.id.mood_id)).check(matches(isDisplayed()));
+        onView(withId(R.id.filter_icon)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.filter_emoji_happy)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.done_filter_button)).perform(click());
+        Thread.sleep(2000);
+        onView(allOf(withId(R.id.Emotional_State), withText("Happy")))
+                .check(matches(isDisplayed()));
+        onView(withText("Angry")).check(doesNotExist());
+        Thread.sleep(2000);
+    }
+
+
+
+
 
 
 }
