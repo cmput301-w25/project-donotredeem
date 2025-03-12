@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
                             .addToBackStack("AddMoodEvent") //its in backstack, so pressing back = removal
                             .commit();
                 } else {
-                    View fragmentView = existingFragment.getView(); //add is there and dumb user click plus button again
+                    View fragmentView = existingFragment.getView(); //add is there and user click plus button again
                     if (fragmentView != null) { //we can see add mood ie is viewable
                         Animation slideOut = AnimationUtils.loadAnimation(view.getContext(), R.anim.slide_out_bottom);
                         fragmentView.startAnimation(slideOut); //so removal
