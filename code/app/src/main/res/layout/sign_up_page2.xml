@@ -10,7 +10,7 @@
     <Button
         android:id="@+id/sign_up_done"
         android:layout_width="110dp"
-        android:layout_height="41dp"
+        android:layout_height="48dp"
         android:layout_marginTop="60dp"
         android:backgroundTint="#FFFFFF"
         android:text="@string/sign_up_done"
@@ -59,22 +59,24 @@
     <EditText
         android:id="@+id/sign_up_username_text"
         android:layout_width="278dp"
-        android:layout_height="33dp"
+        android:layout_height="48dp"
         android:layout_marginStart="50dp"
         android:background="@android:drawable/editbox_background"
         android:ems="10"
         android:inputType="text"
+        android:hint="Username"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_choose_username" />
 
     <EditText
         android:id="@+id/sign_up_password_text"
         android:layout_width="282dp"
-        android:layout_height="37dp"
+        android:layout_height="48dp"
         android:layout_marginStart="50dp"
         android:background="@android:drawable/editbox_background"
         android:ems="10"
         android:inputType="textPassword"
+        android:hint="Password"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_password" />
 </androidx.constraintlayout.widget.ConstraintLayout>

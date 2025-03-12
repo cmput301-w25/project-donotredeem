@@ -49,14 +49,15 @@
 
         <ImageButton
             android:id="@+id/filter_icon"
-            android:layout_height="40dp"
-            android:layout_width="40dp"
+            android:layout_height="48dp"
+            android:layout_width="48dp"
             android:layout_marginStart="20dp"
             android:baselineAlignBottom="true"
             android:scaleType="centerInside"
             android:backgroundTint="#F5E6D3"
             app:srcCompat="@drawable/setting"
             android:layout_marginTop="23dp"
+            android:contentDescription="Filter button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
