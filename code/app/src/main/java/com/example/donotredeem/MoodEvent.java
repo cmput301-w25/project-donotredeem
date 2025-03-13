@@ -19,6 +19,10 @@ public class MoodEvent {
     private String place;
     private String emotionalState;
     private String situation;
+
+    private Boolean privacy;
+
+    private String username;
     private String trigger;
     private String explainText;
     private String explainPicture;
@@ -36,8 +40,7 @@ public class MoodEvent {
      * @param explainText Additional explanation text (optional).
      * @param explainPicture A picture URI representing the event (optional).
      */
-    public MoodEvent(String emotionalState, String date, String time,
-                     String place, @Nullable String situation,
+    public MoodEvent(String username, Boolean privacy, String emotionalState, String date, String time, String place, @Nullable String situation,
                      @Nullable String trigger, @Nullable String explainText, @Nullable String explainPicture) {
 
         // Required Field
@@ -46,6 +49,8 @@ public class MoodEvent {
         }
         this.emotionalState = emotionalState;
         this.time = time;
+        this.username = username;
+        this.privacy = privacy;
         this.date = date;
 
         // Defaults to user-entered place or empty string
@@ -71,7 +76,7 @@ public class MoodEvent {
      * @param explainText Additional explanation text (optional).
      * @param explainPicture A picture URI representing the event (optional).
      */
-    public MoodEvent(String moodEventId, String emotionalState, String date, String time,
+    public MoodEvent(String username, Boolean privacy, String moodEventId, String emotionalState, String date, String time,
                      String place, @Nullable String situation,
                      @Nullable String trigger, @Nullable String explainText, @Nullable String explainPicture) {
         if (emotionalState == null || emotionalState.trim().isEmpty()) {
@@ -79,6 +84,8 @@ public class MoodEvent {
         }
         this.moodEventId = moodEventId;
         this.emotionalState = emotionalState;
+        this.username = username;
+        this.privacy = privacy;
         this.time = time;
         this.date = date;
         this.place = (place != null) ? place : "";
@@ -92,7 +99,25 @@ public class MoodEvent {
      */
     public MoodEvent(){};
 
+
     // Getters
+
+    public Boolean getPrivacy() {
+        return privacy;
+    }
+
+    public void setPrivacy(Boolean privacy) {
+        this.privacy = privacy;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     /**
      * @return The date of the mood event.
      */

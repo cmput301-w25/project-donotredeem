@@ -47,6 +47,9 @@ dependencies {
     //implementation(libs.protobuf.javalite)
     implementation("com.google.protobuf:protobuf-javalite:3.25.1")
 
+    //switch button
+    implementation ("com.google.android.material:material:1.11.0")
+
 
     //image
     implementation ("com.github.bumptech.glide:glide:4.12.0")

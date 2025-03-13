@@ -32,6 +32,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -58,6 +59,7 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
@@ -225,6 +227,9 @@ public class AddMoodEvent extends Fragment {
         EditText addTrigger = view.findViewById(R.id.trigger);
         Button submit = view.findViewById(R.id.button);
 
+        SwitchMaterial private_button;
+        private_button = view.findViewById(R.id.private_button);
+
         image = view.findViewById(R.id.imageView);
         ImageButton media_upload = view.findViewById(R.id.upload_button);
 
@@ -388,6 +393,8 @@ public class AddMoodEvent extends Fragment {
         });
 
 
+
+
         for (int id : socialButtonIds) {
             ImageButton socialButton = view.findViewById(id);
             socialButton.setOnClickListener(v -> highlightSelectedSocial((ImageButton) v));
@@ -399,6 +406,7 @@ public class AddMoodEvent extends Fragment {
             emojiButton.setOnClickListener(v -> highlightSelectedEmoji((ImageButton) v));
         }
 
+
         //View fragmentRoot = view.findViewById(R.id.fragment_root);
 
         submit.setOnClickListener(v -> {
@@ -407,6 +415,14 @@ public class AddMoodEvent extends Fragment {
             String dateText = date.getText().toString();
             String locationText = location.getText().toString();
             String timeText = time.getText().toString();
+
+            Boolean privacy;
+            if (private_button.isChecked()){
+                privacy = true;
+            }
+            else {privacy = false;}
+            Log.e("PRIVATE CHECK", privacy.toString());
+
 
             if (selectedMoodName == null || selectedMoodName.isEmpty()) {
                 Snackbar.make(getView(), "Please select a mood!", Snackbar.LENGTH_SHORT).show();
@@ -427,12 +443,14 @@ public class AddMoodEvent extends Fragment {
                 return;
             }
 
+            Log.e("PRIVATE CHECK", privacy.toString() );
+
             if (imageUri != null) {
                 Log.d("AddMoodEvent", "Uploading image: " + imageUri.toString());
-                uploadImageAndSaveMood(descText, triggerText, dateText, locationText, imageUri, selectedMoodName, selectedSocial, timeText);
+                uploadImageAndSaveMood(privacy,descText, triggerText, dateText, locationText, imageUri, selectedMoodName, selectedSocial, timeText);
             } else {
                 Log.e("AddMoodEvent", "Image URI is null, cannot upload!");
-                saveMoodToFirestore(descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial, timeText);
+                saveMoodToFirestore(privacy, descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial, timeText);
             }
 
 //            if (fragmentRoot != null) {
@@ -630,11 +648,11 @@ public class AddMoodEvent extends Fragment {
      * @param social       Social situation associated with the event.
      * @param time         Time of the mood event.
      */
-    private void uploadImageAndSaveMood(String desc, String trigger,
+    private void uploadImageAndSaveMood(Boolean privacy, String desc, String trigger,
                                         String date, String locationText, Uri imageUri,
                                         String mood, String social, String time) {
             if (imageUri == null) {
-                saveMoodToFirestore(desc, trigger, date, locationText, null, mood, social, time);
+                saveMoodToFirestore(privacy, desc, trigger, date, locationText, null, mood, social, time);
                 return;
             }
             String imageFileName = UUID.randomUUID().toString() + ".jpg";
@@ -644,7 +662,7 @@ public class AddMoodEvent extends Fragment {
                     .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
                             .addOnSuccessListener(uri -> {
                                 Log.d("Upload", "Image uploaded, saving to Firestore: " + uri.toString());
-                                saveMoodToFirestore(desc, trigger, date, locationText, uri.toString(), mood, social, time);
+                                saveMoodToFirestore(privacy, desc, trigger, date, locationText, uri.toString(), mood, social, time);
                             }))
                 .addOnFailureListener(e ->
                     //Toast.makeText(getContext(), "Image upload failed!", Toast.LENGTH_SHORT).show()
@@ -696,14 +714,18 @@ public class AddMoodEvent extends Fragment {
 //                            //Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
 //                            Snackbar.make(getView(), "Error saving data!", Snackbar.LENGTH_SHORT).show());
 //        }
-        private void saveMoodToFirestore(String desc, String trigger,
+        private void saveMoodToFirestore(Boolean privacy, String desc, String trigger,
                                          String date, String locationText, String imageUrl,
                                          String mood, String social, String time) {
+
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+            String loggedInUsername = sharedPreferences.getString("username", null);
+
             // Generate a unique moodEventId
             String moodEventId = UUID.randomUUID().toString();
             DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
 
-            MoodEvent moodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
+            MoodEvent moodEvent = new MoodEvent(loggedInUsername,privacy, moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
 
             // We'll wait for two tasks: saving the mood event and updating the user doc.
             final int totalTasks = 2;
@@ -721,8 +743,8 @@ public class AddMoodEvent extends Fragment {
                     });
 
             if (isAdded() && getActivity() != null) {
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-                String loggedInUsername = sharedPreferences.getString("username", null);
+//                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+//                String loggedInUsername = sharedPreferences.getString("username", null);
 
 
                 if (loggedInUsername != null) {

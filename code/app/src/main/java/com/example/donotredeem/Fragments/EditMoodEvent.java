@@ -58,6 +58,7 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -202,6 +203,9 @@ public class EditMoodEvent extends Fragment {
         dateButton = view.findViewById(R.id.dateButton);
         timeButton = view.findViewById(R.id.timeButton);
         closeButton = view.findViewById(R.id.closeButton);
+        SwitchMaterial private_button;
+        private_button = view.findViewById(R.id.edit_private_button);
+        // this is not pre populating with prev statae idk how to do that someome help - heer
 
         // Pre-populate values from passed arguments
         Bundle args = getArguments();
@@ -396,6 +400,13 @@ public class EditMoodEvent extends Fragment {
             String locationText = locationEdit.getText().toString();
             String timeText = timeEdit.getText().toString();
 
+            Boolean privacy;
+            if (private_button.isChecked()){
+                privacy = true;
+            }
+            else {privacy = false;}
+            Log.e("PRIVATE CHECK", privacy.toString());
+
             if (selectedMoodName == null || selectedMoodName.isEmpty()) {
                 Snackbar.make(getView(), "Please select a mood!", Snackbar.LENGTH_SHORT).show();
                 return;
@@ -417,9 +428,9 @@ public class EditMoodEvent extends Fragment {
             // If a new image was selected, upload it first; otherwise, update using the existing firebaseImageUrl.
             if (imageUri != null) {
                 Log.d("EditMoodEvent", "Uploading image: " + imageUri.toString());
-                uploadImageAndUpdateMood();
+                uploadImageAndUpdateMood(privacy);
             } else {
-                updateMoodEventInFirestore(descText, triggerText, dateText, locationText, firebaseImageUrl,
+                updateMoodEventInFirestore(privacy, descText, triggerText, dateText, locationText, firebaseImageUrl,
                         selectedMoodName, selectedSocial, timeText);
             }
 
@@ -598,11 +609,12 @@ public class EditMoodEvent extends Fragment {
      * Uploads a new image to Firebase Storage and updates the associated mood event in Firestore.
      * If no new image is selected, it updates the event with the existing image URL.
      */
-    private void uploadImageAndUpdateMood() {
+    private void uploadImageAndUpdateMood(Boolean privacy) {
         // If imageUri is null, use the existing firebaseImageUrl
         if (imageUri == null) {
             Log.d("Firebase", "No new image to upload, updating event with existing image.");
             updateMoodEventInFirestore(
+                    privacy,
                     description.getText().toString(),
                     triggerEdit.getText().toString(),
                     dateEdit.getText().toString(),
@@ -620,6 +632,7 @@ public class EditMoodEvent extends Fragment {
         if (imageUrl.startsWith("https://firebasestorage.googleapis.com/")) {
             Log.d("Firebase", "Image is already uploaded, skipping re-upload.");
             updateMoodEventInFirestore(
+                    privacy,
                     description.getText().toString(),
                     triggerEdit.getText().toString(),
                     dateEdit.getText().toString(),
@@ -638,6 +651,7 @@ public class EditMoodEvent extends Fragment {
                 .addOnSuccessListener(taskSnapshot -> newStorageRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     Log.d("Firebase", "Image uploaded successfully: " + uri.toString());
                     updateMoodEventInFirestore(
+                            privacy,
                             description.getText().toString(),
                             triggerEdit.getText().toString(),
                             dateEdit.getText().toString(),
@@ -680,16 +694,20 @@ public class EditMoodEvent extends Fragment {
 //                        //Toast.makeText(getContext(), "Error updating data!", Toast.LENGTH_SHORT).show());
 //                        Snackbar.make(getView(), "Error updating data!", Snackbar.LENGTH_SHORT).show());
 //    }
-    private void updateMoodEventInFirestore(String desc, String trigger,
+    private void updateMoodEventInFirestore(Boolean privacy, String desc, String trigger,
                                             String date, String locationText, String imageUrl,
                                             String mood, String social, String time) {
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        String loggedInUsername = sharedPreferences.getString("username", null);
+
         if (moodEventId == null) {
             Log.e(TAG, "MoodEventId is null, cannot update");
             showError("Mood Event ID is missing!");
             return;
         }
         DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
-        MoodEvent updatedMoodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
+        MoodEvent updatedMoodEvent = new MoodEvent(loggedInUsername,privacy,moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
 
         final int totalTasks = 1;
         final int[] completedTasks = {0};

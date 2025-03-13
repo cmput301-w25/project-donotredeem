@@ -76,7 +76,6 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mood_history, container, false);
 
-        MainActivity.past_location = "moodhistory";
 
         listView = view.findViewById(R.id.history_list);
         moodHistoryList = new ArrayList<MoodEvent>();
