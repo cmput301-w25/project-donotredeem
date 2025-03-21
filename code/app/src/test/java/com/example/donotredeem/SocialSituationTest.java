@@ -17,8 +17,8 @@ public class SocialSituationTest {
         assertEquals("Pair", SocialSituation.Pair.getLabel());
         assertEquals(R.drawable.pair, SocialSituation.Pair.getImg_id());
 
-        assertEquals("Crowd", SocialSituation.Crowd.getLabel());
-        assertEquals(R.drawable.crowd, SocialSituation.Crowd.getImg_id());
+        assertEquals("Few", SocialSituation.Few.getLabel());
+        assertEquals(R.drawable.few_people, SocialSituation.Few.getImg_id());
     }
 
     @Test
@@ -26,7 +26,7 @@ public class SocialSituationTest {
         // Test that correct image ID is returned for valid cases
         assertEquals(R.drawable.alone, SocialSituation.getImageIdBySituation("Alone"));
         assertEquals(R.drawable.pair, SocialSituation.getImageIdBySituation("Pair"));
-        assertEquals(R.drawable.crowd, SocialSituation.getImageIdBySituation("Crowd"));
+        assertEquals(R.drawable.few_people, SocialSituation.getImageIdBySituation("Few"));
     }
 
     @Test

@@ -123,6 +123,7 @@ public class MainPageAdapter extends ArrayAdapter<MoodEvent> {
                 bundle.putString("trigger", Current_Mood_Event.getTrigger());
                 bundle.putString("explainText", Current_Mood_Event.getExplainText());
                 bundle.putString("explainPicture", imageUri);
+                bundle.putBoolean("fragment",Current_Mood_Event.getPrivacy());
 
                 // Create the DialogFragment instance and set arguments
                 ViewMood viewMoodDialog = new ViewMood();

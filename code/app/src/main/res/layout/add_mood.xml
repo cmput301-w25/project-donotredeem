@@ -362,7 +362,6 @@
             android:scaleType="fitCenter"
             android:src="@drawable/alone"
             app:layout_constraintEnd_toStartOf="@+id/pair_social"
-            app:layout_constraintHorizontal_bias="0.423"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView17"
             app:tint="#615E5E" />
@@ -378,9 +377,21 @@
             android:scaleType="fitCenter"
             android:src="@drawable/pair"
             app:tint="#615E5E"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/few_social"
+            app:layout_constraintStart_toEndOf="@id/alone_social"
+            app:layout_constraintTop_toBottomOf="@+id/textView17" />
+
+        <ImageButton
+            android:id="@+id/few_social"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:src="@drawable/few_people"
+            app:tint="#615E5E"
+            app:layout_constraintStart_toEndOf="@+id/pair_social"
+            app:layout_constraintEnd_toStartOf="@id/crowd_social"
             app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
         <ImageButton
@@ -390,11 +401,10 @@
             android:layout_marginTop="20dp"
             android:background="@null"
             android:scaleType="fitCenter"
-            android:src="@drawable/crowd"
+            android:src="@drawable/group"
             app:tint="#615E5E"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.622"
-            app:layout_constraintStart_toEndOf="@+id/pair_social"
+            app:layout_constraintStart_toEndOf="@+id/few_social"
             app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
         <TextView

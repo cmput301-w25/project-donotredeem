@@ -711,38 +711,38 @@ public class AddMoodEvent extends Fragment {
     private void uploadImageAndSaveMood(Boolean privacy, String desc, String trigger,
                                         String date, String locationText, Uri imageUri,
                                         String mood, String social, String time) {
-            if (imageUri == null) {
-                saveMoodToFirestore(privacy, desc, trigger, date, locationText, null, mood, social, time);
-                return;
-            }
-            String imageFileName = UUID.randomUUID().toString() + ".jpg";
-            StorageReference imageRef = storageRef.child(imageFileName);
-
-            imageRef.putFile(imageUri)
-                    .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
-                            .addOnSuccessListener(uri -> {
-                                Log.d("Upload", "Image uploaded, saving to Firestore: " + uri.toString());
-                                saveMoodToFirestore(privacy, desc, trigger, date, locationText, uri.toString(), mood, social, time);
-                            }))
-                .addOnFailureListener(e ->
-                    //Toast.makeText(getContext(), "Image upload failed!", Toast.LENGTH_SHORT).show()
-                    Snackbar.make(getView(), "Image upload failed!", Snackbar.LENGTH_SHORT).show());
+        if (imageUri == null) {
+            saveMoodToFirestore(privacy, desc, trigger, date, locationText, null, mood, social, time);
+            return;
         }
+        String imageFileName = UUID.randomUUID().toString() + ".jpg";
+        StorageReference imageRef = storageRef.child(imageFileName);
+
+        imageRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> imageRef.getDownloadUrl()
+                        .addOnSuccessListener(uri -> {
+                            Log.d("Upload", "Image uploaded, saving to Firestore: " + uri.toString());
+                            saveMoodToFirestore(privacy, desc, trigger, date, locationText, uri.toString(), mood, social, time);
+                        }))
+                .addOnFailureListener(e ->
+                        //Toast.makeText(getContext(), "Image upload failed!", Toast.LENGTH_SHORT).show()
+                        Snackbar.make(getView(), "Image upload failed!", Snackbar.LENGTH_SHORT).show());
+    }
 
 
 
-        /**
-         * Saves the mood event data to Firestore.
-         *
-         * @param desc         Description of the mood event.
-         * @param trigger      Trigger for the mood event.
-         * @param date         Date of the mood event.
-         * @param locationText Location of the mood event.
-         * @param imageUrl     URL of the uploaded image (can be null).
-         * @param mood         The mood associated with the event.
-         * @param social       Social situation associated with the event.
-         * @param time         Time of the mood event.
-         */
+    /**
+     * Saves the mood event data to Firestore.
+     *
+     * @param desc         Description of the mood event.
+     * @param trigger      Trigger for the mood event.
+     * @param date         Date of the mood event.
+     * @param locationText Location of the mood event.
+     * @param imageUrl     URL of the uploaded image (can be null).
+     * @param mood         The mood associated with the event.
+     * @param social       Social situation associated with the event.
+     * @param time         Time of the mood event.
+     */
 //        private void saveMoodToFirestore(String desc, String trigger,
 //                                         String date, String locationText, String imageUrl,
 //                                         String mood, String social, String time) {
@@ -774,56 +774,56 @@ public class AddMoodEvent extends Fragment {
 //                            //Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
 //                            Snackbar.make(getView(), "Error saving data!", Snackbar.LENGTH_SHORT).show());
 //        }
-        private void saveMoodToFirestore(Boolean privacy, String desc, String trigger,
-                                         String date, String locationText, String imageUrl,
-                                         String mood, String social, String time) {
+    private void saveMoodToFirestore(Boolean privacy, String desc, String trigger,
+                                     String date, String locationText, String imageUrl,
+                                     String mood, String social, String time) {
 
-            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-            String loggedInUsername = sharedPreferences.getString("username", null);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        String loggedInUsername = sharedPreferences.getString("username", null);
 
-            // Generate a unique moodEventId
-            String moodEventId = UUID.randomUUID().toString();
-            DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
+        // Generate a unique moodEventId
+        String moodEventId = UUID.randomUUID().toString();
+        DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
 
-            MoodEvent moodEvent = new MoodEvent(loggedInUsername,privacy, moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
+        MoodEvent moodEvent = new MoodEvent(loggedInUsername,privacy, moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
 
-            // We'll wait for two tasks: saving the mood event and updating the user doc.
-            final int totalTasks = 2;
-            final int[] completedTasks = {0};
+        // We'll wait for two tasks: saving the mood event and updating the user doc.
+        final int totalTasks = 2;
+        final int[] completedTasks = {0};
 
-            moodEventRef.set(moodEvent)
-                    .addOnSuccessListener(aVoid -> {
-                        Log.d(TAG, "Mood event saved!");
-                        Snackbar.make(requireView(), "Mood Event Saved!", Snackbar.LENGTH_LONG).show();
-                        incrementAndCheck(completedTasks, totalTasks);
-                    })
-                    .addOnFailureListener(e -> {
-                        Log.e(TAG, "Error saving mood event", e);
-                        showError("Error saving data!");
-                    });
+        moodEventRef.set(moodEvent)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "Mood event saved!");
+                    Snackbar.make(requireView(), "Mood Event Saved!", Snackbar.LENGTH_LONG).show();
+                    incrementAndCheck(completedTasks, totalTasks);
+                })
+                .addOnFailureListener(e -> {
+                    Log.e(TAG, "Error saving mood event", e);
+                    showError("Error saving data!");
+                });
 
-            if (isAdded() && getActivity() != null) {
+        if (isAdded() && getActivity() != null) {
 //                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
 //                String loggedInUsername = sharedPreferences.getString("username", null);
 
 
-                if (loggedInUsername != null) {
-                    DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
-                    userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d(TAG, "User document updated with mood event reference");
-                                incrementAndCheck(completedTasks, totalTasks);
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e(TAG, "Failed to update user document", e);
-                                showError("Error updating user document!");
-                            });
-                } else {
-                    Log.e(TAG, "Logged-in username not found in SharedPreferences");
-                    showError("User not found!");
-                }
+            if (loggedInUsername != null) {
+                DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
+                userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
+                        .addOnSuccessListener(aVoid -> {
+                            Log.d(TAG, "User document updated with mood event reference");
+                            incrementAndCheck(completedTasks, totalTasks);
+                        })
+                        .addOnFailureListener(e -> {
+                            Log.e(TAG, "Failed to update user document", e);
+                            showError("Error updating user document!");
+                        });
+            } else {
+                Log.e(TAG, "Logged-in username not found in SharedPreferences");
+                showError("User not found!");
             }
         }
+    }
 
     /**
      * Increments the counter and checks if all tasks have finished.

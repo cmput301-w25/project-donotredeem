@@ -480,15 +480,15 @@ public class EditMoodEvent extends Fragment {
                     @Override
                     public void onAnimationRepeat(Animation animation) {
 
-                        }
-                    });
+                    }
+                });
 
-                } else {
-                    getParentFragmentManager().popBackStack();
-                }
+            } else {
+                getParentFragmentManager().popBackStack();
+            }
 
-                Snackbar.make(getView(), "Mood event not saved!", Snackbar.LENGTH_LONG).show();
-            });
+            Snackbar.make(getView(), "Mood event not saved!", Snackbar.LENGTH_LONG).show();
+        });
 
 
         return view;

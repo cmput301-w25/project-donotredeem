@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<androidx.cardview.widget.CardView
+    android:layout_width="wrap_content"
+    android:id="@+id/rounded_bg"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:backgroundTint="#222121"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="24dp"
+    app:cardUseCompatPadding="true"
+    android:elevation="8dp">
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="20sp"
+        android:layout_marginEnd="20sp"
+        android:layout_marginTop="20sp"
+        android:layout_marginBottom="20sp">
+
+    <ImageView
+        android:id="@+id/View_timelineImage"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:src="@drawable/cat"
+        android:layout_marginBottom="18dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:id="@+id/emotionContainer"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/View_timelineImage"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/emojiIcon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/hapi"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/View_Emotional_State"
+            android:scaleType="centerInside" />
+
+        <TextView
+            android:id="@+id/View_Emotional_State"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sad"
+            android:textSize="24sp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/emojiIcon"
+            android:textColor="@color/black"
+            app:layout_constraintWidth_max="150dp"
+            android:layout_marginStart="12dp" /> </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:id="@+id/descriptionContainer"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/emotionContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/DescIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/desc"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/View_Additional_details"
+                android:scaleType="centerInside"
+                app:tint="#F5E6D3" />
+
+            <TextView
+                android:id="@+id/View_Additional_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Optional Description here"
+                android:textSize="18sp"
+                app:layout_constraintWidth_max="140dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/DescIcon"
+                android:textColor="#F5E6D3"
+                android:layout_marginStart="12dp" /> </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/DateContainer"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/descriptionContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/DateIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/calender"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/View_Specific_Date"
+                android:scaleType="centerInside"
+                app:tint="#F5E6D3" />
+
+            <TextView
+                android:id="@+id/View_Specific_Date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Date here"
+                android:textSize="18sp"
+                app:layout_constraintWidth_max="140dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/DateIcon"
+                android:textColor="#F5E6D3"
+                android:layout_marginStart="12dp"
+                /> </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/TimeContainer"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/DateContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/TimeIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/view_clock"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/View_Specific_Time"
+                android:scaleType="centerInside"
+                app:tint="#F5E6D3" />
+
+            <TextView
+                android:id="@+id/View_Specific_Time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Time here"
+                app:layout_constraintWidth_max="140dp"
+                android:textSize="18sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/TimeIcon"
+                android:textColor="#F5E6D3"
+                android:layout_marginStart="12dp" /> </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/LocationContainer"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/TimeContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/LocationIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:visibility="gone"
+                android:src="@drawable/location"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/View_Specific_Location"
+                android:scaleType="centerInside"
+                app:tint="#F5E6D3" />
+
+            <TextView
+                android:id="@+id/View_Specific_Location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Location here"
+                android:textSize="18sp"
+                app:layout_constraintWidth_max="140dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/LocationIcon"
+                android:textColor="#F5E6D3"
+                android:layout_marginStart="12dp" /> </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ReasonContainer"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/LocationContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/ReasonIcon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/reason"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/View_Specific_Trigger"
+                android:scaleType="centerInside"
+                app:tint="#F5E6D3" />
+
+            <TextView
+                android:id="@+id/View_Specific_Trigger"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reason here"
+                android:textSize="18sp"
+                app:layout_constraintWidth_max="140dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/ReasonIcon"
+                android:textColor="#F5E6D3"
+                android:layout_marginStart="12dp" /> </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/SituationContainer"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/ReasonContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/View_SituationImage"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/alone"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/View_Situation_Text"
+                android:scaleType="centerInside"
+                app:tint="#F5E6D3" />
+
+            <TextView
+                android:id="@+id/View_Situation_Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Situation here"
+                android:textSize="18sp"
+                app:layout_constraintWidth_max="140dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/View_SituationImage"
+                android:textColor="#F5E6D3"
+                android:layout_marginStart="12dp" /> </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/PrivacyContainer"
+        android:layout_width="180dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/SituationContainer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/View_Privacy_Image"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/unlocked"
+                android:visibility="gone"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/View_Privacy_Text"
+                android:scaleType="centerInside"
+                app:tint="#F5E6D3" />
+
+            <TextView
+                android:id="@+id/View_Privacy_Text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Privacy here"
+                android:textSize="18sp"
+                app:layout_constraintWidth_max="140dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/View_Privacy_Image"
+                android:textColor="#F5E6D3"
+                android:layout_marginStart="12dp" /> </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/closeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Close"
+        android:layout_marginTop="13dp"
+        android:padding="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/PrivacyContainer"
+        android:textColor="#222121"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
+</androidx.constraintlayout.widget.ConstraintLayout>
