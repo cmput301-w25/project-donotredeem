@@ -75,6 +75,10 @@ dependencies {
     implementation("net.bytebuddy:byte-buddy:1.17.1")
     androidTestImplementation("org.mockito:mockito-android:5.7.0")
 
+    implementation("com.google.android.gms:play-services-maps:19.1.0")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+    implementation("com.google.android.libraries.places:places:4.1.0")
+
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)

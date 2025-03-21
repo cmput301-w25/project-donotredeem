@@ -122,7 +122,7 @@ public class EditMoodEvent extends Fragment {
             R.id.emoji_shameful, R.id.emoji_surprised, R.id.emoji_shy,
             R.id.emoji_tired
     };
-    int[] socialButtonIds = {R.id.alone_social, R.id.pair_social, R.id.crowd_social};
+    int[] socialButtonIds = {R.id.alone_social, R.id.pair_social, R.id.few_social, R.id.crowd_social};
     private ImageButton selectedEmoji = null;
     private ImageButton selectedSocialButton = null;
 
@@ -219,9 +219,12 @@ public class EditMoodEvent extends Fragment {
             String trigger = args.getString("trigger");
             String explainText = args.getString("explainText");
             String explainPicture = args.getString("explainPicture");
+            Boolean privacy = args.getBoolean("privacy");
 
             // For this example, assume selectedMoodName comes from emotionalState
             selectedMoodName = emotionalState;
+
+            private_button.setChecked(privacy);
 
             if (!TextUtils.isEmpty(explainText)) {
                 description.setText(explainText);

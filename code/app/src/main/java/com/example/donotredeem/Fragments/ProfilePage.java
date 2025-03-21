@@ -253,34 +253,34 @@ public class ProfilePage extends Fragment {
      * Displays the mood events in the list view, either by creating a new adapter
      * or updating the existing one.
      */
-//    private void Display(ArrayList<MoodEvent> moodHistoryList) {
-//        // Create a defensive copy to avoid ConcurrentModificationException
-//        ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
-//
-//        sortedList.sort((event1, event2) -> {
-//            try {
-//                LocalDate date1 = parseStringToDate(event1.getDate());
-//                LocalDate date2 = parseStringToDate(event2.getDate());
-//
-//                // First compare dates
-//                int dateCompare = date2.compareTo(date1); // Reverse chronological
-//                if (dateCompare != 0) return dateCompare;
-//
-//                // If dates equal, compare times
-//                LocalTime time1 = parseStringToTime(event1.getTime());
-//                LocalTime time2 = parseStringToTime(event2.getTime());
-//                return time2.compareTo(time1); // Reverse chronological
-//            } catch (Exception e) {
-//                Log.e("Sorting", "Error comparing events", e);
-//                return 0;
-//            }
-//        });
-//
-//        // Update adapter with sorted list
-//        adapter = new MoodEventAdapter(getContext(), sortedList);
-//        recent_list.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
-//    }
+    private void Display(ArrayList<MoodEvent> moodHistoryList) {
+        // Create a defensive copy to avoid ConcurrentModificationException
+        ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
+
+        sortedList.sort((event1, event2) -> {
+            try {
+                LocalDate date1 = parseStringToDate(event1.getDate());
+                LocalDate date2 = parseStringToDate(event2.getDate());
+
+                // First compare dates
+                int dateCompare = date2.compareTo(date1); // Reverse chronological
+                if (dateCompare != 0) return dateCompare;
+
+                // If dates equal, compare times
+                LocalTime time1 = parseStringToTime(event1.getTime());
+                LocalTime time2 = parseStringToTime(event2.getTime());
+                return time2.compareTo(time1); // Reverse chronological
+            } catch (Exception e) {
+                Log.e("Sorting", "Error comparing events", e);
+                return 0;
+            }
+        });
+
+        // Update adapter with sorted list
+        adapter = new MoodEventAdapter(getContext(), sortedList);
+        recent_list.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
 
     private void fetchUserMoodEvents(String username) {
         if (username == null) {
@@ -355,18 +355,18 @@ public class ProfilePage extends Fragment {
         }
     }
 
-    private void Display(ArrayList<MoodEvent> moodHistoryList) {
-        // Update the adapter with sorted list
-        if (adapter == null) {
-            adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
-            recent_list.setAdapter(adapter);
-        } else {
-            // Just update the existing adapter if it already exists
-            adapter.clear();
-            adapter.addAll(moodHistoryList);
-            adapter.notifyDataSetChanged();
-        }
-    }
+//    private void Display(ArrayList<MoodEvent> moodHistoryList) {
+//        // Update the adapter with sorted list
+//        if (adapter == null) {
+//            adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
+//            recent_list.setAdapter(adapter);
+//        } else {
+//            // Just update the existing adapter if it already exists
+//            adapter.clear();
+//            adapter.addAll(moodHistoryList);
+//            adapter.notifyDataSetChanged();
+//        }
+//    }
 
 
     /**
