@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#FFFFFF" /> <!-- White background or your desired color -->
-    <corners android:radius="20dp" /> <!-- Round corners with 16dp radius -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+
+    <corners android:radius="24dp"/>  <!-- Adjust the radius as needed -->
+    <solid android:color="@android:color/white"/>  <!-- Background color -->
+    <padding android:left="12dp" android:top="12dp" android:right="12dp" android:bottom="12dp"/>
 </shape>

@@ -73,6 +73,10 @@
 
         <!--        </provider>-->
 
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCoAZY3RwbhOJq-Dg1S3gAIOlIcQFfusnA"/>
+
     </application>
 
 </manifest>

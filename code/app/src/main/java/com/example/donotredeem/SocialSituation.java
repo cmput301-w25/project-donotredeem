@@ -1,6 +1,5 @@
 package com.example.donotredeem;
 
-import android.util.Log;
 /**
  * Enum representing various social situations along with their associated image resources.
  *
@@ -10,8 +9,9 @@ import android.util.Log;
 public enum SocialSituation {
 
     Alone("Alone", R.drawable.alone),
-    Pair("Pair", R.drawable.pair),
-    Crowd("Crowd", R.drawable.crowd);
+    Pair("With one Other Person", R.drawable.pair),
+    Few("With two to Several People", R.drawable.few_people),
+    Crowd ("With a Crowd",R.drawable.group);
 
     private final String label; //no moods aside these
     private final int img_id;
@@ -50,7 +50,7 @@ public enum SocialSituation {
      * the method returns -1.
      *
      *
-     * @param situation the label of the social situation ("Alone", "Pair", "Crowd")
+     * @param situation the label of the social situation ("Alone", "Pair", "Few")
      * @return the drawable image resource id if a match is found; -1 otherwise
      */
     public static int getImageIdBySituation(String situation) {
@@ -59,10 +59,12 @@ public enum SocialSituation {
         switch (situation) {
             case "Alone":
                 return R.drawable.alone;
-            case "Pair":
+            case "With one Other Person":
                 return R.drawable.pair;
-            case "Crowd":
-                return R.drawable.crowd;
+            case "With two to Several People":
+                return R.drawable.few_people;
+            case "With a Crowd":
+                return R.drawable.group;
             // Add more cases here
             default:
                 return -1;  // Return -1 for invalid or unrecognized situations

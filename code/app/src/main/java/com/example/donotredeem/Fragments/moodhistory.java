@@ -76,7 +76,6 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.mood_history, container, false);
 
-        MainActivity.past_location = "moodhistory";
 
         listView = view.findViewById(R.id.history_list);
         moodHistoryList = new ArrayList<MoodEvent>();
@@ -166,12 +165,45 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
      *
      * @param moodRefs List of Firestore document references to mood events
      */
+//    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+//        ArrayList<MoodEvent> tempList = new ArrayList<>();
+//        final int[] fetchedCount = {0};
+//
+//        for (DocumentReference moodRef : moodRefs) {
+//            moodRef.get().addOnSuccessListener(documentSnapshot -> {
+//                if (documentSnapshot.exists()) {
+//                    try {
+//                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
+//                        if (moodEvent != null) {
+//                            tempList.add(moodEvent);
+//                        }
+//                    } catch (Exception e) {
+//                        Log.e("MoodHistory", "Error converting document", e);
+//                    }
+//                }
+//
+//                fetchedCount[0]++;
+//                if (fetchedCount[0] == moodRefs.size()) {
+//                    moodHistoryList.clear();
+//                    moodHistoryList.addAll(tempList);
+//                    Display(moodHistoryList); // Only sort once when all data is loaded
+//                }
+//            }).addOnFailureListener(e -> {
+//                Log.e("MoodHistory", "Error fetching document", e);
+//                fetchedCount[0]++;
+//            });
+//        }
+//    }
     private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+        if (!isAdded()) return; // Stop if fragment is not attached
+
         ArrayList<MoodEvent> tempList = new ArrayList<>();
         final int[] fetchedCount = {0};
 
         for (DocumentReference moodRef : moodRefs) {
             moodRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (!isAdded()) return;
+
                 if (documentSnapshot.exists()) {
                     try {
                         MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
@@ -185,9 +217,10 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
 
                 fetchedCount[0]++;
                 if (fetchedCount[0] == moodRefs.size()) {
+                    if (!isAdded()) return; // Stop if fragment is not attached
                     moodHistoryList.clear();
                     moodHistoryList.addAll(tempList);
-                    Display(moodHistoryList); // Only sort once when all data is loaded
+                    Display(moodHistoryList);
                 }
             }).addOnFailureListener(e -> {
                 Log.e("MoodHistory", "Error fetching document", e);
@@ -201,34 +234,63 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
      *
      * @param moodHistoryList The list of mood events to display
      */
+//    private void Display(ArrayList<MoodEvent> moodHistoryList) {
+//        // Create a defensive copy to avoid ConcurrentModificationException
+//        ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
+//
+//        sortedList.sort((event1, event2) -> {
+//            try {
+//                LocalDate date1 = parseStringToDate(event1.getDate());
+//                LocalDate date2 = parseStringToDate(event2.getDate());
+//
+//                // First compare dates
+//                int dateCompare = date2.compareTo(date1); // Reverse chronological
+//                if (dateCompare != 0) return dateCompare;
+//
+//                // If dates equal, compare times
+//                LocalTime time1 = parseStringToTime(event1.getTime());
+//                LocalTime time2 = parseStringToTime(event2.getTime());
+//                return time2.compareTo(time1); // Reverse chronological
+//            } catch (Exception e) {
+//                Log.e("Sorting", "Error comparing events", e);
+//                return 0;
+//            }
+//        });
+//
+//        // Update adapter with sorted list
+//        adapter = new MoodEventAdapter(getContext(), sortedList);
+//        listView.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
+//    }
     private void Display(ArrayList<MoodEvent> moodHistoryList) {
-        // Create a defensive copy to avoid ConcurrentModificationException
-        ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
+        if (!isAdded()) return; //stop if fragment is not attached
 
+        Context context = getContext();
+        if (context == null) return; //no null pointer crash
+
+        ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
         sortedList.sort((event1, event2) -> {
             try {
                 LocalDate date1 = parseStringToDate(event1.getDate());
                 LocalDate date2 = parseStringToDate(event2.getDate());
 
-                // First compare dates
-                int dateCompare = date2.compareTo(date1); // Reverse chronological
+                int dateCompare = date2.compareTo(date1);
                 if (dateCompare != 0) return dateCompare;
 
-                // If dates equal, compare times
                 LocalTime time1 = parseStringToTime(event1.getTime());
                 LocalTime time2 = parseStringToTime(event2.getTime());
-                return time2.compareTo(time1); // Reverse chronological
+                return time2.compareTo(time1);
             } catch (Exception e) {
                 Log.e("Sorting", "Error comparing events", e);
                 return 0;
             }
         });
 
-        // Update adapter with sorted list
-        adapter = new MoodEventAdapter(requireContext(), sortedList);
+        adapter = new MoodEventAdapter(context, sortedList);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
+
 
     /** Redirects the user to the login screen. */
     private void redirectToLogin() {

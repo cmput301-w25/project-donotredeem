@@ -112,7 +112,7 @@
 
 
     <ListView
-        android:id="@+id/listView"
+        android:id="@+id/main_listView"
         android:layout_width="410dp"
         android:layout_height="646dp"
         app:layout_constraintBottom_toBottomOf="parent"

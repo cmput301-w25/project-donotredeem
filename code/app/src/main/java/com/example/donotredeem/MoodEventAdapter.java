@@ -2,9 +2,6 @@ package com.example.donotredeem;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Movie;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,12 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.TextClock;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
@@ -31,8 +25,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.net.URI;
-import java.time.LocalTime;
 import java.util.ArrayList;
 
 import github.com.st235.swipetoactionlayout.SwipeAction;
@@ -80,24 +72,31 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         TextView ThisEmoState = MainView.findViewById(R.id.Emotional_State);
         TextView ThisTime = MainView.findViewById(R.id.Specific_Time);
         TextView ThisDate = MainView.findViewById(R.id.Specific_Date);
-        TextView ThisLocation = MainView.findViewById(R.id.Specific_Location);
         ImageView ThisSituation = MainView.findViewById(R.id.SituationImage);
-        ThisSituation.setVisibility(View.VISIBLE);
-        TextView ThisTrigger = MainView.findViewById(R.id.Specific_Trigger);
         TextView ThisTextDescription = MainView.findViewById(R.id.Additional_details);
         ImageView ThisPictureDescription = MainView.findViewById(R.id.timelineImage);
+        ImageView ThisPrivacyImage = MainView.findViewById(R.id.PrivacyImage);
+//        TextView ThisSituationText = MainView.findViewById(R.id.Situation_text);
+//        TextView ThisTrigger = MainView.findViewById(R.id.Specific_Trigger);
+//        TextView ThisLocation = MainView.findViewById(R.id.Specific_Location);
 
 
         if (Current_Mood_Event != null) {
             ThisEmoState.setText(Current_Mood_Event.getEmotionalState());
             ThisTime.setText(Current_Mood_Event.getTime().toString());
-            ThisLocation.setText(Current_Mood_Event.getPlace());
             ThisDate.setText(Current_Mood_Event.getDate().toString());
-            ThisTrigger.setText(Current_Mood_Event.getTrigger());
             ThisTextDescription.setText(Current_Mood_Event.getExplainText());
+
+//            ThisTrigger.setText(Current_Mood_Event.getTrigger());
+//            ThisSituationText.setText(Current_Mood_Event.getSituation());
+//            ThisLocation.setText(Current_Mood_Event.getPlace());
         }
 
         String imageUri = Current_Mood_Event.getExplainPicture();
+        String mood = Current_Mood_Event.getEmotionalState();
+        String situation = Current_Mood_Event.getSituation();
+        Boolean privacy = Current_Mood_Event.getPrivacy();
+        db = FirebaseFirestore.getInstance();
 
         if (imageUri != null && !imageUri.isEmpty()) {
             // Use Glide to load the image into the ImageView
@@ -111,17 +110,18 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             ThisPictureDescription.setImageResource(R.drawable.rounded_background);
         }
 
-        String mood = Current_Mood_Event.getEmotionalState();
-        String situation = Current_Mood_Event.getSituation();
-        db = FirebaseFirestore.getInstance();
 
+        if (privacy){ThisPrivacyImage.setImageResource(R.drawable.locked);}
+        else {ThisPrivacyImage.setImageResource(R.drawable.unlocked);}
 
         int situationId = SocialSituation.getImageIdBySituation(situation);
         if (situationId != -1) {
             ThisSituation.setImageResource(situationId);
+            ThisSituation.setVisibility(View.VISIBLE);
             Log.d("MoodAdapter", "Image set.");
         } else {
-            ThisSituation.setVisibility(View.GONE);  // Use a fallback
+            ThisSituation.setVisibility(View.GONE);
+//            ThisSituationText.setVisibility(View.GONE);// Use a fallback
         }
 
         int imageId = MoodType.getImageIdByMood(mood);
@@ -212,6 +212,8 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                 bundle.putString("trigger", Current_Mood_Event.getTrigger());
                 bundle.putString("explainText", Current_Mood_Event.getExplainText());
                 bundle.putString("explainPicture", imageUri);
+                bundle.putBoolean("privacy",privacy);
+                bundle.putBoolean("fragment",true);
 
                 // Create the DialogFragment instance and set arguments
                 ViewMood viewMoodDialog = new ViewMood();
@@ -302,6 +304,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         args.putString("trigger", moodEvent.getTrigger());
         args.putString("explainText", moodEvent.getExplainText());
         args.putString("explainPicture", moodEvent.getExplainPicture());
+        args.putBoolean("privacy",moodEvent.getPrivacy());
 
         editFragment.setArguments(args);
 

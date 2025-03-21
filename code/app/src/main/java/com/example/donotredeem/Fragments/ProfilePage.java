@@ -107,16 +107,14 @@ public class ProfilePage extends Fragment {
             drawerLayout.closeDrawer(sidePanel); //side panel closing
         });
 
-
         sidePanel.findViewById(R.id.nav_history).setOnClickListener(v -> {
-            drawerLayout.closeDrawer(sidePanel); //history in panel
-
+            drawerLayout.closeDrawer(sidePanel);
 
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             Fragment existingFragment = fragmentManager.findFragmentByTag("moodhistory");
 
-
             if (existingFragment == null) {
+
                 moodhistory historyFragment = new moodhistory();
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_container, historyFragment, "moodhistory")
@@ -152,34 +150,34 @@ public class ProfilePage extends Fragment {
      *
      * @param username The username of the logged-in user
      */
-    private void fetchUserMoodEvents(String username) {
-        if (username == null) {
-            Log.e("MoodHistory", "No username found in SharedPreferences");
-            return;
-        }
-
-        db.collection("User")
-                .whereEqualTo("username", username)
-                .addSnapshotListener((querySnapshot, error) -> {
-                    if (!querySnapshot.isEmpty()) {
-                        DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
-                        Log.d("MoodHistory", "User found: " + userDoc.getData());
-                        List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
-                        if (moodRefsList != null && !moodRefsList.isEmpty()) {
-
-                            fetchMoodEvents(moodRefsList); // Fetch the referenced mood events
-                        }
-                        else {
-                            Log.d("MoodHistory", "No mood events found.");
-                        }
-                    }
-
-                    else {
-                        Log.e("MoodHistory", "No user found with username: " + username);
-                    }
-                });
-
-    }
+//    private void fetchUserMoodEvents(String username) {
+//        if (username == null) {
+//            Log.e("MoodHistory", "No username found in SharedPreferences");
+//            return;
+//        }
+//
+//        db.collection("User")
+//                .whereEqualTo("username", username)
+//                .addSnapshotListener((querySnapshot, error) -> {
+//                    if (!querySnapshot.isEmpty()) {
+//                        DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
+//                        Log.d("MoodHistory", "User found: " + userDoc.getData());
+//                        List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
+//                        if (moodRefsList != null && !moodRefsList.isEmpty()) {
+//
+//                            fetchMoodEvents(moodRefsList); // Fetch the referenced mood events
+//                        }
+//                        else {
+//                            Log.d("MoodHistory", "No mood events found.");
+//                        }
+//                    }
+//
+//                    else {
+//                        Log.e("MoodHistory", "No user found with username: " + username);
+//                    }
+//                });
+//
+//    }
 
     /**
      * Fetches mood events from the provided list of document references.
@@ -187,46 +185,46 @@ public class ProfilePage extends Fragment {
      *
      * @param moodRefs The list of document references for mood events
      */
-    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
-        ArrayList<MoodEvent> tempList = new ArrayList<>();
-        final int[] fetchedCount = {0}; // Counter to track fetched events
-
-        for (DocumentReference moodRef : moodRefs) {
-            moodRef.get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
-                    try {
-                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
-                        if (moodEvent != null) {
-                            tempList.add(moodEvent);
-                        }
-                    } catch (Exception e) {
-                        Log.e("MoodHistory", "Error converting document", e);
-                    }
-                }
-
-                fetchedCount[0]++;
-                if (fetchedCount[0] == moodRefs.size()) {
-                    // All events fetched, now sort and display
-                    moodHistoryList.clear();
-                    moodHistoryList.addAll(tempList);
-
-                    // Sort first
-                    sortMoodEvents();
-
-                    // Keep only the 2 most recent
-                    if (moodHistoryList.size() >2) {
-                        moodHistoryList = new ArrayList<>(moodHistoryList.subList(0, 2));
-                    }
-
-
-                    Display( moodHistoryList);
-                }
-            }).addOnFailureListener(e -> {
-                Log.e("MoodHistory", "Error fetching document", e);
-                fetchedCount[0]++;
-            });
-        }
-    }
+//    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+//        ArrayList<MoodEvent> tempList = new ArrayList<>();
+//        final int[] fetchedCount = {0}; // Counter to track fetched events
+//
+//        for (DocumentReference moodRef : moodRefs) {
+//            moodRef.get().addOnSuccessListener(documentSnapshot -> {
+//                if (documentSnapshot.exists()) {
+//                    try {
+//                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
+//                        if (moodEvent != null) {
+//                            tempList.add(moodEvent);
+//                        }
+//                    } catch (Exception e) {
+//                        Log.e("MoodHistory", "Error converting document", e);
+//                    }
+//                }
+//
+//                fetchedCount[0]++;
+//                if (fetchedCount[0] == moodRefs.size()) {
+//                    // All events fetched, now sort and display
+//                    moodHistoryList.clear();
+//                    moodHistoryList.addAll(tempList);
+//
+//                    // Sort first
+//                    sortMoodEvents();
+//
+//                    // Keep only the 2 most recent
+//                    if (moodHistoryList.size() >2) {
+//                        moodHistoryList = new ArrayList<>(moodHistoryList.subList(0, 2));
+//                    }
+//
+//
+//                    Display( moodHistoryList);
+//                }
+//            }).addOnFailureListener(e -> {
+//                Log.e("MoodHistory", "Error fetching document", e);
+//                fetchedCount[0]++;
+//            });
+//        }
+//    }
 
     /**
      * Sorts the mood events list by date and time in reverse chronological order.
@@ -279,10 +277,97 @@ public class ProfilePage extends Fragment {
         });
 
         // Update adapter with sorted list
-        adapter = new MoodEventAdapter(requireContext(), sortedList);
+        adapter = new MoodEventAdapter(getContext(), sortedList);
         recent_list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
+
+    private void fetchUserMoodEvents(String username) {
+        if (username == null) {
+            Log.e("MoodHistory", "No username found in SharedPreferences");
+            return;
+        }
+
+        db.collection("User")
+                .whereEqualTo("username", username)
+                .addSnapshotListener((querySnapshot, error) -> {
+                    if (querySnapshot != null && !querySnapshot.isEmpty()) {
+                        DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
+                        Log.d("MoodHistory", "User found: " + userDoc.getData());
+                        List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
+                        if (moodRefsList != null && !moodRefsList.isEmpty()) {
+                            fetchMoodEvents(moodRefsList); // Fetch the referenced mood events
+                        } else {
+                            Log.d("MoodHistory", "No mood events found.");
+                        }
+                    } else {
+                        Log.e("MoodHistory", "No user found with username: " + username);
+                    }
+                });
+    }
+
+    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+        ArrayList<MoodEvent> tempList = new ArrayList<>();
+        final int[] fetchedCount = {0};
+
+        for (DocumentReference moodRef : moodRefs) {
+            moodRef.get().addOnSuccessListener(documentSnapshot -> {
+                if (documentSnapshot.exists()) {
+                    try {
+                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
+                        if (moodEvent != null) {
+                            tempList.add(moodEvent);
+                        }
+                    } catch (Exception e) {
+                        Log.e("MoodHistory", "Error converting document", e);
+                    }
+                }
+
+                fetchedCount[0]++;
+                if (fetchedCount[0] == moodRefs.size()) {
+
+                    moodHistoryList.clear();
+                    moodHistoryList.addAll(tempList);
+
+
+                    sortMoodEvents();
+
+                    // Keep only the 2 most recent
+                    if (!moodHistoryList.isEmpty()) {
+                        Log.e("PROFILE LIST", "fetchMoodEvents: not emprt" );
+                    if (moodHistoryList.size() > 2) {
+                        ArrayList<MoodEvent> RecentHistoryList = new ArrayList<MoodEvent>(moodHistoryList.subList(0, 2));
+                        Display(RecentHistoryList);
+                    }
+                    else {Display(moodHistoryList);}}
+                    else {
+                        Log.e("EMPTY_LIST", "fetchMoodEvents: LIST IS EMPTY");
+                    }
+
+
+
+
+                }
+            }).addOnFailureListener(e -> {
+                Log.e("MoodHistory", "Error fetching document", e);
+                fetchedCount[0]++;
+            });
+        }
+    }
+
+//    private void Display(ArrayList<MoodEvent> moodHistoryList) {
+//        // Update the adapter with sorted list
+//        if (adapter == null) {
+//            adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
+//            recent_list.setAdapter(adapter);
+//        } else {
+//            // Just update the existing adapter if it already exists
+//            adapter.clear();
+//            adapter.addAll(moodHistoryList);
+//            adapter.notifyDataSetChanged();
+//        }
+//    }
+
 
     /**
      * Parses a string representing a date in "dd/MM/yyyy" format into a LocalDate object.
