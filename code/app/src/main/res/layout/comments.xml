@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#222121"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <!-- Comment Input Section -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="8dp">
+
+        <EditText
+            android:id="@+id/commentInput"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:hint="Add a comment..."
+            android:inputType="textCapSentences"
+            android:maxLines="3"
+            android:textColor="#F8F5F5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/postComment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageButton
+            android:id="@+id/postComment"
+            android:layout_width="53dp"
+            android:layout_height="62dp"
+            android:backgroundTint="#222121"
+            android:scaleType="fitCenter"
+            android:src="@drawable/submit"
+            android:contentDescription="Submit Button"
+            app:layout_constraintBottom_toBottomOf="@id/commentInput"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/commentInput" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Comments List -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/commentsRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:scrollbars="vertical"
+        tools:listitem="@layout/item_comment" />
+
+</LinearLayout>
