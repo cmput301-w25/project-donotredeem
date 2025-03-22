@@ -58,6 +58,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
@@ -158,6 +159,7 @@ public class EditMoodEvent extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
 
         // Initialize Firebase
         db = FirebaseFirestore.getInstance();
