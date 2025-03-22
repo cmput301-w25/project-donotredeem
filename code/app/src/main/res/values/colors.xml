@@ -13,4 +13,10 @@
     <color name="Shy">#E5FFCB</color>
     <color name="Tired">#CBE6FF</color>
 
+
+<!-- for the comments box    //-->
+    <color name="surface_container">#FEF7FF</color>
+    <color name="colorOnSurface">#1D1B20</color>
+    <color name="colorOnSurfaceVariant">#49454F</color>
+    <color name="colorOutline">#79747E</color>
 </resources>
