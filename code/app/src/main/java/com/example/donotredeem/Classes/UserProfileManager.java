@@ -9,6 +9,7 @@ import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -109,5 +110,65 @@ public class UserProfileManager {
     public interface OnUpdateListener{
         void onSuccess();
         void onError(Exception e);
+    }
+
+
+
+
+    /**
+     * Fetches the user profile with follower and following details using the minimal constructor.
+     *
+     * @param username The unique ID for the user whose details are to be fetched.
+     * @param callback Callback to handle the result.
+     */
+    public void getUserProfileWithFollowers(String username, OnUserProfileFetchListener callback) {
+        assert db != null;
+        db.collection("User").document(username)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            // Extracting required data
+                            String bio = document.getString("bio");
+
+                            int followerCount = document.getLong("followers") != null ?
+                                    document.getLong("followers").intValue() : 0;
+                            int followingCount = document.getLong("following") != null ?
+                                    document.getLong("following").intValue() : 0;
+
+                            // Safely handling lists
+                            @SuppressWarnings("unchecked")
+                            List<String> followersList = (List<String>) document.get("followers_list");
+                            @SuppressWarnings("unchecked")
+                            List<String> followingList = (List<String>) document.get("following_list");
+                            @SuppressWarnings("unchecked")
+                            List<String> requestsList = (List<String>) document.get("requests");
+
+                            // Fallback to empty list if any of these are null
+                            if (followersList == null) followersList = new java.util.ArrayList<>();
+                            if (followingList == null) followingList = new java.util.ArrayList<>();
+                            if (requestsList == null) requestsList = new java.util.ArrayList<>();
+
+                            // Creating the Users object using the minimal constructor
+                            Users user = new Users(
+                                    username,
+                                    bio,
+                                    followerCount,
+                                    followersList,
+                                    followingCount,
+                                    followingList,
+                                    requestsList
+                            );
+
+                            // Passing the populated Users object to the callback
+                            callback.onUserProfileFetched(user);
+                        } else {
+                            callback.onUserProfileFetched(null);
+                        }
+                    } else {
+                        callback.onUserProfileFetchError(task.getException());
+                    }
+                });
     }
 }

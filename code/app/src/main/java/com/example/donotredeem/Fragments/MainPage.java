@@ -1,14 +1,18 @@
 package com.example.donotredeem.Fragments;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +20,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.example.donotredeem.LogIn;
 import com.example.donotredeem.MainPageAdapter;
@@ -46,6 +51,7 @@ public class MainPage extends Fragment {
     private MainPageAdapter main_page_adapter;
     private String loggedInUsername;
     private List<MoodEvent> MainMoodList;
+    private ImageView searchBtn;
 
     /**
      * Called to instantiate the fragment's view.
@@ -66,6 +72,7 @@ public class MainPage extends Fragment {
         //TextView textView = view.findViewById(R.id.user);
         MainMoodList = new ArrayList<MoodEvent>();
         Main_list =  view.findViewById(R.id.main_listView);
+        searchBtn = view.findViewById(R.id.imageView4);
 
         // Retrieve the username from SharedPreferences (saved during login)
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
@@ -89,6 +96,17 @@ public class MainPage extends Fragment {
         }
 
         button.setOnClickListener(view1 -> logout());
+
+        searchBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_container, new Explore())
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
 
         return view;
     }

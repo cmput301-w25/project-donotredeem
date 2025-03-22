@@ -1,5 +1,7 @@
 package com.example.donotredeem.Fragments;
 
+import static java.security.AccessController.getContext;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;

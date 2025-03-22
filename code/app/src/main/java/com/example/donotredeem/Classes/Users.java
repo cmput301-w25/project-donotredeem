@@ -20,10 +20,11 @@ public class Users {
 //    private String picture;
     private  List<String> MoodREF;
 //    private Boolean isAdmin;
-//    private int followers;
-//    private List<String> followerList;
-//    private int following;
-//    private List<String> followingList;
+    private int followers;
+    private List<String> followerList;
+    private int following;
+    private List<String> followingList;
+    private List<String> requests;
     private String bio;
 
     /**
@@ -67,12 +68,33 @@ public class Users {
 //        this.followerList = followerList;
 //        this.followingList = followingList;
 //    }
+    public Users (String username, String password, String email, int followers, int following, List<String> followerList, List<String> followingList, List<String> requests){
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.followers = followers;
+        this.following = following;
+        this.followerList = followerList;
+        this.followingList = followingList;
+        this.requests = requests;
+    }
 
     public Users(String username, String password, String email, String bio) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.bio = bio;
+    }
+
+    public Users(String username, String bio, int followers, List<String> followerList,
+                 int following, List<String> followingList, List<String> requests) {
+        this.username = username;
+        this.bio = bio;
+        this.followers = followers;
+        this.followerList = followerList;
+        this.following = following;
+        this.followingList = followingList;
+        this.requests = requests;
     }
 
     public String getUsername() {
@@ -156,37 +178,37 @@ public class Users {
 //        isAdmin = admin;
 //    }
 //
-//    public int getFollowers() {
-//        return followers;
-//    }
-//
-//    public void setFollowers(int followers) {
-//        this.followers = followers;
-//    }
-//
-//    public List<String> getFollowerList() {
-//        return followerList;
-//    }
-//
-//    public void setFollowerList(List<String> followerList) {
-//        this.followerList = followerList;
-//    }
-//
-//    public int getFollowing() {
-//        return following;
-//    }
-//
-//    public void setFollowing(int following) {
-//        this.following = following;
-//    }
-//
-//    public List<String> getFollowingList() {
-//        return followingList;
-//    }
-//
-//    public void setFollowingList(List<String> followingList) {
-//        this.followingList = followingList;
-//    }
+    public int getFollowers() {
+        return followers;
+    }
+
+    public void setFollowers(int followers) {
+        this.followers = followers;
+    }
+
+    public List<String> getFollowerList() {
+        return followerList;
+    }
+
+    public void setFollowerList(List<String> followerList) {
+        this.followerList = followerList;
+    }
+
+    public int getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(int following) {
+        this.following = following;
+    }
+
+    public List<String> getFollowingList() {
+        return followingList;
+    }
+
+    public void setFollowingList(List<String> followingList) {
+        this.followingList = followingList;
+    }
 
     public List<String> getMoodREF() {
         return MoodREF;
@@ -203,4 +225,13 @@ public class Users {
     public void setBio(String bio) {
         this.bio = bio;
     }
+
+    public List<String> getRequests() {
+        return requests;
+    }
+
+    public void setRequests(List<String> requests) {
+        this.requests = requests;
+    }
 }
+
