@@ -25,6 +25,7 @@ import com.example.donotredeem.Fragments.AddMoodEvent;
 import com.example.donotredeem.Fragments.Analytics;
 import com.example.donotredeem.Fragments.MainPage;
 import com.example.donotredeem.Fragments.Map;
+import com.example.donotredeem.Fragments.RequestsFragment;
 import com.example.donotredeem.Fragments.moodhistory;
 import com.example.donotredeem.Fragments.ProfilePage;
 import com.example.donotredeem.Fragments.Requests;
@@ -145,15 +146,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        heartButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                removeAddMoodEventIfExists();
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new Requests())
-                        .addToBackStack(null)
-                        .commit();
-            }
+//        heartButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                removeAddMoodEventIfExists();
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.fragment_container, new Requests())
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
+//        });
+
+        // In MainActivity.java
+        heartButton.setOnClickListener(v -> {
+            removeAddMoodEventIfExists(); // Your existing cleanup method
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new RequestsFragment())
+                    .addToBackStack(null)
+                    .commit();
         });
 
         profilePage.setOnClickListener(new View.OnClickListener() {
