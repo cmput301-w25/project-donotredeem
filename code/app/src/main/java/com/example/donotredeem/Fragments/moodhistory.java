@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -50,6 +51,8 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
     private String loggedInUsername;
     private ArrayList<MoodEvent> moodHistoryList;
     private SharedPreferences sharedPreferences;
+
+
 
     /**
      * Applies a filtered list of mood events to the display.
@@ -286,7 +289,7 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
             }
         });
 
-        adapter = new MoodEventAdapter(context, sortedList);
+        adapter = new MoodEventAdapter(context, sortedList, listView);
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -331,6 +334,11 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
             Log.e("MoodHistory", "Invalid time format: " + timeString, e);
             return LocalTime.MIN;
         }
+    }
+
+    private void clearSavedFilters() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
+        sharedPreferences.edit().clear().apply();
     }
 
 }

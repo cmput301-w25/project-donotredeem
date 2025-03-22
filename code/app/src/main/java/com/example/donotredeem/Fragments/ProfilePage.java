@@ -91,7 +91,7 @@ public class ProfilePage extends Fragment {
             fetchUserMoodEvents(loggedInUsername);
         }
 
-        adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
+        adapter = new MoodEventAdapter(requireContext(), moodHistoryList, recent_list);
         recent_list.setAdapter(adapter);
 
 
@@ -277,7 +277,7 @@ public class ProfilePage extends Fragment {
         });
 
         // Update adapter with sorted list
-        adapter = new MoodEventAdapter(getContext(), sortedList);
+        adapter = new MoodEventAdapter(getContext(), sortedList, recent_list);
         recent_list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }

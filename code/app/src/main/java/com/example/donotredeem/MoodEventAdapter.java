@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -38,6 +39,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
     private Context context;
     private ArrayList<MoodEvent> Events;
+    private ListView listView;
     private FirebaseFirestore db;
     private SwipeToActionLayout swipeToActionLayout;
     /**
@@ -45,10 +47,11 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
      * @param context The context of the activity or fragment.
      * @param Events The list of MoodEvent objects to display.
      */
-    public MoodEventAdapter(Context context, ArrayList<MoodEvent> Events){
+    public MoodEventAdapter(Context context, ArrayList<MoodEvent> Events, ListView listView){
         super(context,0,Events);
         this.context = context;
         this.Events = Events;
+        this.listView = listView;
     }
 
     @NonNull
@@ -180,9 +183,24 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                     // Get the mood event corresponding to this item
                     MoodEvent moodEvent = getItem(position);
 
+                    int firstVisiblePosition = listView.getFirstVisiblePosition();
+                    View firstVisibleView = listView.getChildAt(0);
+                    int topOffset = (firstVisibleView != null) ? firstVisibleView.getTop() : 0;
+
                     // Remove the mood event from the list and notify adapter
                     Events.remove(position);
                     notifyDataSetChanged();
+
+                    // Adjust position if the deleted item was above the current first visible item
+                    if (position <= firstVisiblePosition) {
+                        firstVisiblePosition = Math.max(0, firstVisiblePosition - 1);
+                    }
+
+                    // Restore scroll position after the list updates
+                    int finalFirstVisiblePosition = firstVisiblePosition;
+                    listView.post(() -> {
+                        listView.setSelectionFromTop(finalFirstVisiblePosition, topOffset);
+                    });
 
                     // Delete the mood event from Firestore and update User's MoodRef array
                     deleteMoodEventFromFirestore(moodEvent);
