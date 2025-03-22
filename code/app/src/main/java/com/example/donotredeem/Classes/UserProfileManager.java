@@ -3,6 +3,7 @@ package com.example.donotredeem.Classes;
 import android.util.Log;
 
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
@@ -34,6 +35,35 @@ public class UserProfileManager {
         // Initialize Firestore instance
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
+    }
+
+    // Add to UserProfileManager class
+    public void acceptFollowRequest(String currentUser, String requesterUsername, OnUpdateListener listener) {
+        // 1. Add requester to current user's followers
+        db.collection("User").document(currentUser)
+                .update(
+                        "followers", FieldValue.increment(1),
+                        "followers_list", FieldValue.arrayUnion(requesterUsername),
+                        "requests", FieldValue.arrayRemove(requesterUsername)
+                )
+                .addOnSuccessListener(aVoid -> {
+                    // 2. Add current user to requester's following
+                    db.collection("User").document(requesterUsername)
+                            .update(
+                                    "following", FieldValue.increment(1),
+                                    "following_list", FieldValue.arrayUnion(currentUser)
+                            )
+                            .addOnSuccessListener(aVoid1 -> listener.onSuccess())
+                            .addOnFailureListener(e -> listener.onError(e));
+                })
+                .addOnFailureListener(e -> listener.onError(e));
+    }
+
+    public void declineFollowRequest(String currentUser, String requesterUsername, OnUpdateListener listener) {
+        db.collection("User").document(currentUser)
+                .update("requests", FieldValue.arrayRemove(requesterUsername))
+                .addOnSuccessListener(aVoid -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onError(e));
     }
 
 
