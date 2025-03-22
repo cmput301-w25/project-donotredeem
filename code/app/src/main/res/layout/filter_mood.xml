@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/filter_card"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:cardElevation="10dp">
+    app:cardElevation="10dp"
+    android:layout_marginHorizontal="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="381dp"
+        android:layout_height="400dp"
         android:background="#222121"
         tools:ignore="ExtraText">
 
         <HorizontalScrollView
             android:id="@+id/filter_emojiScrollView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="390dp"
+            android:layout_height="85dp"
             android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -265,6 +267,7 @@
             </LinearLayout>
         </HorizontalScrollView>
 
+
         <LinearLayout
             android:id="@+id/ButtonlinearLayout"
             android:layout_width="wrap_content"
@@ -364,6 +367,7 @@
             android:id="@+id/filter_textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/inter"
             android:text="Filter Mood"
             android:textColor="#F8F4F4"
@@ -429,17 +433,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/close"
             app:tint="#F4EEEE" />
-
-        <HorizontalScrollView
-        android:id="@+id/emojiScrollView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/filter_textView11">
-
-    </HorizontalScrollView>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
