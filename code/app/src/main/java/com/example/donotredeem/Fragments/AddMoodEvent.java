@@ -149,7 +149,7 @@ public class AddMoodEvent extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Places.initialize(requireContext(), "AIzaSyCoAZY3RwbhOJq-Dg1S3gAIOlIcQFfusnA");
+        Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
 
         Log.d("AddMoodEvent", "onCreate called");
 
