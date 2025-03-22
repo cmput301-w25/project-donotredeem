@@ -47,19 +47,19 @@ public class SearchedUser extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.searched_user, container, false);
-
-        // Initialize TextViews
-        usernameTextView = view.findViewById(R.id.username_text);
-        bioTextView = view.findViewById(R.id.bio_text);
-        followersTextView = view.findViewById(R.id.followers_text);
-        followingTextView = view.findViewById(R.id.following_text);
-
-        // Initialize ListViews
-        followerListView = view.findViewById(R.id.follower_list);
-        followingListView = view.findViewById(R.id.following_list);
-
-        // Fetch and display user data
-        fetchUserData(username);
+//
+//        // Initialize TextViews
+//        usernameTextView = view.findViewById(R.id.username_text);
+//        bioTextView = view.findViewById(R.id.bio_text);
+//        followersTextView = view.findViewById(R.id.followers_text);
+//        followingTextView = view.findViewById(R.id.following_text);
+//
+//        // Initialize ListViews
+//        followerListView = view.findViewById(R.id.follower_list);
+//        followingListView = view.findViewById(R.id.following_list);
+//
+//        // Fetch and display user data
+//        fetchUserData(username);
 
         return view;
     }

@@ -45,17 +45,17 @@ public class Explore extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // Get the selected username
-                String selectedUsername = displaylist.get(position);
-
-                // Create a new instance of DetailFragment and pass the username
-                SearchedUser searchedUser = SearchedUser.newInstance(selectedUsername);
-
-                // Replace the current fragment with DetailFragment
-                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, SearchedUser());
-                transaction.addToBackStack(null);
-                transaction.commit();
+//                // Get the selected username
+//                String selectedUsername = displaylist.get(position);
+//
+//                // Create a new instance of DetailFragment and pass the username
+//                SearchedUser searchedUser = SearchedUser.newInstance(selectedUsername);
+//
+//                // Replace the current fragment with DetailFragment
+//                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+//                transaction.replace(R.id.fragment_container, SearchedUser());
+//                transaction.addToBackStack(null);
+//                transaction.commit();
             }
         });
 
