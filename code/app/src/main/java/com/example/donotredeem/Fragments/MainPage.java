@@ -63,7 +63,7 @@ public class MainPage extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         Button button = view.findViewById(R.id.temp_sign_out);
-        TextView textView = view.findViewById(R.id.user);
+        //TextView textView = view.findViewById(R.id.user);
         MainMoodList = new ArrayList<MoodEvent>();
         Main_list =  view.findViewById(R.id.main_listView);
 

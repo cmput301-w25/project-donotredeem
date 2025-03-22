@@ -15,9 +15,8 @@
 
         <HorizontalScrollView
             android:id="@+id/filter_emojiScrollView"
-            android:layout_width="407dp"
-            android:layout_height="75dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:scrollbars="none"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -28,99 +27,241 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="8dp">
+                android:padding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textView11"
+                app:layout_constraintVertical_bias="0.0">
 
-                <ImageButton
-                    android:id="@+id/filter_emoji_happy"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/hapi" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/filter_emoji_sad"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    <ImageButton
+                        android:id="@+id/filter_emoji_happy"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/hapi" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Happy"
+                        android:textColor="#F4F2F2"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/sad" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/filter_emoji_fear"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    <ImageButton
+                        android:id="@+id/filter_emoji_sad"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/sad" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sad"
+                        android:textColor="#F4F2F2"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/fear" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/filter_emoji_angry"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    <ImageButton
+                        android:id="@+id/filter_emoji_fear"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/fear" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Fear"
+                        android:textColor="#F4F2F2"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/angry" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/filter_emoji_confused"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    <ImageButton
+                        android:id="@+id/filter_emoji_angry"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/angry" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Angry"
+                        android:textColor="#F4F2F2"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/confused" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/filter_emoji_disgusted"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    <ImageButton
+                        android:id="@+id/filter_emoji_confused"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/confused" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Confused"
+                        android:textColor="#F4F2F2"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/disgust" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/filter_emoji_shameful"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    <ImageButton
+                        android:id="@+id/filter_emoji_disgusted"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/disgust" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Disgusted"
+                        android:textColor="#F4F2F2"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/shame" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/filter_emoji_surprised"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    <ImageButton
+                        android:id="@+id/filter_emoji_shameful"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/shame" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shameful"
+                        android:textColor="#F4F2F2"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/surprised" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/filter_emoji_shy"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    <ImageButton
+                        android:id="@+id/filter_emoji_surprised"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/surprised" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Surprised"
+                        android:textColor="#F4F2F2"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/shy" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                <ImageButton
-                    android:id="@+id/filter_emoji_tired"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    <ImageButton
+                        android:id="@+id/filter_emoji_shy"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/shy" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Shy"
+                        android:textColor="#F4F2F2"
+                        android:textSize="12sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/tired" />
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
+                    <ImageButton
+                        android:id="@+id/filter_emoji_tired"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@null"
+                        android:scaleType="fitCenter"
+                        android:src="@drawable/tired" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Tired"
+                        android:textColor="#F4F2F2"
+                        android:textSize="12sp" />
+                </LinearLayout>
             </LinearLayout>
         </HorizontalScrollView>
 
