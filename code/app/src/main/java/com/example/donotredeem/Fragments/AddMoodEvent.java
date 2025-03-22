@@ -785,7 +785,7 @@ public class AddMoodEvent extends Fragment {
         String moodEventId = UUID.randomUUID().toString();
         DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
 
-        MoodEvent moodEvent = new MoodEvent(loggedInUsername,privacy, moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
+        MoodEvent moodEvent = new MoodEvent(selectedGeoPoint, loggedInUsername,privacy, moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
 
         // We'll wait for two tasks: saving the mood event and updating the user doc.
         final int totalTasks = 2;

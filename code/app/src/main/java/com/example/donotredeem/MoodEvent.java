@@ -6,6 +6,8 @@ import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
+import com.google.firebase.firestore.GeoPoint;
+
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,6 +30,8 @@ public class MoodEvent {
     private String explainPicture;
     private String moodEventId;
 
+    private GeoPoint location;
+
     /**
      * Constructs a MoodEvent with all possible fields.
      *
@@ -40,7 +44,7 @@ public class MoodEvent {
      * @param explainText Additional explanation text (optional).
      * @param explainPicture A picture URI representing the event (optional).
      */
-    public MoodEvent(String username, Boolean privacy, String emotionalState, String date, String time, String place, @Nullable String situation,
+    public MoodEvent(GeoPoint location, String username, Boolean privacy, String emotionalState, String date, String time, String place, @Nullable String situation,
                      @Nullable String trigger, @Nullable String explainText, @Nullable String explainPicture) {
 
         // Required Field
@@ -61,6 +65,7 @@ public class MoodEvent {
         this.trigger = trigger;
         this.explainText = explainText;
         this.explainPicture = explainPicture;
+        this.location = location;
     }
 
     /**
@@ -76,7 +81,7 @@ public class MoodEvent {
      * @param explainText Additional explanation text (optional).
      * @param explainPicture A picture URI representing the event (optional).
      */
-    public MoodEvent(String username, Boolean privacy, String moodEventId, String emotionalState, String date, String time,
+    public MoodEvent(GeoPoint location, String username, Boolean privacy, String moodEventId, String emotionalState, String date, String time,
                      String place, @Nullable String situation,
                      @Nullable String trigger, @Nullable String explainText, @Nullable String explainPicture) {
         if (emotionalState == null || emotionalState.trim().isEmpty()) {
@@ -88,6 +93,7 @@ public class MoodEvent {
         this.privacy = privacy;
         this.time = time;
         this.date = date;
+        this.location = location;
         this.place = (place != null) ? place : "";
         this.situation = situation;
         this.trigger = trigger;
@@ -101,6 +107,14 @@ public class MoodEvent {
 
 
     // Getters
+
+    public GeoPoint getLocation() {
+        return location;
+    }
+
+    public void setLocation(GeoPoint location) {
+        this.location = location;
+    }
 
     public Boolean getPrivacy() {
         return privacy;

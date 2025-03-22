@@ -49,6 +49,7 @@ import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
 import com.example.donotredeem.SocialSituation;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -57,6 +58,10 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,6 +69,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -71,6 +77,8 @@ import com.google.firebase.storage.UploadTask;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -92,6 +100,8 @@ public class EditMoodEvent extends Fragment {
 
     // Variables to store selected values
     private String selectedMoodName = null;
+
+    private GeoPoint selectedGeoPoint;
     private String selectedSocial = null;
 
     // Request codes
@@ -102,6 +112,7 @@ public class EditMoodEvent extends Fragment {
     // ActivityResultLaunchers for camera and gallery
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
+    private ActivityResultLauncher<Intent> placeAutocompleteLauncher;
 
     // Location variables
     private FusedLocationProviderClient fusedLocationClient;
@@ -169,6 +180,32 @@ public class EditMoodEvent extends Fragment {
                 image.setImageURI(imageUri);
             }
         });
+
+        placeAutocompleteLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+            if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
+
+                Place place = Autocomplete.getPlaceFromIntent(result.getData());
+
+                if (place.getLatLng() != null) {
+
+                    double latitude = place.getLatLng().latitude;
+                    double longitude = place.getLatLng().longitude;
+
+                    selectedGeoPoint = new GeoPoint(latitude, longitude);
+
+                    locationEdit.setText(place.getName());
+
+                    Log.d("Location", "Name: " + place.getName() + ", Lat: " + latitude + ", Lng: " + longitude);
+                }
+
+            } else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(result.getData());
+                Log.e("Autocomplete", "Error: " + status.getStatusMessage());
+
+
+            }
+
+        });
     }
 
     /**
@@ -205,6 +242,7 @@ public class EditMoodEvent extends Fragment {
         closeButton = view.findViewById(R.id.closeButton);
         SwitchMaterial private_button;
         private_button = view.findViewById(R.id.edit_private_button);
+
         // this is not pre populating with prev statae idk how to do that someome help - heer
 
         // Pre-populate values from passed arguments
@@ -220,6 +258,7 @@ public class EditMoodEvent extends Fragment {
             String explainText = args.getString("explainText");
             String explainPicture = args.getString("explainPicture");
             Boolean privacy = args.getBoolean("privacy");
+            double[] location = args.getDoubleArray("locationpts");
 
             // For this example, assume selectedMoodName comes from emotionalState
             selectedMoodName = emotionalState;
@@ -298,22 +337,49 @@ public class EditMoodEvent extends Fragment {
         mediaUpload.setOnClickListener(v -> showSourceDialog());
 
         // Location handling
-        locationButton.setOnClickListener(v -> {
-            if (locationButton.isChecked()) {
-                checkLocationPermission();
-            } else {
-                locationEdit.setText("");
-            }
-        });
+//        locationButton.setOnClickListener(v -> {
+//            if (locationButton.isChecked()) {
+//                checkLocationPermission();
+//            } else {
+//                locationEdit.setText("");
+//            }
+//        });
+//
+//        locationEdit.addTextChangedListener(new TextWatcher() {
+//            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+//            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+//                if (s.length() > 0 && locationButton.isChecked()) {
+//                    locationButton.setChecked(false);
+//                }
+//            }
+//            @Override public void afterTextChanged(Editable s) { }
+//        });
 
-        locationEdit.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() > 0 && locationButton.isChecked()) {
-                    locationButton.setChecked(false);
-                }
+        locationEdit.setOnClickListener(v -> {
+            locationEdit.requestFocus();
+
+            List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+//            Intent intent = new Autocomplete.IntentBuilder(
+//                    AutocompleteActivityMode.OVERLAY, fields)
+//                    .setTypeFilter(TypeFilter.ADDRESS) // Focuses on addresses (street names included)
+//                    .build(requireActivity());
+
+            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(requireActivity());
+            placeAutocompleteLauncher.launch(intent);
+        });
+        RadioButton location_button = view.findViewById(R.id.radioButton);
+        final boolean[] isSelected_loc = {false};
+
+        location_button.setOnClickListener(v -> {
+            if (isSelected_loc[0]) {
+                locationEdit.setText("");
+                location_button.setChecked(false);
+            } else {
+                checkLocationPermission();
+                location_button.setChecked(true);
             }
-            @Override public void afterTextChanged(Editable s) { }
+
+            isSelected_loc[0] = !isSelected_loc[0];
         });
 
         // Date handling
@@ -710,7 +776,7 @@ public class EditMoodEvent extends Fragment {
             return;
         }
         DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
-        MoodEvent updatedMoodEvent = new MoodEvent(loggedInUsername,privacy,moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
+        MoodEvent updatedMoodEvent = new MoodEvent(selectedGeoPoint, loggedInUsername,privacy,moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
 
         final int totalTasks = 1;
         final int[] completedTasks = {0};
