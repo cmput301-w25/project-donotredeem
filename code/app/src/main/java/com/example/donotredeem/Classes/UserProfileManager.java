@@ -115,12 +115,6 @@ public class UserProfileManager {
 
 
 
-    /**
-     * Fetches the user profile with follower and following details using the minimal constructor.
-     *
-     * @param username The unique ID for the user whose details are to be fetched.
-     * @param callback Callback to handle the result.
-     */
     public void getUserProfileWithFollowers(String username, OnUserProfileFetchListener callback) {
         assert db != null;
         db.collection("User").document(username)
@@ -131,13 +125,11 @@ public class UserProfileManager {
                         if (document.exists()) {
                             // Extracting required data
                             String bio = document.getString("bio");
-
                             int followerCount = document.getLong("followers") != null ?
                                     document.getLong("followers").intValue() : 0;
                             int followingCount = document.getLong("following") != null ?
                                     document.getLong("following").intValue() : 0;
 
-                            // Safely handling lists
                             @SuppressWarnings("unchecked")
                             List<String> followersList = (List<String>) document.get("followers_list");
                             @SuppressWarnings("unchecked")
@@ -145,12 +137,12 @@ public class UserProfileManager {
                             @SuppressWarnings("unchecked")
                             List<String> requestsList = (List<String>) document.get("requests");
 
-                            // Fallback to empty list if any of these are null
+                            // Handle null lists gracefully
                             if (followersList == null) followersList = new java.util.ArrayList<>();
                             if (followingList == null) followingList = new java.util.ArrayList<>();
                             if (requestsList == null) requestsList = new java.util.ArrayList<>();
 
-                            // Creating the Users object using the minimal constructor
+                            // Create the Users object
                             Users user = new Users(
                                     username,
                                     bio,
@@ -161,7 +153,7 @@ public class UserProfileManager {
                                     requestsList
                             );
 
-                            // Passing the populated Users object to the callback
+                            // Pass data to callback
                             callback.onUserProfileFetched(user);
                         } else {
                             callback.onUserProfileFetched(null);
