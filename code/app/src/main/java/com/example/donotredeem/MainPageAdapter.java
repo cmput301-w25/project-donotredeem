@@ -134,6 +134,16 @@ public class MainPageAdapter extends ArrayAdapter<MoodEvent> {
             }
         });
 
+        ImageView commentIcon = MainView.findViewById(R.id.comment_icon);
+        commentIcon.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("postId", Current_Mood_Event.getMoodEventId());
+            CommentsFragment commentsFragment = new CommentsFragment();
+            commentsFragment.setArguments(bundle);
+            commentsFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "CommentsFragment");
+        });
+
+
 
         return MainView;
     }

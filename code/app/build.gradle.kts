@@ -46,7 +46,7 @@ dependencies {
     implementation ("com.google.android.gms:play-services-auth:20.5.0")
     //implementation(libs.protobuf.javalite)
     implementation("com.google.protobuf:protobuf-javalite:3.25.1")
-
+    implementation ("com.google.android.material:material:1.6.1")
     //switch button
     implementation ("com.google.android.material:material:1.11.0")
 
