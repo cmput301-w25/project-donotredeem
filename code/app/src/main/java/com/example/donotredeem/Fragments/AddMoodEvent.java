@@ -29,12 +29,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -202,6 +204,7 @@ public class AddMoodEvent extends Fragment {
 
         });
 
+
     }
 
     /**
@@ -240,6 +243,21 @@ public class AddMoodEvent extends Fragment {
         View view = inflater.inflate(R.layout.add_mood, container, false);
         View fragmentRoot = view.findViewById(R.id.fragment_root);
         EditText description = view.findViewById(R.id.desc);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            String selectedMood = args.getString("SELECTED_MOOD");
+            if (selectedMood != null) {
+                int buttonId = getButtonIdForMood(selectedMood);
+                if (buttonId != -1) {
+                    ImageButton emojiButton = view.findViewById(buttonId);
+                    if (emojiButton != null) {
+                        highlightSelectedEmoji(emojiButton);
+                    }
+                }
+            }
+        }
+
 //        description.addTextChangedListener(new TextWatcher() {
 //            @Override
 //            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -964,6 +982,21 @@ public class AddMoodEvent extends Fragment {
             }
         }
         return null;
+    }
+    private int getButtonIdForMood(String moodName) {
+        switch (moodName.toLowerCase()) {
+            case "happy": return R.id.emoji_happy;
+            case "sad": return R.id.emoji_sad;
+            case "fear": return R.id.emoji_fear;
+            case "angry": return R.id.emoji_angry;
+            case "confused": return R.id.emoji_confused;
+            case "disgusted": return R.id.emoji_disgusted;
+            case "shameful": return R.id.emoji_shameful;
+            case "surprised": return R.id.emoji_surprised;
+            case "shy": return R.id.emoji_shy;
+            case "tired": return R.id.emoji_tired;
+            default: return -1; // Handle unknown moods
+        }
     }
 
 

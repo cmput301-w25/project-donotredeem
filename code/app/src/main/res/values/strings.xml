@@ -33,4 +33,23 @@
     <string name="what_helps_you_feel_better_when_you_are_down">What helps you feel better when you are down?</string>
     <string name="select_all_that_apply">Select all that apply</string>
     <string name="default_web_client_id">YOUR_WEB_CLIENT_ID</string>
+    <string-array name="mood_frequency_options">
+        <item>Select frequency</item>
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Monthly</item>
+        <item>Only when I\'m feeling down</item>
+    </string-array>
+    <string-array name="mood_names">
+        <item>Happy</item>
+        <item>Sad</item>
+        <item>Fear</item>
+        <item>Angry</item>
+        <item>Confused</item>
+        <item>Disgusted</item>
+        <item>Shameful</item>
+        <item>Surprised</item>
+        <item>Shy</item>
+        <item>Tired</item>
+    </string-array>
 </resources>

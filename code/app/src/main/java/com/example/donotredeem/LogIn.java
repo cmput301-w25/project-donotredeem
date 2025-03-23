@@ -118,14 +118,12 @@ public class LogIn extends AppCompatActivity {
                 String username = editTextUsername.getText().toString();
                 String password = editTextPassword.getText().toString();
 
-                if (TextUtils.isEmpty(username)) {
-                    return;
-                }
-
+                if (TextUtils.isEmpty(username)){
+                    Snackbar.make(findViewById(android.R.id.content), "Please enter username", Snackbar.LENGTH_LONG).show();
+                    return;}
                 if (TextUtils.isEmpty(password)) {
-                    return;
-                }
-
+                    Snackbar.make(findViewById(android.R.id.content), "Please enter password", Snackbar.LENGTH_LONG).show();
+                    return;}
 
                 // Firestore query to check if the username exists and password matches
                 Log.d(TAG, "Fetching user: " + username);

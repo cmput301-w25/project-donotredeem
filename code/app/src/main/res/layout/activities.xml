@@ -13,6 +13,7 @@
 
         <ImageButton
             android:id="@+id/music_button"
+            android:tag="Music"
             android:layout_width="173dp"
             android:layout_height="168dp"
             android:layout_marginTop="40dp"
@@ -29,6 +30,7 @@
 
         <ImageButton
             android:id="@+id/dancer_button"
+            android:tag="Dancer"
             android:layout_width="173dp"
             android:layout_height="168dp"
             android:layout_marginTop="40dp"
@@ -45,6 +47,7 @@
 
         <ImageButton
             android:id="@+id/joystick_button"
+            android:tag="Gaming"
             android:layout_width="173dp"
             android:layout_height="168dp"
             android:layout_marginTop="20dp"
@@ -61,6 +64,7 @@
 
         <ImageButton
             android:id="@+id/walk_button"
+            android:tag="Walking"
             android:layout_width="173dp"
             android:layout_height="168dp"
             android:layout_marginTop="20dp"
@@ -77,6 +81,7 @@
 
         <ImageButton
             android:id="@+id/playing_button"
+            android:tag="Sports"
             android:layout_width="173dp"
             android:layout_height="168dp"
             android:layout_marginTop="20dp"
@@ -93,6 +98,7 @@
 
         <ImageButton
             android:id="@+id/travel_button"
+            android:tag="Traveling"
             android:layout_width="173dp"
             android:layout_height="168dp"
             android:layout_marginTop="20dp"
@@ -109,6 +115,7 @@
 
         <ImageButton
             android:id="@+id/relationship_button"
+            android:tag="Socializing"
             android:layout_width="172dp"
             android:layout_height="165dp"
             android:layout_marginTop="20dp"
@@ -125,6 +132,7 @@
 
         <ImageButton
             android:id="@+id/art_button"
+            android:tag="Art"
             android:layout_width="173dp"
             android:layout_height="168dp"
             android:layout_marginTop="20dp"
@@ -141,6 +149,7 @@
 
         <ImageButton
             android:id="@+id/cooking_button"
+            android:tag="Cooking"
             android:layout_width="173dp"
             android:layout_height="168dp"
             android:layout_marginTop="20dp"
@@ -157,6 +166,7 @@
 
         <ImageButton
             android:id="@+id/reading_button"
+            android:tag="Reading"
             android:layout_width="173dp"
             android:layout_height="168dp"
             android:layout_marginTop="20dp"

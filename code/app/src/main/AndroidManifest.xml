@@ -35,6 +35,10 @@
         </provider>
 
         <activity
+            android:name=".MoodSelectionActivity"
+            android:exported="true"> <!-- Changed from false -->
+        </activity>
+        <activity
             android:name=".Register"
             android:exported="false">
             <meta-data

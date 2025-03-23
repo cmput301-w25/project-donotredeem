@@ -71,8 +71,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.main_activity);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new MainPage())
-                .addToBackStack(null)
                 .commit();
+
+        // Handle mood selection from MoodSelectionActivity
+        if (getIntent() != null && getIntent().hasExtra("SELECTED_MOOD")) {
+            String selectedMood = getIntent().getStringExtra("SELECTED_MOOD");
+            showAddMoodFragmentWithMood(selectedMood);
+        } else {
+            // Default to MainPage
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new MainPage())
+                    .commit();
+        }
+//        getSupportFragmentManager().beginTransaction()
+//                .replace(R.id.fragment_container, new MainPage())
+//                .addToBackStack(null)
+//                .commit();
 
         addEvent = findViewById(R.id.add_button);
         mapButton = findViewById(R.id.map_button);
@@ -209,6 +223,22 @@ public class MainActivity extends AppCompatActivity {
         if (editProfile != null) {
             fragmentManager.popBackStack("EditProfile", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
+    }
+    private void showAddMoodFragmentWithMood(String mood) {
+        // Create fragment instance
+        AddMoodEvent fragment = new AddMoodEvent();
+
+        // Pass mood via Bundle
+        Bundle args = new Bundle();
+        args.putString("SELECTED_MOOD", mood);
+        fragment.setArguments(args);
+
+        // Replace fragment container
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_bottom, R.anim.slide_out_bottom)
+                .replace(R.id.fragment_container, fragment, "AddMoodEvent")
+                .addToBackStack("AddMoodEvent")
+                .commit();
     }
 
 }
