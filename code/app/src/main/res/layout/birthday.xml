@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     android:background="#222121">
 
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_arrow_back"
+        android:contentDescription="back_button"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="#FFFFFF" />
+
     <ImageView
         android:id="@+id/balloons"
         android:layout_width="wrap_content"

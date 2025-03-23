@@ -7,6 +7,7 @@
     android:id="@+id/sign_up_id"
     android:background="#222122">
 
+
     <Button
         android:id="@+id/sign_up_done"
         android:layout_width="110dp"

@@ -385,26 +385,32 @@ public class Register extends AppCompatActivity {
             case 1:
                 setContentView(R.layout.sign_up_page1);
                 initializePage1();
+                setupBackButton(true);
                 break;
             case 2:
                 setContentView(R.layout.sign_up_page2);
                 initializePage2();
+                setupBackButton(false);
                 break;
             case 3:
                 setContentView(R.layout.birthday);
                 initializePage3();
+                setupBackButton(false);
                 break;
             case 4:
                 setContentView(R.layout.activities);
                 initializeActivitiesPage();
+                setupBackButton(false);
                 break;
             case 5:
                 setContentView(R.layout.remindermood);
                 setupReminderButtons();
+                setupBackButton(false);
                 break;
             case 6:
                 setContentView(R.layout.mood_recurrence); // Your XML name
                 setupMoodRecurrence();
+                setupBackButton(false);
                 break;
             case 7:
                 registerUser();
@@ -414,86 +420,197 @@ public class Register extends AppCompatActivity {
         setupNavigation();
     }
 
+    private void setupBackButton(boolean exitOnBack) {
+        ImageButton btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> {
+                if (exitOnBack) {
+                    finish(); // Exit registration on first page
+                } else {
+                    currentPage--;
+                    showPage(currentPage); // Navigate to previous page
+                }
+            });
+        }
+    }
+
+
     private void initializePage1() {
         etName = findViewById(R.id.sign_up_name_text);
         etEmail = findViewById(R.id.sign_up_email_text);
         etPhoneNo = findViewById(R.id.sign_up_phone_number_text);
         btnNext = findViewById(R.id.sign_up_done);
+        etName.setText(name != null ? name : "");
+        etEmail.setText(email != null ? email : "");
+        etPhoneNo.setText(phone != null ? phone : "");
     }
 
     private void initializePage2() {
         etUsername = findViewById(R.id.sign_up_username_text);
         etPassword = findViewById(R.id.sign_up_password_text);
         btnNext = findViewById(R.id.sign_up_done);
+        etUsername.setText(username != null ? username : "");
+        etPassword.setText(password != null ? password : "");
     }
 
     private void initializePage3() {
         etBirthDate = findViewById(R.id.editTextDate);
         btnNext = findViewById(R.id.next_button_bday);
+        etBirthDate.setText(birthDate != null ? birthDate : "");
     }
 
-    private void initializeActivitiesPage() {
-        btnNext = findViewById(R.id.next_button_activities);
-        setupActivityButtons();
-        updateNextButtonState();
+//    private void initializeActivitiesPage() {
+//        btnNext = findViewById(R.id.next_button_activities);
+//        setupActivityButtons();
+//        updateNextButtonState();
+//    }
+private void initializeActivitiesPage() {
+    btnNext = findViewById(R.id.next_button_activities);
+    setupActivityButtons();
+    updateNextButtonState();
+
+    // Restore selected activities
+    int[] buttonIds = {
+            R.id.music_button, R.id.dancer_button, R.id.joystick_button,
+            R.id.walk_button, R.id.playing_button, R.id.travel_button,
+            R.id.relationship_button, R.id.art_button, R.id.cooking_button,
+            R.id.reading_button
+    };
+
+    for (int buttonId : buttonIds) {
+        ImageButton button = findViewById(buttonId);
+        if (button != null) {
+            String activityName = activityMap.get(buttonId);
+            boolean isSelected = selectedActivities.contains(activityName);
+            buttonStates.put(button, isSelected);
+            button.setBackgroundTintList(ColorStateList.valueOf(
+                    isSelected ? Color.parseColor("#4CAF50") : Color.parseColor("#D9D9D9")
+            ));
+        }
+    }
+}
+
+//    private void setupReminderButtons() {
+//        Button yesButton = findViewById(R.id.yes_remindermood);
+//        Button noButton = findViewById(R.id.no_remindermood);
+//
+//        if (yesButton == null || noButton == null) {
+//            Log.e("Register", "Reminder buttons not found!");
+//            return;
+//        }
+//
+//        View.OnClickListener reminderListener = v -> {
+//            // Set reminder value
+//            if (v.getId() == R.id.yes_remindermood) {
+//                reminderMood = "YES";
+//            } else {
+//                reminderMood = "NO";
+//            }
+//
+//            // Add slight delay for visual feedback
+//            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+//                storeData(currentPage);
+//                currentPage++;
+//                showPage(currentPage);
+//            }, 200);
+//        };
+//
+//        yesButton.setOnClickListener(reminderListener);
+//        noButton.setOnClickListener(reminderListener);
+//    }
+private void setupReminderButtons() {
+    Button yesButton = findViewById(R.id.yes_remindermood);
+    Button noButton = findViewById(R.id.no_remindermood);
+
+    // Restore previous selection
+    if (reminderMood.equals("YES")) {
+        yesButton.setBackgroundColor(Color.parseColor("#4CAF50"));
+    } else if (reminderMood.equals("NO")) {
+        noButton.setBackgroundColor(Color.parseColor("#4CAF50"));
     }
 
-    private void setupReminderButtons() {
-        Button yesButton = findViewById(R.id.yes_remindermood);
-        Button noButton = findViewById(R.id.no_remindermood);
+    View.OnClickListener reminderListener = v -> {
+        // Reset colors
+        yesButton.setBackgroundColor(Color.TRANSPARENT);
+        noButton.setBackgroundColor(Color.TRANSPARENT);
 
-        if (yesButton == null || noButton == null) {
-            Log.e("Register", "Reminder buttons not found!");
-            return;
+        if (v.getId() == R.id.yes_remindermood) {
+            reminderMood = "YES";
+            yesButton.setBackgroundColor(Color.parseColor("#4CAF50"));
+        } else {
+            reminderMood = "NO";
+            noButton.setBackgroundColor(Color.parseColor("#4CAF50"));
         }
 
-        View.OnClickListener reminderListener = v -> {
-            // Set reminder value
-            if (v.getId() == R.id.yes_remindermood) {
-                reminderMood = "YES";
-            } else {
-                reminderMood = "NO";
-            }
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            storeData(currentPage);
+            currentPage++;
+            showPage(currentPage);
+        }, 200);
+    };
 
-            // Add slight delay for visual feedback
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                storeData(currentPage);
-                currentPage++;
-                showPage(currentPage);
-            }, 200);
-        };
+    yesButton.setOnClickListener(reminderListener);
+    noButton.setOnClickListener(reminderListener);
+}
+//    private void setupMoodRecurrence() {
+//        moodFrequencySpinner = findViewById(R.id.mood_frequency);
+//
+//        // Create adapter using string array
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+//                R.array.mood_frequency_options, android.R.layout.simple_spinner_item);
+//
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        moodFrequencySpinner.setAdapter(adapter);
+//
+//        // Set default selection
+//        moodFrequencySpinner.setSelection(0);
+//
+//        // Store selection when changed
+//        moodFrequencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                moodRecurrence = parent.getItemAtPosition(position).toString();
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//                moodRecurrence = "";
+//            }
+//        });
+//
+//        btnNext = findViewById(R.id.next_button); // Add this button to your XML
+//    }
+private void setupMoodRecurrence() {
+    moodFrequencySpinner = findViewById(R.id.mood_frequency);
 
-        yesButton.setOnClickListener(reminderListener);
-        noButton.setOnClickListener(reminderListener);
-    }
-    private void setupMoodRecurrence() {
-        moodFrequencySpinner = findViewById(R.id.mood_frequency);
+    ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+            R.array.mood_frequency_options, android.R.layout.simple_spinner_item);
 
-        // Create adapter using string array
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.mood_frequency_options, android.R.layout.simple_spinner_item);
+    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+    moodFrequencySpinner.setAdapter(adapter);
 
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        moodFrequencySpinner.setAdapter(adapter);
-
-        // Set default selection
+    // Restore previous selection
+    if (!moodRecurrence.isEmpty()) {
+        int position = adapter.getPosition(moodRecurrence);
+        moodFrequencySpinner.setSelection(position);
+    } else {
         moodFrequencySpinner.setSelection(0);
-
-        // Store selection when changed
-        moodFrequencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                moodRecurrence = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                moodRecurrence = "";
-            }
-        });
-
-        btnNext = findViewById(R.id.next_button); // Add this button to your XML
     }
+
+    moodFrequencySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+            moodRecurrence = parent.getItemAtPosition(position).toString();
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> parent) {
+            moodRecurrence = "";
+        }
+    });
+
+    btnNext = findViewById(R.id.next_button);
+}
 
 
     private void setupNavigation() {
@@ -521,6 +638,8 @@ public class Register extends AppCompatActivity {
             case 4:
                 break;
             case 5:
+                break;
+            case 6:
                 break;
         }
     }
@@ -678,4 +797,17 @@ public class Register extends AppCompatActivity {
     private void showSnackbar(String message) {
         Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
     }
+
+    private final Map<Integer, String> activityMap = new HashMap<Integer, String>() {{
+        put(R.id.music_button, "Music");
+        put(R.id.dancer_button, "Dancing");
+        put(R.id.joystick_button, "Gaming");
+        put(R.id.walk_button, "Walking");
+        put(R.id.playing_button, "Sports");
+        put(R.id.travel_button, "Traveling");
+        put(R.id.relationship_button, "Socializing");
+        put(R.id.art_button, "Art");
+        put(R.id.cooking_button, "Cooking");
+        put(R.id.reading_button, "Reading");
+    }};
 }
