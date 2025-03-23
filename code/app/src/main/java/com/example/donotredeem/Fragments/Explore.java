@@ -20,7 +20,7 @@ import java.util.List;
 
 public class Explore extends Fragment {
 
-    private List<String> displaylist = Arrays.asList("AG", "Ayaan"); // Example list
+    private List<String> displaylist = Arrays.asList("AG", "Ayaan", "Heer"); // Example list
     private ListView listView;
 
     @Nullable
@@ -42,21 +42,18 @@ public class Explore extends Fragment {
         listView.setAdapter(adapter);
 
         // Set onItemClickListener to handle clicks
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                // Get the selected username
-//                String selectedUsername = displaylist.get(position);
-//
-//                // Create a new instance of DetailFragment and pass the username
-//                SearchedUser searchedUser = SearchedUser.newInstance(selectedUsername);
-//
-//                // Replace the current fragment with DetailFragment
-//                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-//                transaction.replace(R.id.fragment_container, SearchedUser());
-//                transaction.addToBackStack(null);
-//                transaction.commit();
-            }
+        listView.setOnItemClickListener((parent, view1, position, id) -> {
+            // Get the selected username
+            String selectedUsername = displaylist.get(position);
+
+            // Create a new instance of SearchedUser and pass the username
+            SearchedUser searchedUserFragment = SearchedUser.newInstance(selectedUsername);
+
+            // Replace the current fragment with SearchedUser
+            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.fragment_container, searchedUserFragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
         return view;

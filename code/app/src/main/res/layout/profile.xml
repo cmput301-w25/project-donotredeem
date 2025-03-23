@@ -11,203 +11,219 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        >
 
         <ImageView
-            android:id="@+id/side_panel_button"
             android:layout_width="40dp"
+            android:id="@+id/side_panel_button"
             android:layout_height="40dp"
-            android:layout_marginTop="52dp"
-            android:layout_marginEnd="28dp"
-            android:src="@drawable/menu"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#F5E6D3" />
+            android:src="@drawable/menu"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="40dp"
+            app:tint="#F5E6D3"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
-            android:id="@+id/profile_heading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="52dp"
-            android:fontFamily="@font/jomolhari"
-            android:text="Profile"
-            android:textColor="#F5E6D3"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/profile_heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/jomolhari"
+        android:text="Profile"
+        android:textColor="#F5E6D3"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="20dp"
+         />
 
-        <ImageView
-            android:id="@+id/user_icon"
-            android:layout_width="107dp"
-            android:layout_height="109dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profile_heading"
-            app:srcCompat="@drawable/user"
-            app:tint="#F5E6D3" />
+    <ImageView
+        android:id="@+id/user_icon"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="20dp"
+        app:layout_constraintTop_toBottomOf="@id/profile_heading"
+        app:tint="#F5E6D3"
+        app:srcCompat="@drawable/user" />
 
         <LinearLayout
-            android:id="@+id/linearLayout2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="160dp"
-            android:orientation="horizontal"
+            android:orientation="vertical"
+            android:id="@+id/profile_details"
+            android:layout_marginLeft="115dp"
             app:layout_constraintStart_toEndOf="@id/user_icon"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/side_panel_button">
 
-            <!-- Followers Group -->
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/jomolhari"
+        android:text="Username"
+        android:textColor="#F5E6D3"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+         />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
                 android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textView4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="35dp"
                     android:fontFamily="@font/jomolhari"
-                    android:text="Followers"
+                    android:text="Follower"
                     android:textColor="#F5E6D3"
-                    android:textSize="17sp"
-                    android:textStyle="italic" />
-
-                <TextView
-                    android:id="@+id/textView7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/jomolhari"
-                    android:text="0"
-                    android:textColor="#F5E6D3"
-                    android:textSize="22sp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <!-- Following Group -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/textView5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/jomolhari"
-                    android:text="Following"
-                    android:textColor="#F5E6D3"
-                    android:textSize="17sp"
-                    android:textStyle="italic" />
-
-                <TextView
-                    android:id="@+id/textView8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_marginLeft="35dp"
                     android:fontFamily="@font/jomolhari"
                     android:text="0"
                     android:textColor="#F5E6D3"
-                    android:textSize="22sp"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
-
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="175dp"
+                android:layout_marginTop="-56dp"
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/textView6"
+                    android:id="@+id/textView7"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="110dp"
                     android:fontFamily="@font/jomolhari"
                     android:text="Moods"
                     android:textColor="#F5E6D3"
-                    android:textSize="17sp"
-                    android:textStyle="italic" />
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/textView9"
+                    android:id="@+id/textView8"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_marginLeft="21dp"
                     android:fontFamily="@font/jomolhari"
                     android:text="0"
                     android:textColor="#F5E6D3"
-                    android:textSize="22sp"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.146" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="87dp"
+                android:layout_marginTop="-56dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView01"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginEnd="110dp"
+                    android:fontFamily="@font/jomolhari"
+                    android:text="Following"
+                    android:textColor="#F5E6D3"
+                    android:textSize="15sp"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/textView02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="31dp"
+                    android:fontFamily="@font/jomolhari"
+                    android:text="0"
+                    android:textColor="#F5E6D3"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.146" />
             </LinearLayout>
+
+            <TextView
+        android:id="@+id/textView9"
+        android:layout_width="248dp"
+        android:layout_height="79dp"
+        android:fontFamily="@font/jomolhari"
+        android:text="Example Bio. Maximum of 50 characters"
+        android:textColor="#F5E6D3"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.969"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.211" />
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/recent_moods"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="68dp"
-            android:fontFamily="@font/jomolhari"
-            android:text="Recents"
-            android:textColor="#F5E6D3"
-            android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/user_icon"
 
-            />
+    <TextView
+        android:id="@+id/recent_moods"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/jomolhari"
+        android:text="Recents"
+        android:textColor="#F5E6D3"
+        android:textSize="20sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_icon"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="30dp"
+
+         />
 
         <ListView
-            android:id="@+id/recent_history"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             app:layout_constraintTop_toBottomOf="@id/recent_moods"
-            tools:layout_editor_absoluteX="0dp" />
-
-        <TextView
-            android:id="@+id/textView10"
-            android:layout_width="248dp"
-            android:layout_height="79dp"
-            android:layout_marginTop="12dp"
-            android:fontFamily="@font/jomolhari"
-            android:text="Example Bio. Maximum of 50 characters"
-            android:textColor="#F5E6D3"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.722"
-            app:layout_constraintStart_toEndOf="@+id/recent_moods"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout2" />
-
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="7dp"
-            android:fontFamily="@font/jomolhari"
-            android:text="Username"
-            android:textColor="#F5E6D3"
-            android:textSize="25sp"
-            app:layout_constraintStart_toEndOf="@+id/user_icon"
-            app:layout_constraintTop_toBottomOf="@+id/profile_heading" />
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="30dp"
+            android:layout_marginTop="10dp"
+            android:id="@+id/recent_history"/>
 
 
-        <!--        <FrameLayout-->
-    <!--            android:id="@+id/profile_fragment_container"-->
-    <!--            android:layout_width="match_parent"-->
-    <!--            android:layout_height="match_parent" />-->
+<!--        <FrameLayout-->
+<!--            android:id="@+id/profile_fragment_container"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent" />-->
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <LinearLayout

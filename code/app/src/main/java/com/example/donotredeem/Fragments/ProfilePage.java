@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +20,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+
+import com.example.donotredeem.Classes.UserProfileManager;
+import com.example.donotredeem.Classes.Users;
 import com.example.donotredeem.Fragments.moodhistory;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -51,10 +55,9 @@ public class ProfilePage extends Fragment {
     private FirebaseFirestore db;
     private String loggedInUsername;
 
-    private TextView displayname;
-    private TextView follower;
-    private TextView following;
-    private TextView bio;
+    private String username;
+    private Button Follow;
+    private TextView usernameTextView, bioTextView, followersTextView, followingTextView;
 
 
 
@@ -72,13 +75,24 @@ public class ProfilePage extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile, container, false);
 
+        usernameTextView = view.findViewById(R.id.textView2);
+        bioTextView = view.findViewById(R.id.textView9);
+        followersTextView = view.findViewById(R.id.textView7);
+        followingTextView = view.findViewById(R.id.textView8);
+//        Follow = view.findViewById(R.id.button6);
+
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        username = sharedPreferences.getString("username", null);
+
+        fetchUserData(username);
+
         MainActivity.past_location = "moodhistory";
 
         recent_list = view.findViewById(R.id.recent_history);
         db = FirebaseFirestore.getInstance();
         moodHistoryList = new ArrayList<MoodEvent>();
 
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         if (!sharedPreferences.contains("username")) {
             Log.e("MainPageDebug", "Username not found in SharedPreferences, redirecting to login");
             redirectToLogin();
@@ -145,6 +159,44 @@ public class ProfilePage extends Fragment {
         });
 
         return view;
+    }
+
+    private void fetchUserData(String username) {
+        if (username == null || username.isEmpty()) {
+            Log.e("SearchedUser", "Username is null/empty");
+            return;
+        }
+        Log.d("MyTag", "This is a debug message 333333333333.");
+
+
+        UserProfileManager userProfileManager = new UserProfileManager();
+        Log.d("MyTag", "This is a debug message44444444444444444.");
+        userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
+            @Override
+            public void onUserProfileFetched(Users user) {
+                if (user != null) {
+                    Log.d("MyTag", "This is a debug message5555555555555.");
+                    // Set user details to TextViews
+                    usernameTextView.setText(user.getUsername());
+                    bioTextView.setText(user.getBio());
+                    // Inside onUserProfileFetched in fetchUserData:
+                    followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
+                    followingTextView.setText(String.valueOf(user.getFollowing()));
+                    Log.d("MyTag", "This is a debug message666666666666666.");
+
+//                    // Display follower and following lists
+//                    updateListView(followerListView, user.getFollowerList(), "No followers");
+//                    updateListView(followingListView, user.getFollowingList(), "Not following anyone");
+                } else {
+                    Log.e("SearchedUser", "User not found.");
+                }
+            }
+
+            @Override
+            public void onUserProfileFetchError(Exception e) {
+                Log.e("SearchedUser", "Error fetching user data", e);
+            }
+        });
     }
 
     /**

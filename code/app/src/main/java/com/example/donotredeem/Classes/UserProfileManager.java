@@ -2,6 +2,7 @@ package com.example.donotredeem.Classes;
 
 import android.util.Log;
 
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -36,6 +37,9 @@ public class UserProfileManager {
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
     }
+    // Add to UserProfileManager class
+
+
 
     // Add to UserProfileManager class
     public void acceptFollowRequest(String currentUser, String requesterUsername, OnUpdateListener listener) {
@@ -43,7 +47,7 @@ public class UserProfileManager {
         db.collection("User").document(currentUser)
                 .update(
                         "followers", FieldValue.increment(1),
-                        "followers_list", FieldValue.arrayUnion(requesterUsername),
+                        "follower_list", FieldValue.arrayUnion(requesterUsername),
                         "requests", FieldValue.arrayRemove(requesterUsername)
                 )
                 .addOnSuccessListener(aVoid -> {
@@ -66,6 +70,30 @@ public class UserProfileManager {
                 .addOnFailureListener(e -> listener.onError(e));
     }
 
+    /**
+     * Adds the logged-in user to the requests list of the target user's document.
+     *
+     * @param targetUsername   The username of the target user (being followed).
+     * @param loggedInUsername The username of the logged-in user (who is following).
+     * @param callback         Callback to handle success or error.
+     */
+    public void addToRequestsList(String targetUsername, String loggedInUsername, OnUpdateListener callback) {
+        db.collection("User")
+                .document(targetUsername)
+                .update("requests", FieldValue.arrayUnion(loggedInUsername))
+                .addOnSuccessListener(aVoid -> {
+                    Log.d("UserProfileManager", "Request added successfully.");
+                    if (callback != null) {
+                        callback.onSuccess();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("UserProfileManager", "Error adding request.", e);
+                    if (callback != null) {
+                        callback.onError(e);
+                    }
+                });
+    }
 
     /**
      * Creates a <code>Users</code> object from a Firestore document snapshot.
@@ -102,6 +130,50 @@ public class UserProfileManager {
                         callback.onUserProfileFetchError(task.getException());
                     }
                 });
+    }
+
+    /**
+     * Adds a user to the following list of another user.
+     */
+    public void addToFollowingList(String username, String targetUsername, OnUpdateListener listener) {
+        DocumentReference userRef = db.collection("User").document(username);
+        userRef.update("following_list", FieldValue.arrayUnion(targetUsername),
+                        "following", FieldValue.increment(1))
+                .addOnSuccessListener(aVoid -> listener.onSuccess())
+                .addOnFailureListener(listener::onError);
+    }
+
+    /**
+     * Adds a user to the followers list of another user.
+     */
+    public void addToFollowersList(String username, String targetUsername, OnUpdateListener listener) {
+        DocumentReference userRef = db.collection("User").document(username);
+        userRef.update("follower_list", FieldValue.arrayUnion(targetUsername),
+                        "followers", FieldValue.increment(1))
+                .addOnSuccessListener(aVoid -> listener.onSuccess())
+                .addOnFailureListener(listener::onError);
+    }
+
+    /**
+     * Removes a user from the following list of another user.
+     */
+    public void removeFromFollowingList(String username, String targetUsername, OnUpdateListener listener) {
+        DocumentReference userRef = db.collection("User").document(username);
+        userRef.update("following_list", FieldValue.arrayRemove(targetUsername),
+                        "following", FieldValue.increment(-1))
+                .addOnSuccessListener(aVoid -> listener.onSuccess())
+                .addOnFailureListener(listener::onError);
+    }
+
+    /**
+     * Removes a user from the followers list of another user.
+     */
+    public void removeFromFollowersList(String username, String targetUsername, OnUpdateListener listener) {
+        DocumentReference userRef = db.collection("User").document(username);
+        userRef.update("follower_list", FieldValue.arrayRemove(targetUsername),
+                        "followers", FieldValue.increment(-1))
+                .addOnSuccessListener(aVoid -> listener.onSuccess())
+                .addOnFailureListener(listener::onError);
     }
 
 
@@ -146,33 +218,27 @@ public class UserProfileManager {
 
 
     public void getUserProfileWithFollowers(String username, OnUserProfileFetchListener callback) {
-        assert db != null;
         db.collection("User").document(username)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            // Extracting required data
-                            String bio = document.getString("bio");
-                            int followerCount = document.getLong("followers") != null ?
-                                    document.getLong("followers").intValue() : 0;
-                            int followingCount = document.getLong("following") != null ?
-                                    document.getLong("following").intValue() : 0;
+                            // Get followers (handle both Long and String)
+                            Object followersObj = document.get("followers");
+                            int followerCount = parseFieldToInt(followersObj);
 
-                            @SuppressWarnings("unchecked")
-                            List<String> followersList = (List<String>) document.get("followers_list");
-                            @SuppressWarnings("unchecked")
+                            // Get following (handle both Long and String)
+                            Object followingObj = document.get("following");
+                            int followingCount = parseFieldToInt(followingObj);
+
+                            // Extract other fields
+                            String bio = document.getString("bio");
+                            List<String> followersList = (List<String>) document.get("follower_list");
                             List<String> followingList = (List<String>) document.get("following_list");
-                            @SuppressWarnings("unchecked")
                             List<String> requestsList = (List<String>) document.get("requests");
 
-                            // Handle null lists gracefully
-                            if (followersList == null) followersList = new java.util.ArrayList<>();
-                            if (followingList == null) followingList = new java.util.ArrayList<>();
-                            if (requestsList == null) requestsList = new java.util.ArrayList<>();
-
-                            // Create the Users object
+                            // Create Users object
                             Users user = new Users(
                                     username,
                                     bio,
@@ -183,7 +249,6 @@ public class UserProfileManager {
                                     requestsList
                             );
 
-                            // Pass data to callback
                             callback.onUserProfileFetched(user);
                         } else {
                             callback.onUserProfileFetched(null);
@@ -192,5 +257,20 @@ public class UserProfileManager {
                         callback.onUserProfileFetchError(task.getException());
                     }
                 });
+    }
+
+    // Helper method to parse Long or String to int
+    private int parseFieldToInt(Object value) {
+        if (value instanceof Long) {
+            return ((Long) value).intValue(); // Handle Firestore numbers
+        } else if (value instanceof String) {
+            try {
+                return Integer.parseInt((String) value); // Parse strings
+            } catch (NumberFormatException e) {
+                Log.e("ParseError", "Invalid number format: " + value);
+                return 0;
+            }
+        }
+        return 0; // Default for unknown types
     }
 }
