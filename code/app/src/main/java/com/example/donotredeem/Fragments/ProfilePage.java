@@ -337,8 +337,8 @@ public class ProfilePage extends Fragment {
                     // Keep only the 2 most recent
                     if (!moodHistoryList.isEmpty()) {
                         Log.e("PROFILE LIST", "fetchMoodEvents: not emprt" );
-                    if (moodHistoryList.size() > 2) {
-                        ArrayList<MoodEvent> RecentHistoryList = new ArrayList<MoodEvent>(moodHistoryList.subList(0, 2));
+                    if (moodHistoryList.size() > 3) {
+                        ArrayList<MoodEvent> RecentHistoryList = new ArrayList<MoodEvent>(moodHistoryList.subList(0, 3));
                         Display(RecentHistoryList);
                     }
                     else {Display(moodHistoryList);}}
