@@ -112,6 +112,31 @@ public class MainPage extends Fragment {
     }
 
 
+//    private void FetchFollowingUsers(String username) {
+//        if (username == null) {
+//            Log.e("Main Page", "No username found in SharedPreferences");
+//            return;
+//        }
+//
+//        db.collection("User")
+//                .whereEqualTo("username", username)
+//                .addSnapshotListener((querySnapshot, error) -> {
+//                    if (!querySnapshot.isEmpty()) {
+//                        DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
+//                        Log.d("Main Page", "User found: " + userDoc.getData());
+//                        List<String> FollowedUsers = (List<String>) userDoc.get("following_list");
+//                        if (FollowedUsers != null && !FollowedUsers.isEmpty()) {
+//                            FetchPublicEvents(FollowedUsers);
+//                        } else {
+//                            Log.d("Main Page", "No followed users.");
+//                            Display(new ArrayList<>());
+//                        }
+//                    } else {
+//                        Log.e("Main Page", "No user found with username: " + username);
+//                    }
+//                });
+//    }
+
     private void FetchFollowingUsers(String username) {
         if (username == null) {
             Log.e("Main Page", "No username found in SharedPreferences");
@@ -136,6 +161,38 @@ public class MainPage extends Fragment {
                     }
                 });
     }
+
+//    private void FetchPublicEvents(List<String> FollowedUsers) {
+//        if (!isAdded()) return; // Stop if fragment is not attached
+//
+//        ArrayList<MoodEvent> tempList = new ArrayList<>();
+//        final int[] fetchedCount = {0}; // track total moods fetched
+//
+//        if (FollowedUsers.isEmpty()) {
+//            Display(tempList);
+//            return;
+//        }
+//
+//        for (String FollowedUser : FollowedUsers) {
+//            db.collection("User")
+//                    .whereEqualTo("username", FollowedUser)
+//                    .addSnapshotListener((querySnapshot, error) -> {
+//                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
+//                            DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
+//                            List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
+//
+//                            if (moodRefsList != null && !moodRefsList.isEmpty()) {
+//                                FetchMoods(moodRefsList, tempList, FollowedUsers.size(), fetchedCount);
+//                            } else {
+//                                fetchedCount[0]++;
+//                                if (fetchedCount[0] == FollowedUsers.size()) {
+//                                    Display(tempList);
+//                                }
+//                            }
+//                        }
+//                    });
+//        }
+//    }
 
     private void FetchPublicEvents(List<String> FollowedUsers) {
         if (!isAdded()) return; // Stop if fragment is not attached
@@ -168,6 +225,7 @@ public class MainPage extends Fragment {
                     });
         }
     }
+
 
     private void FetchMoods(List<DocumentReference> moodRefs, ArrayList<MoodEvent> tempList, int totalUsers, int[] fetchedCount) {
         ArrayList<MoodEvent> userMoodEvents = new ArrayList<>();
@@ -209,6 +267,47 @@ public class MainPage extends Fragment {
             });
         }
     }
+
+//    private void FetchMoods(List<DocumentReference> moodRefs, ArrayList<MoodEvent> tempList, int totalUsers, int[] fetchedCount) {
+//        ArrayList<MoodEvent> userMoodEvents = new ArrayList<>();
+//        final int[] moodsFetched = {0}; // Moods of this user
+//
+//        if (moodRefs.isEmpty()) {
+//            fetchedCount[0]++;
+//            if (fetchedCount[0] == totalUsers) {
+//                Display(tempList);
+//            }
+//            return;
+//        }
+//
+//        for (DocumentReference moodRef : moodRefs) {
+//            moodRef.addSnapshotListener((documentSnapshot, error) -> {
+//                if (!isAdded()) return;
+//
+//                if (documentSnapshot != null && documentSnapshot.exists()) {
+//                    try {
+//                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
+//                        if (moodEvent != null && !moodEvent.getPrivacy()) {
+//                            userMoodEvents.add(moodEvent);
+//                        }
+//                    } catch (Exception e) {
+//                        Log.e("MoodHistory", "Error converting document", e);
+//                    }
+//                }
+//
+//                moodsFetched[0]++;
+//
+//                if (moodsFetched[0] == moodRefs.size()) { // All moods for this user are fetched
+//                    tempList.addAll(userMoodEvents);
+//                    fetchedCount[0]++;
+//
+//                    if (fetchedCount[0] == totalUsers) {
+//                        Display(tempList);
+//                    }
+//                }
+//            });
+//        }
+//    }
 
 
     /**
