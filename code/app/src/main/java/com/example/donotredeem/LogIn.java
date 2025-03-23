@@ -159,9 +159,11 @@ public class LogIn extends AppCompatActivity {
                                         SharedPreferences.Editor editor = sharedPreferences.edit();
                                         editor.putString("username", username);
                                         editor.apply();
-                                        startActivity(new Intent(LogIn.this, MainActivity.class));
+//                                        startActivity(new Intent(LogIn.this, MainActivity.class));
+//                                        finish();
+                                        startActivity(new Intent(LogIn.this, MoodSelectionActivity.class));
                                         finish();
-                                    }, 2000);
+                                        }, 2000);
 
                                 } else {
                                     Log.e(TAG,"Incorrect password.");
@@ -239,7 +241,9 @@ public class LogIn extends AppCompatActivity {
                 //Toast.makeText(LogIn.this, "Google Sign-In Successful", Toast.LENGTH_SHORT).show();
                 Snackbar.make(findViewById(android.R.id.content), "Google Sign-In Successful", Snackbar.LENGTH_LONG).show();
 
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+//                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+//                finish();
+                startActivity(new Intent(LogIn.this, MoodSelectionActivity.class));
                 finish();
             } else {
                 Log.w(TAG, "signInWithCredential:failure", task.getException());
