@@ -321,6 +321,7 @@
             app:layout_constraintTop_toBottomOf="@+id/loc"
             app:layout_constraintVertical_bias="0.014" />
 
+
         <EditText
             android:id="@+id/trigger"
             android:layout_width="0dp"
@@ -330,10 +331,10 @@
             android:background="@android:drawable/editbox_background"
             android:hint="Description"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView16"
             tools:ignore="MissingConstraints" />
-
 
         <TextView
             android:id="@+id/textView19"
@@ -364,6 +365,15 @@
             app:layout_constraintTop_toBottomOf="@+id/textView17"
             app:tint="#615E5E" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Alone"
+            android:layout_marginStart="15dp"
+            app:layout_constraintTop_toBottomOf="@id/alone_social"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="@id/alone_social"/>
+
 
         <ImageButton
             android:id="@+id/pair_social"
@@ -379,6 +389,15 @@
             app:layout_constraintTop_toBottomOf="@+id/textView17"
             app:tint="#615E5E" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            app:layout_constraintWidth_max="80dp"
+            android:layout_height="wrap_content"
+            android:text="With one other person"
+            app:layout_constraintTop_toBottomOf="@id/pair_social"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="@id/pair_social"/>
+
         <ImageButton
             android:id="@+id/few_social"
             android:layout_width="50dp"
@@ -392,6 +411,15 @@
             app:layout_constraintTop_toBottomOf="@+id/textView17"
             app:tint="#615E5E" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            app:layout_constraintWidth_max="80dp"
+            android:layout_height="wrap_content"
+            android:text="With 2-7 person"
+            app:layout_constraintTop_toBottomOf="@id/few_social"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="@id/few_social"/>
+
         <ImageButton
             android:id="@+id/crowd_social"
             android:layout_width="50dp"
@@ -404,13 +432,21 @@
             app:layout_constraintStart_toEndOf="@+id/few_social"
             app:layout_constraintTop_toBottomOf="@+id/textView17"
             app:tint="#615E5E" />
+        <TextView
+            android:layout_width="wrap_content"
+            app:layout_constraintWidth_max="80dp"
+            android:layout_height="wrap_content"
+            android:text="Crowd"
+            app:layout_constraintTop_toBottomOf="@id/crowd_social"
+            android:textColor="@color/white"
+            app:layout_constraintStart_toStartOf="@id/crowd_social"/>
 
         <TextView
             android:id="@+id/private_question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="150dp"
-            android:layout_marginTop="25dp"
+            android:layout_marginStart="120dp"
+            android:layout_marginTop="60dp"
             android:text="Is this mood private?"
             android:textColor="@color/white"
             android:textSize="20dp"
@@ -424,7 +460,7 @@
             android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="50dp"
             app:layout_constraintStart_toEndOf="@id/private_question"
             app:layout_constraintTop_toBottomOf="@id/alone_social" />
 
@@ -432,14 +468,13 @@
             android:id="@+id/button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
+            android:layout_marginTop="40dp"
             android:backgroundTint="#3F51B5"
             android:fontFamily="@font/inter"
             android:text="Submit"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/private_button" />
 
