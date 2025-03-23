@@ -124,7 +124,7 @@ public class MainPage extends Fragment {
                     if (!querySnapshot.isEmpty()) {
                         DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
                         Log.d("Main Page", "User found: " + userDoc.getData());
-                        List<String> FollowedUsers = (List<String>) userDoc.get("Following");
+                        List<String> FollowedUsers = (List<String>) userDoc.get("following_list");
                         if (FollowedUsers != null && !FollowedUsers.isEmpty()) {
                             FetchPublicEvents(FollowedUsers);
                         } else {

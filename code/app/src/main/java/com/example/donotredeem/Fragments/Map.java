@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -137,7 +138,9 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
                     if (!querySnapshot.isEmpty()) {
                         DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
                         Log.d("Main Page", "User found: " + userDoc.getData());
-                        List<String> FollowedUsers = (List<String>) userDoc.get("Following");
+                        List<String> FollowedUsers = (List<String>) userDoc.get("following_list");
+
+
                         if (FollowedUsers != null && !FollowedUsers.isEmpty()) {
                             FetchPublicEvents(FollowedUsers);
                         } else {
@@ -150,7 +153,7 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
                 });
     }
 
-    private void FetchMoods(List<DocumentReference> moodRefs, ArrayList<MoodEvent> tempList, int totalUsers, int[] fetchedCount) { //ffreidns method
+    private void FetchMoods(List<DocumentReference> moodRefs, ArrayList<MoodEvent> tempList, int totalUsers, int[] fetchedCount) { //friends method 3
         ArrayList<MoodEvent> userMoodEvents = new ArrayList<>();
         final int[] moodsFetched = {0}; // Moods of this user
 
@@ -169,7 +172,7 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
                     try {
                         MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
                         if (moodEvent != null && !moodEvent.getPrivacy() && (moodEvent.getLocation() != null)) {
-                            userMoodEvents.add(moodEvent);
+                                userMoodEvents.add(moodEvent);
                         }
                     } catch (Exception e) {
                         Log.e("MoodHistory", "Error converting document", e);
@@ -190,6 +193,17 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
                 }
             });
         }
+    }
+
+    private double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+        final int R = 6371000; // Radius of the Earth in meters
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Distance in meters
     }
 
 
