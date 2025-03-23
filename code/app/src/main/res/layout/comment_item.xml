@@ -53,11 +53,11 @@
 
         <!-- Timestamp -->
         <TextView
-            android:id="@+id/comment_time"
+            android:id="@+id/comment_timestamp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="2h ago"
+            android:textAppearance="?attr/textAppearanceCaption"
             android:textColor="?attr/colorOutline"
             android:textSize="12sp"
             app:layout_constraintTop_toBottomOf="@id/comment_text"

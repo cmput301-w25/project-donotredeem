@@ -24,8 +24,11 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
+
 
 public class CommentsFragment extends BottomSheetDialogFragment {
 
@@ -92,26 +95,70 @@ public class CommentsFragment extends BottomSheetDialogFragment {
         }
     }
 
-    private void loadComments() {
-        CollectionReference commentsRef = db.collection("MoodEvents").document(postId).collection("Comments");
-        commentsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
-                if (e != null) return;
+//    private void loadComments() {
+//        CollectionReference commentsRef = db.collection("MoodEvents").document(postId).collection("Comments");
+//        commentsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+//            @Override
+//            public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+//                if (e != null) return;
+//
+//                commentList.clear();
+//                if (snapshots != null && !snapshots.isEmpty()) {
+//                    for (DocumentChange dc : snapshots.getDocumentChanges()) {
+//                        if (dc.getType() == DocumentChange.Type.ADDED) {
+//                            Comment comment = dc.getDocument().toObject(Comment.class);
+//                            commentList.add(comment);
+//                        }
+//                    }
+//                }
+//                commentsAdapter.notifyDataSetChanged();
+//            }
+//        });
+//    }
+//private void loadComments() {
+//    CollectionReference commentsRef = db.collection("MoodEvents").document(postId).collection("Comments");
+//    commentsRef.orderBy("timestamp", Query.Direction.DESCENDING)  // Add sorting
+//            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+//                @Override
+//                public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+//                    if (e != null) return;
+//
+//                    commentList.clear();
+//                    if (snapshots != null && !snapshots.isEmpty()) {
+//                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
+//                            if (dc.getType() == DocumentChange.Type.ADDED) {
+//                                Comment comment = dc.getDocument().toObject(Comment.class);
+//                                commentList.add(comment);
+//                            }
+//                        }
+//                    }
+//                    commentsAdapter.notifyDataSetChanged();
+//                }
+//            });
+//}
+private void loadComments() {
+    CollectionReference commentsRef = db.collection("MoodEvents").document(postId).collection("Comments");
+    commentsRef.orderBy("timestamp", Query.Direction.DESCENDING)
+            .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+                    if (e != null) return;
 
-                commentList.clear();
-                if (snapshots != null && !snapshots.isEmpty()) {
-                    for (DocumentChange dc : snapshots.getDocumentChanges()) {
-                        if (dc.getType() == DocumentChange.Type.ADDED) {
-                            Comment comment = dc.getDocument().toObject(Comment.class);
-                            commentList.add(comment);
+                    ArrayList<Comment> newComments = new ArrayList<>();
+                    if (snapshots != null) {
+                        for (QueryDocumentSnapshot document : snapshots) {
+                            Comment comment = document.toObject(Comment.class);
+                            newComments.add(comment);
                         }
                     }
+
+                    // Update the list and preserve reference
+                    commentList.clear();
+                    commentList.addAll(newComments);
+                    commentsAdapter.notifyDataSetChanged();
                 }
-                commentsAdapter.notifyDataSetChanged();
-            }
-        });
-    }
+            });
+}
 
     private void addComment(String text) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
