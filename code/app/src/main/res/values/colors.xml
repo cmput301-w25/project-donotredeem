@@ -12,6 +12,7 @@
     <color name="Surprised">#FFFB8D</color>
     <color name="Shy">#E5FFCB</color>
     <color name="Tired">#CBE6FF</color>
+    <color name="gray_light">#EEEAEA</color>
 
 <!--    activity selection-->
     <color name="selected_green">#4CAF50</color>

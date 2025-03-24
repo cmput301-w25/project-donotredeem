@@ -77,8 +77,8 @@ public class ProfilePage extends Fragment {
 
         usernameTextView = view.findViewById(R.id.textView2);
         bioTextView = view.findViewById(R.id.textView9);
-        followersTextView = view.findViewById(R.id.textView7);
-        followingTextView = view.findViewById(R.id.textView8);
+        followersTextView = view.findViewById(R.id.textView5);
+        followingTextView = view.findViewById(R.id.textView02);
 //        Follow = view.findViewById(R.id.button6);
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
@@ -181,7 +181,9 @@ public class ProfilePage extends Fragment {
                     bioTextView.setText(user.getBio());
                     // Inside onUserProfileFetched in fetchUserData:
                     followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
+                    Log.d("MyTag", "User following count: " + user.getFollowing());
                     followingTextView.setText(String.valueOf(user.getFollowing()));
+
                     Log.d("MyTag", "This is a debug message666666666666666.");
 
 //                    // Display follower and following lists

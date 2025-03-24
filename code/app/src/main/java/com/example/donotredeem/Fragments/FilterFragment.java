@@ -1,6 +1,7 @@
 package com.example.donotredeem.Fragments;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -104,18 +105,32 @@ public class FilterFragment extends DialogFragment {
         all = view.findViewById(R.id.All_filter_button);
 
         pastmonth.setOnClickListener(v ->{
+            pastmonth.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
+            pastweek.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
+            all.setBackgroundColor(getResources().getColor(R.color.gray_light, null));
+            pastmonth.setBackgroundResource(R.drawable.highlight_background);
             btn = "month";
         });
         pastweek.setOnClickListener(v ->{
+            pastmonth.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
+            pastweek.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
+            all.setBackgroundColor(getResources().getColor(R.color.gray_light, null));
+            pastweek.setBackgroundResource(R.drawable.highlight_background);
             btn = "week";
         });
-        all.setOnClickListener(v ->{
+        all.setOnClickListener( v -> {
+            pastmonth.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
+            pastweek.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
+            all.setBackgroundColor(getResources().getColor(R.color.gray_light, null));
+            all.setBackgroundResource(R.drawable.highlight_background);
             btn = "all";
         });
         close.setOnClickListener( v -> {
             dismiss();
         });
 
+        // Load saved filters when the filter fragment is opened
+        loadSavedFilters(view);
 
         donebtn.setOnClickListener(v -> {
             String searchKeyword = Keyword.getText().toString().trim().toLowerCase();
@@ -149,6 +164,8 @@ public class FilterFragment extends DialogFragment {
             if (listener != null) {
                 listener.filterMood(filteredList);
             }
+
+            saveFilters(searchKeyword, btn, selectedEmojiNames);
             dismiss();
         });
 
@@ -157,6 +174,72 @@ public class FilterFragment extends DialogFragment {
             emojiButton.setOnClickListener(v -> highlightSelectedEmoji((ImageButton) v));
         }
         return view;
+    }
+
+    private void loadSavedFilters(View view) {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
+
+        String savedKeyword = sharedPreferences.getString("keyword", "");
+        String savedTimeFilter = sharedPreferences.getString("timeFilter", "all");
+        String savedEmojis = sharedPreferences.getString("selectedEmojis", "");
+
+        // Restore keyword
+        Keyword.setText(savedKeyword);
+
+        // Restore time filter selection
+        //        if (savedTimeFilter != null) {
+        //            btn = savedTimeFilter;
+        //            if (btn.equals("month")) {
+        //                pastmonth.performClick();
+        //            } else if (btn.equals("week")) {
+        //                pastweek.performClick();
+        //            } else if (btn.equals("all")) {
+        //                all.performClick();
+        //            }
+        //        }
+        if ("month".equals(savedTimeFilter)) {
+            btn = "month";
+            pastmonth.setBackgroundResource(R.drawable.highlight_background);
+        } else if ("week".equals(savedTimeFilter)) {
+            btn = "week";
+            pastweek.setBackgroundResource(R.drawable.highlight_background);
+        } else {
+            btn = "all";
+            all.setBackgroundResource(R.drawable.highlight_background);
+        }
+
+        // Restore selected emojis
+        if (!savedEmojis.isEmpty()) {
+            String[] emojiArray = savedEmojis.split(",");
+            for (String emoji : emojiArray) {
+                selectedEmojiNames.add(emoji);
+            }
+            highlightRestoredEmojis(view);
+        }
+    }
+    private void highlightRestoredEmojis(View view) {
+        for (int id : emojiButtonIds) {
+            ImageButton emojiButton = view.findViewById(id);
+            MoodType moodType = getMoodForButtonId(id);
+
+            if (moodType != null && selectedEmojiNames.contains(moodType.getMood())) {
+                emojiButton.setBackgroundResource(R.drawable.highlight_background);
+                emojiButton.setElevation(8);
+            }
+        }
+    }
+
+    private void saveFilters(String keyword, String timeFilter, HashSet<String> emojiSet) {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        editor.putString("keyword", keyword);
+        editor.putString("timeFilter", timeFilter);
+
+        // Save selected emojis as a comma-separated string
+        editor.putString("selectedEmojis", String.join(",", emojiSet));
+
+        editor.apply();
     }
 
     /**

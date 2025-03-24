@@ -179,7 +179,7 @@ public class Users {
 //    }
 //
     public int getFollowers() {
-        return followers;
+        return followerList != null ? followerList.size() : 0;
     }
 
     public void setFollowers(int followers) {
@@ -195,7 +195,7 @@ public class Users {
     }
 
     public int getFollowing() {
-        return following;
+        return followingList != null ? followingList.size() : 0;
     }
 
     public void setFollowing(int following) {

@@ -86,45 +86,6 @@ public class SearchedUser extends Fragment {
         fetchUserData(username);
 
 
-//        Follow.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-//                String loggedInUsername = sharedPreferences.getString("username", null);
-//
-//                if (loggedInUsername == null) {
-//                    Log.e("SearchedUser", "No user is logged in.");
-//                    return;
-//                }
-//
-//                UserProfileManager userProfileManager = new UserProfileManager();
-//
-//                // Check if the user is already following the searched user
-//                userProfileManager.getUserProfileWithFollowers(loggedInUsername, new UserProfileManager.OnUserProfileFetchListener() {
-//                    @Override
-//                    public void onUserProfileFetched(Users currentUser) {
-//                        if (currentUser != null) {
-//                            List<String> followingList = currentUser.getFollowingList();
-//
-//                            if (followingList.contains(username)) {
-//                                // User is already following the searched user -> Unfollow them
-//                                unfollowUser(loggedInUsername, username);
-//                            } else {
-//                                // User is not following -> Send follow request or follow
-//                                sendFollowRequest(loggedInUsername, username);
-//                            }
-//                        } else {
-//                            Log.e("SearchedUser", "Error fetching current user data.");
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onUserProfileFetchError(Exception e) {
-//                        Log.e("SearchedUser", "Error fetching logged-in user data.", e);
-//                    }
-//                });
-//            }
-//        });
         Follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -199,7 +160,6 @@ public class SearchedUser extends Fragment {
                             }
                         }
                     }
-
                     @Override
                     public void onUserProfileFetchError(Exception e) {
                         handleError("Error fetching user data", e);
@@ -338,7 +298,7 @@ public class SearchedUser extends Fragment {
                 if (documentSnapshot.exists()) {
                     try {
                         MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
-                        if (moodEvent != null) {
+                        if (moodEvent != null && !moodEvent.getPrivacy()) {
                             tempList.add(moodEvent);
                         }
                     } catch (Exception e) {
