@@ -106,6 +106,18 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         />
 
+                    <ImageView
+                        android:id="@+id/jar_button"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:src="@drawable/ic_jar"
+                        android:layout_marginEnd="8dp"
+                        app:tint="#222121"
+                        android:contentDescription="Add to Mood Jar"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@id/SituationImage"/>
+
 <!--                    <TextView-->
 <!--                        android:id="@+id/Situation_text"-->
 <!--                        android:layout_width="150dp"-->
@@ -136,6 +148,7 @@
                         android:layout_height="80dp"
                         android:layout_marginEnd="7dp"
                         android:src="@drawable/cat" />
+
 
                     <!--In the java code, change the visibility when a mood event has a picture.-->
 

@@ -36,6 +36,7 @@ android {
 }
 
 dependencies {
+    implementation ("com.google.maps.android:android-maps-utils:2.2.3")
     implementation("com.github.st235:swipetoactionlayout:1.1.4")
     //firebase
     implementation(platform("com.google.firebase:firebase-bom:33.9.0"))

@@ -267,47 +267,7 @@ public class MainPage extends Fragment {
             });
         }
     }
-
-//    private void FetchMoods(List<DocumentReference> moodRefs, ArrayList<MoodEvent> tempList, int totalUsers, int[] fetchedCount) {
-//        ArrayList<MoodEvent> userMoodEvents = new ArrayList<>();
-//        final int[] moodsFetched = {0}; // Moods of this user
-//
-//        if (moodRefs.isEmpty()) {
-//            fetchedCount[0]++;
-//            if (fetchedCount[0] == totalUsers) {
-//                Display(tempList);
-//            }
-//            return;
-//        }
-//
-//        for (DocumentReference moodRef : moodRefs) {
-//            moodRef.addSnapshotListener((documentSnapshot, error) -> {
-//                if (!isAdded()) return;
-//
-//                if (documentSnapshot != null && documentSnapshot.exists()) {
-//                    try {
-//                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
-//                        if (moodEvent != null && !moodEvent.getPrivacy()) {
-//                            userMoodEvents.add(moodEvent);
-//                        }
-//                    } catch (Exception e) {
-//                        Log.e("MoodHistory", "Error converting document", e);
-//                    }
-//                }
-//
-//                moodsFetched[0]++;
-//
-//                if (moodsFetched[0] == moodRefs.size()) { // All moods for this user are fetched
-//                    tempList.addAll(userMoodEvents);
-//                    fetchedCount[0]++;
-//
-//                    if (fetchedCount[0] == totalUsers) {
-//                        Display(tempList);
-//                    }
-//                }
-//            });
-//        }
-//    }
+    
 
 
     /**
