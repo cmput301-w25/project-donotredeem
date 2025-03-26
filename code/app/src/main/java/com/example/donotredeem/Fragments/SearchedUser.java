@@ -89,6 +89,7 @@ public class SearchedUser extends Fragment {
         Follow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!isAdded()) return; // Add this check
                 SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
                 final String loggedInUsername = sharedPreferences.getString("username", null);
 
@@ -308,28 +309,18 @@ public class SearchedUser extends Fragment {
 
                 fetchedCount[0]++;
                 if (fetchedCount[0] == moodRefs.size()) {
-
                     moodHistoryList.clear();
                     moodHistoryList.addAll(tempList);
-
-
                     sortMoodEvents();
 
-                    // Keep only the 2 most recent
-                    if (!moodHistoryList.isEmpty()) {
-                        Log.e("PROFILE LIST", "fetchMoodEvents: not emprt" );
+                    if (isAdded() && getContext() != null) { // Check fragment attachment
                         if (moodHistoryList.size() > 2) {
-                            ArrayList<MoodEvent> RecentHistoryList = new ArrayList<MoodEvent>(moodHistoryList.subList(0, 2));
+                            ArrayList<MoodEvent> RecentHistoryList = new ArrayList<>(moodHistoryList.subList(0, 2));
                             Display(RecentHistoryList);
+                        } else {
+                            Display(moodHistoryList);
                         }
-                        else {Display(moodHistoryList);}}
-                    else {
-                        Log.e("EMPTY_LIST", "fetchMoodEvents: LIST IS EMPTY");
                     }
-
-
-
-
                 }
             }).addOnFailureListener(e -> {
                 Log.e("MoodHistory", "Error fetching document", e);
@@ -366,30 +357,31 @@ public class SearchedUser extends Fragment {
      * or updating the existing one.
      */
     private void Display(ArrayList<MoodEvent> moodHistoryList) {
-        // Create a defensive copy to avoid ConcurrentModificationException
+        if (!isAdded() || getContext() == null) {
+            // Fragment is not attached to an activity
+            return;
+        }
+
+        // Create a defensive copy and sort
         ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
 
         sortedList.sort((event1, event2) -> {
             try {
                 LocalDate date1 = parseStringToDate(event1.getDate());
                 LocalDate date2 = parseStringToDate(event2.getDate());
-
-                // First compare dates
-                int dateCompare = date2.compareTo(date1); // Reverse chronological
+                int dateCompare = date2.compareTo(date1);
                 if (dateCompare != 0) return dateCompare;
 
-                // If dates equal, compare times
                 LocalTime time1 = parseStringToTime(event1.getTime());
                 LocalTime time2 = parseStringToTime(event2.getTime());
-                return time2.compareTo(time1); // Reverse chronological
+                return time2.compareTo(time1);
             } catch (Exception e) {
-                Log.e("Sorting", "Error comparing events", e);
                 return 0;
             }
         });
 
-        // Update adapter with sorted list
-        adapter = new MoodEventAdapter(getContext(), sortedList);
+        // Update adapter with valid context
+        adapter = new MoodEventAdapter(requireActivity(), moodHistoryList);
         recent_list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }

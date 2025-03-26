@@ -116,7 +116,7 @@ public class ProfilePage extends Fragment {
             fetchUserMoodEvents(loggedInUsername);
         }
 
-        adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
+        adapter = new MoodEventAdapter(requireActivity(), moodHistoryList);
         recent_list.setAdapter(adapter);
 
         follower.setOnClickListener(new View.OnClickListener() {
@@ -383,30 +383,31 @@ public class ProfilePage extends Fragment {
      * or updating the existing one.
      */
     private void Display(ArrayList<MoodEvent> moodHistoryList) {
-        // Create a defensive copy to avoid ConcurrentModificationException
+        if (!isAdded() || getContext() == null) {
+            // Fragment is not attached, skip UI updates
+            return;
+        }
+
+        // Create a defensive copy and sort
         ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
 
         sortedList.sort((event1, event2) -> {
             try {
                 LocalDate date1 = parseStringToDate(event1.getDate());
                 LocalDate date2 = parseStringToDate(event2.getDate());
-
-                // First compare dates
-                int dateCompare = date2.compareTo(date1); // Reverse chronological
+                int dateCompare = date2.compareTo(date1);
                 if (dateCompare != 0) return dateCompare;
 
-                // If dates equal, compare times
                 LocalTime time1 = parseStringToTime(event1.getTime());
                 LocalTime time2 = parseStringToTime(event2.getTime());
-                return time2.compareTo(time1); // Reverse chronological
+                return time2.compareTo(time1);
             } catch (Exception e) {
-                Log.e("Sorting", "Error comparing events", e);
                 return 0;
             }
         });
 
-        // Update adapter with sorted list
-        adapter = new MoodEventAdapter(getContext(), sortedList);
+        // Update adapter with valid context
+        adapter = new MoodEventAdapter(requireContext(), sortedList);
         recent_list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -453,29 +454,20 @@ public class ProfilePage extends Fragment {
                 }
 
                 fetchedCount[0]++;
+                // Inside fetchMoodEvents
                 if (fetchedCount[0] == moodRefs.size()) {
-
                     moodHistoryList.clear();
                     moodHistoryList.addAll(tempList);
-
-
                     sortMoodEvents();
 
-                    // Keep only the 2 most recent
-                    if (!moodHistoryList.isEmpty()) {
-                        Log.e("PROFILE LIST", "fetchMoodEvents: not emprt" );
-                    if (moodHistoryList.size() > 3) {
-                        ArrayList<MoodEvent> RecentHistoryList = new ArrayList<MoodEvent>(moodHistoryList.subList(0, 3));
-                        Display(RecentHistoryList);
+                    if (isAdded() && getContext() != null) { // Check fragment attachment
+                        if (moodHistoryList.size() > 3) {
+                            ArrayList<MoodEvent> RecentHistoryList = new ArrayList<>(moodHistoryList.subList(0, 3));
+                            Display(RecentHistoryList);
+                        } else {
+                            Display(moodHistoryList);
+                        }
                     }
-                    else {Display(moodHistoryList);}}
-                    else {
-                        Log.e("EMPTY_LIST", "fetchMoodEvents: LIST IS EMPTY");
-                    }
-
-
-
-
                 }
             }).addOnFailureListener(e -> {
                 Log.e("MoodHistory", "Error fetching document", e);
