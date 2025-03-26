@@ -699,6 +699,10 @@ public class AddMoodEvent extends Fragment {
 
                     double latitude = locationResult.getLastLocation().getLatitude();
                     double longitude = locationResult.getLastLocation().getLongitude();
+                    selectedGeoPoint = new GeoPoint(latitude, longitude);
+
+                    Log.d("POINTS", "onLocationResult: "+ latitude+ longitude);
+                    
                     Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
 
                     List<Address> addresses = null;

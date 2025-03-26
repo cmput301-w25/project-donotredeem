@@ -639,6 +639,9 @@ public class EditMoodEvent extends Fragment {
                 public void onLocationResult(LocationResult locationResult) {
                     double latitude = locationResult.getLastLocation().getLatitude();
                     double longitude = locationResult.getLastLocation().getLongitude();
+
+                    selectedGeoPoint = new GeoPoint(latitude, longitude);
+
                     android.location.Geocoder geocoder = new android.location.Geocoder(requireContext(), Locale.getDefault());
                     try {
                         List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
