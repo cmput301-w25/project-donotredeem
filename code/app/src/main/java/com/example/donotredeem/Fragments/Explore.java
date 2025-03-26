@@ -9,70 +9,53 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.donotredeem.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Explore extends Fragment {
 
-//    private List<String> displaylist = Arrays.asList("AG", "Ayaan", "Heer", "isoblade"); // Example list
     private List<String> displaylist = new ArrayList<>();
     private List<String> filteredList = new ArrayList<>();
-
-    private ListView listView;
+    private RecyclerView recyclerView;
     private EditText searchBar;
-    private ArrayAdapter<String> adapter;
+    private UserAdapter adapter;
     private String username;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.explore, container, false);
-        Log.d("MyTag", "This is a debug message77777777777777777.");
 
-        Log.d("MyTag", "Display list: ");
-
-        // Initialize ListView
-        listView = view.findViewById(R.id.list_view);
+        // Initialize RecyclerView
+        recyclerView = view.findViewById(R.id.list_view);
         searchBar = view.findViewById(R.id.search_bar);
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         username = sharedPreferences.getString("username", null);
 
+        // Setup RecyclerView
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        adapter = new UserAdapter(new ArrayList<>(), this::onItemClicked);
+        recyclerView.setAdapter(adapter);
+
         fetchUsernamesFromFirestore();
-        Log.d("MyTag", "Display list: " + displaylist.toString());
-
-
-        // Use ArrayAdapter for simple string lists
-        adapter = new ArrayAdapter<>(
-                requireContext(),
-                R.layout.list_layout, // Use custom layout here
-                R.id.item_text,     // Reference to the TextView inside list_item.xml
-                filteredList
-        );
-
-        // Set adapter to listView
-        listView.setAdapter(adapter);
 
         searchBar.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -80,28 +63,18 @@ public class Explore extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        // Set onItemClickListener to handle clicks
-        listView.setOnItemClickListener((parent, view1, position, id) -> {
-            // Get the selected username
-            String selectedUsername = filteredList.get(position);
-
-
-            // Create a new instance of SearchedUser and pass the username
-            SearchedUser searchedUserFragment = SearchedUser.newInstance(selectedUsername);
-
-            // Replace the current fragment with SearchedUser
-            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, searchedUserFragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            public void afterTextChanged(Editable s) {}
         });
 
         return view;
+    }
+
+    private void onItemClicked(String username) {
+        SearchedUser searchedUserFragment = SearchedUser.newInstance(username);
+        FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, searchedUserFragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     private void fetchUsernamesFromFirestore() {
@@ -111,31 +84,33 @@ public class Explore extends Fragment {
                 displaylist.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     if (!document.getId().equals(username)) {
-                        displaylist.add(document.getId()); // Document ID is the username
+                        displaylist.add(document.getId());
                     }
                 }
-//                filterList(""); // Show all results initially
-            } else {
+                // Update both lists
+                filteredList.clear();
+                filteredList.addAll(displaylist);
+                adapter.updateList(new ArrayList<>(filteredList)); // Pass copy
+            }
+            else {
                 Log.e("Explore", "Error fetching usernames", task.getException());
             }
         });
     }
-    /**
-     * Filters the list based on the search query.
-     *
-     * @param query The string to filter by.
-     */
+
     private void filterList(String query) {
-        filteredList.clear(); // Clear the previous results
+        List<String> filtered = new ArrayList<>();
         if (query.isEmpty()) {
-            filteredList.addAll(displaylist); // Show all items if query is empty
+            filtered.addAll(displaylist);
         } else {
             for (String username : displaylist) {
                 if (username.toLowerCase().contains(query.toLowerCase())) {
-                    filteredList.add(username); // Add matching items to filtered list
+                    filtered.add(username);
                 }
             }
         }
-        adapter.notifyDataSetChanged(); // Refresh ListView with filtered items
+        filteredList.clear();
+        filteredList.addAll(filtered);
+        adapter.updateList(new ArrayList<>(filtered)); // Pass copy
     }
 }

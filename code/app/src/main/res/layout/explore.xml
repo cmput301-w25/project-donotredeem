@@ -6,24 +6,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#222121"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
+    <!-- Search Card with Status Bar Spacing -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+        android:layout_height="56dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="16dp"
         android:background="@android:color/white"
-        app:cardCornerRadius="50dp"
-        app:cardElevation="4dp"
+        app:cardCornerRadius="28dp"
+        app:cardElevation="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="8dp">
+            android:layout_height="match_parent"
+            android:paddingHorizontal="16dp">
 
             <ImageView
                 android:id="@+id/search_icon"
@@ -32,7 +36,8 @@
                 android:src="@drawable/searchiconnobg"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="#666" />
 
             <EditText
                 android:id="@+id/search_bar"
@@ -40,10 +45,11 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:hint="Search..."
+                android:imeOptions="actionSearch"
                 android:inputType="text"
-                android:padding="8dp"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/darker_gray"
+                android:textColor="#333"
+                android:textColorHint="#999"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/search_icon"
@@ -52,29 +58,19 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 
-    <ListView
+    <!-- Enhanced List View -->
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:divider="@android:color/darker_gray"
-        android:dividerHeight="1dp"
+        android:layout_marginTop="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        android:scrollbars="vertical"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/item_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textColor="#FFFFFF"
-        android:textSize="18sp"
-        android:background="#3E3D3D"
-        android:gravity="center_vertical"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@id/cardView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
