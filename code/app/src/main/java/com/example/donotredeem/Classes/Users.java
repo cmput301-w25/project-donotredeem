@@ -1,5 +1,7 @@
 package com.example.donotredeem.Classes;
 
+import com.google.firebase.firestore.DocumentReference;
+
 import java.util.List;
 
 /**
@@ -20,11 +22,10 @@ public class Users {
 //    private String picture;
     private  List<String> MoodREF;
 //    private Boolean isAdmin;
-    private int followers;
     private List<String> followerList;
-    private int following;
     private List<String> followingList;
     private List<String> requests;
+    private List<DocumentReference> moodRefs;
     private String bio;
 
     /**
@@ -68,16 +69,14 @@ public class Users {
 //        this.followerList = followerList;
 //        this.followingList = followingList;
 //    }
-    public Users (String username, String password, String email, int followers, int following, List<String> followerList, List<String> followingList, List<String> requests){
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.followers = followers;
-        this.following = following;
-        this.followerList = followerList;
-        this.followingList = followingList;
-        this.requests = requests;
-    }
+//    public Users (String username, String password, String email, int followers, int following, List<String> followerList, List<String> followingList, List<String> requests){
+//        this.username = username;
+//        this.password = password;
+//        this.email = email;
+//        this.followerList = followerList;
+//        this.followingList = followingList;
+//        this.requests = requests;
+//    }
 
     public Users(String username, String password, String email, String bio) {
         this.username = username;
@@ -86,15 +85,14 @@ public class Users {
         this.bio = bio;
     }
 
-    public Users(String username, String bio, int followers, List<String> followerList,
-                 int following, List<String> followingList, List<String> requests) {
+    public Users(String username, String bio, List<String> followerList,
+                 List<String> followingList, List<String> requests, List<DocumentReference> moodRefs) {
         this.username = username;
         this.bio = bio;
-        this.followers = followers;
         this.followerList = followerList;
-        this.following = following;
         this.followingList = followingList;
         this.requests = requests;
+        this.moodRefs = moodRefs;
     }
 
     public String getUsername() {
@@ -182,10 +180,6 @@ public class Users {
         return followerList != null ? followerList.size() : 0;
     }
 
-    public void setFollowers(int followers) {
-        this.followers = followers;
-    }
-
     public List<String> getFollowerList() {
         return followerList;
     }
@@ -196,10 +190,6 @@ public class Users {
 
     public int getFollowing() {
         return followingList != null ? followingList.size() : 0;
-    }
-
-    public void setFollowing(int following) {
-        this.following = following;
     }
 
     public List<String> getFollowingList() {
@@ -233,5 +223,7 @@ public class Users {
     public void setRequests(List<String> requests) {
         this.requests = requests;
     }
+
+    public int getMoods(){return moodRefs != null ?  moodRefs.size() : 0;}
 }
 

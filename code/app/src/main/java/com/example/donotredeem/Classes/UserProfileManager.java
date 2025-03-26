@@ -224,29 +224,29 @@ public class UserProfileManager {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            // Get followers (handle both Long and String)
-                            Object followersObj = document.get("followers");
-                            int followerCount = parseFieldToInt(followersObj);
+//                            // Get followers (handle both Long and String)
+//                            Object followersObj = document.get("followers");
+//                            int followerCount = parseFieldToInt(followersObj);
 
-                            // Get following (handle both Long and String)
-                            Object followingObj = document.get("following");
-                            int followingCount = parseFieldToInt(followingObj);
+//                            // Get following (handle both Long and String)
+//                            Object followingObj = document.get("following");
+//                            int followingCount = parseFieldToInt(followingObj);
 
                             // Extract other fields
                             String bio = document.getString("bio");
                             List<String> followersList = (List<String>) document.get("follower_list");
                             List<String> followingList = (List<String>) document.get("following_list");
                             List<String> requestsList = (List<String>) document.get("requests");
+                            List<DocumentReference> moodRefs = (List<DocumentReference>) document.get("MoodRef");
 
                             // Create Users object
                             Users user = new Users(
                                     username,
                                     bio,
-                                    followerCount,
                                     followersList,
-                                    followingCount,
                                     followingList,
-                                    requestsList
+                                    requestsList,
+                                    moodRefs
                             );
 
                             callback.onUserProfileFetched(user);
