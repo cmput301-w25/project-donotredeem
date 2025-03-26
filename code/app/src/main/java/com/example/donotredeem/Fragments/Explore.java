@@ -1,5 +1,7 @@
 package com.example.donotredeem.Fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -34,6 +36,7 @@ public class Explore extends Fragment {
     private ListView listView;
     private EditText searchBar;
     private ArrayAdapter<String> adapter;
+    private String username;
 
     @Nullable
     @Override
@@ -46,6 +49,9 @@ public class Explore extends Fragment {
         // Initialize ListView
         listView = view.findViewById(R.id.list_view);
         searchBar = view.findViewById(R.id.search_bar);
+
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        username = sharedPreferences.getString("username", null);
 
         fetchUsernamesFromFirestore();
         Log.d("MyTag", "Display list: " + displaylist.toString());
@@ -104,9 +110,11 @@ public class Explore extends Fragment {
             if (task.isSuccessful()) {
                 displaylist.clear();
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    displaylist.add(document.getId()); // Document ID is the username
+                    if (!document.getId().equals(username)) {
+                        displaylist.add(document.getId()); // Document ID is the username
+                    }
                 }
-                filterList(""); // Show all results initially
+//                filterList(""); // Show all results initially
             } else {
                 Log.e("Explore", "Error fetching usernames", task.getException());
             }

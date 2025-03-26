@@ -2,6 +2,7 @@ package com.example.donotredeem.Fragments;
 
 import static java.security.AccessController.getContext;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -58,6 +59,7 @@ public class ProfilePage extends Fragment {
     private String username;
     private Button Follow;
     private TextView usernameTextView, bioTextView, followersTextView, followingTextView;
+    private LinearLayout follower, following;
 
 
 
@@ -71,6 +73,7 @@ public class ProfilePage extends Fragment {
      * @param savedInstanceState A Bundle containing the saved state (if available)
      * @return The root view of the fragment
      */
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile, container, false);
@@ -79,6 +82,8 @@ public class ProfilePage extends Fragment {
         bioTextView = view.findViewById(R.id.textView9);
         followersTextView = view.findViewById(R.id.textView5);
         followingTextView = view.findViewById(R.id.textView02);
+        follower = view.findViewById(R.id.followerLayout);
+        following = view.findViewById(R.id.followingLayout);
 //        Follow = view.findViewById(R.id.button6);
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
@@ -109,6 +114,38 @@ public class ProfilePage extends Fragment {
 
         adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
         recent_list.setAdapter(adapter);
+
+        follower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                // Add FollowerFragment on top of the current fragment
+                FollowerFragment followerFragment = new FollowerFragment();
+                fragmentTransaction.add(R.id.fragment_container, followerFragment);
+
+                // Add to back stack so the back button can return to ProfilePage
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
+
+        following.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
+                // Add FollowingFragment on top of the current fragment
+                FollowingFragment followingFragment = new FollowingFragment();
+                fragmentTransaction.add(R.id.fragment_container, followingFragment);
+
+                // Add to back stack so the back button can return to ProfilePage
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+            }
+        });
 
 
         DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
