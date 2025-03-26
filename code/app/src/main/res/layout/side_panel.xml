@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#222121">
+
+    <LinearLayout
+        android:id="@+id/side_panel"
+        android:layout_width="138dp"
+        android:layout_height="895dp"
+        android:background="#222121"
+        android:orientation="vertical"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="75dp"
+            android:fontFamily="@font/jomolhari"
+            android:padding="16dp"
+            android:text="feelin'"
+            android:textColor="#F5E6D3"
+            android:textSize="34sp"
+            android:textStyle="bold|italic" />
+
+        <TextView
+            android:id="@+id/nav_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="History"
+            android:textSize="17dp"
+            android:layout_marginTop="20dp"
+            android:textColor="#F5E6D3"
+            android:padding="16dp" />
+
+        <TextView
+            android:id="@+id/nav_profile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#F5E6D3"
+            android:textSize="17dp"
+            android:text="Profile"
+            android:padding="16dp" />
+
+        <TextView
+            android:id="@+id/nav_settings"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#F5E6D3"
+            android:textSize="17dp"
+            android:text="Settings"
+            android:padding="16dp" />
+
+        <TextView
+            android:id="@+id/nav_about_us"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#F5E6D3"
+            android:textSize="17dp"
+            android:text="About Us"
+            android:padding="16dp" />
+
+        <TextView
+            android:id="@+id/nav_qr_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="QR Code"
+            android:textSize="17dp"
+            android:textColor="#F5E6D3"
+            android:padding="16dp" />
+
+        <TextView
+            android:id="@+id/nav_mood_jar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MoodJar"
+            android:textSize="17dp"
+            android:textColor="#F5E6D3"
+            android:padding="16dp" />
+
+
+        <TextView
+            android:id="@+id/Sign_out"
+            android:layout_width="match_parent"
+            android:textColor="#F5E6D3"
+            android:layout_height="wrap_content"
+            android:text="Sign Out"
+            android:textSize="17dp"
+            android:padding="16dp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="333dp"
+        android:layout_height="365dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="84dp"
+        app:layout_constraintStart_toEndOf="@+id/side_panel"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/hapi" />
+
+    <ImageView
+        android:id="@+id/imageView6"
+        android:layout_width="333dp"
+        android:layout_height="365dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="352dp"
+        app:layout_constraintStart_toEndOf="@+id/side_panel"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/angry" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="50dp"
+        android:layout_height="51dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#222121"
+        android:scaleType="fitCenter"
+        android:tint="#F5E6D3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.917"
+        app:layout_constraintStart_toEndOf="@+id/side_panel"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/close" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
