@@ -85,6 +85,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -112,9 +113,6 @@ public class AddMoodEvent extends Fragment {
     private static final int CAMERA_REQUEST = 100;
     private static final int GALLERY_REQUEST = 200;
     private static final int LOCATION_REQUEST = 300;
-
-    private static final int AUTOCOMPLETE_REQUEST = 400;
-
     private ImageButton selectedEmoji = null;
     private ImageButton selectedSocialButton = null;
 
@@ -166,14 +164,30 @@ public class AddMoodEvent extends Fragment {
         //the code below is taken from https://developer.android.com/media/camera/camera-deprecated/photobasics
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
-                image.setImageURI(imageUri);
+                File imageFile = new File(imageUri.getPath());
 
+                if (imageFile.length() > 65536) {
+                    Snackbar.make(getView(), "Image too large. Please capture a smaller image.", Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+
+                image.setImageURI(imageUri);
             }
         });
 
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
                 imageUri = result.getData().getData();
+                try (InputStream inputStream = requireContext().getContentResolver().openInputStream(imageUri)) {
+                    int fileSize = inputStream.available();
+                    if (fileSize > 65536) {
+                        Snackbar.make(getView(), "Image too large. Please select a smaller image.", Snackbar.LENGTH_SHORT).show();
+                        return;
+                    }
+                } catch (IOException e) {
+                    Log.e("GalleryError", "Error checking image size", e);
+                }
+
                 image.setImageURI(imageUri);
             }
         });
@@ -998,7 +1012,5 @@ public class AddMoodEvent extends Fragment {
             default: return -1; // Handle unknown moods
         }
     }
-
-
 
 }
