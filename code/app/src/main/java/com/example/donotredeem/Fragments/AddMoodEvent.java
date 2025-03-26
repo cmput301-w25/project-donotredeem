@@ -281,7 +281,7 @@ public class AddMoodEvent extends Fragment {
 //        });
 
 
-        EditText addTrigger = view.findViewById(R.id.trigger);
+        EditText addTrigger = view.findViewById(R.id.reasoning);
         Button submit = view.findViewById(R.id.button);
 
         SwitchMaterial private_button;

@@ -232,7 +232,7 @@ public class EditMoodEvent extends Fragment {
         locationEdit = view.findViewById(R.id.loc);
         dateEdit = view.findViewById(R.id.date);
         timeEdit = view.findViewById(R.id.Time);
-        triggerEdit = view.findViewById(R.id.trigger);
+        triggerEdit = view.findViewById(R.id.reasoning);
         image = view.findViewById(R.id.imageView);
         submit = view.findViewById(R.id.button);
         mediaUpload = view.findViewById(R.id.upload_button);
