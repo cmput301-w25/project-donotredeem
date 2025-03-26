@@ -69,14 +69,14 @@ public class Users {
 //        this.followerList = followerList;
 //        this.followingList = followingList;
 //    }
-    public Users (String username, String password, String email, int followers, int following, List<String> followerList, List<String> followingList, List<String> requests){
-        this.username = username;
-        this.password = password;
-        this.email = email;
-        this.followerList = followerList;
-        this.followingList = followingList;
-        this.requests = requests;
-    }
+//    public Users (String username, String password, String email, int followers, int following, List<String> followerList, List<String> followingList, List<String> requests){
+//        this.username = username;
+//        this.password = password;
+//        this.email = email;
+//        this.followerList = followerList;
+//        this.followingList = followingList;
+//        this.requests = requests;
+//    }
 
     public Users(String username, String password, String email, String bio) {
         this.username = username;
