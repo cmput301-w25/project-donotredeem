@@ -60,8 +60,8 @@ public class ProfilePage extends Fragment {
 
     private String username;
     private Button Follow;
-    private TextView usernameTextView, bioTextView, followersTextView, followingTextView;
-    private LinearLayout follower, following;
+    private TextView usernameTextView, bioTextView, followersTextView, followingTextView, moodTextView;
+    private LinearLayout follower, following, mood;
 
 
 
@@ -84,8 +84,10 @@ public class ProfilePage extends Fragment {
         bioTextView = view.findViewById(R.id.textView9);
         followersTextView = view.findViewById(R.id.textView5);
         followingTextView = view.findViewById(R.id.textView02);
+        moodTextView = view.findViewById(R.id.textView8);
         follower = view.findViewById(R.id.followerLayout);
         following = view.findViewById(R.id.followingLayout);
+        mood = view.findViewById(R.id.moodLayout);
 //        Follow = view.findViewById(R.id.button6);
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
@@ -148,6 +150,25 @@ public class ProfilePage extends Fragment {
                 fragmentTransaction.commit();
             }
         });
+        mood.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Fragment existingFragment = fragmentManager.findFragmentByTag("moodhistory");
+
+                if (existingFragment == null) {
+
+                    moodhistory historyFragment = new moodhistory();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.fragment_container, historyFragment, "moodhistory")
+                            .addToBackStack(null)
+                            .commit();
+                } else {
+                    fragmentManager.popBackStack("moodhistory", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+            }
+        });
+
 
 
         DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
@@ -233,6 +254,8 @@ public class ProfilePage extends Fragment {
                     followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
                     Log.d("MyTag", "User following count: " + user.getFollowing());
                     followingTextView.setText(String.valueOf(user.getFollowing()));
+                    moodTextView.setText(String.valueOf(user.getMoods()));
+                    
 
                     Log.d("MyTag", "This is a debug message666666666666666.");
 
