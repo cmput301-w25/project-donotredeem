@@ -31,6 +31,8 @@ import com.example.donotredeem.LogIn;
 import com.example.donotredeem.MainActivity;
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodEventAdapter;
+import com.example.donotredeem.MoodJarFragment;
+import com.example.donotredeem.QRCodeFragment;
 import com.example.donotredeem.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -156,6 +158,17 @@ public class ProfilePage extends Fragment {
             } else {
                 fragmentManager.popBackStack("EditProfile", FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
+        });
+
+        // Add QR Code Navigation
+        sidePanel.findViewById(R.id.nav_qr_code).setOnClickListener(v -> {
+            drawerLayout.closeDrawer(sidePanel);
+            navigateToFragment(new QRCodeFragment(), "QRCode");
+        });
+
+        sidePanel.findViewById(R.id.nav_mood_jar).setOnClickListener(v -> {
+            drawerLayout.closeDrawer(sidePanel);
+            navigateToFragment(new MoodJarFragment(), "MoodJar");
         });
 
         return view;
@@ -466,5 +479,18 @@ public class ProfilePage extends Fragment {
         Intent intent = new Intent(getActivity(), LogIn.class);
         startActivity(intent);
         requireActivity().finish();
+    }
+    private void navigateToFragment(Fragment fragment, String tag) {
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        Fragment existingFragment = fragmentManager.findFragmentByTag(tag);
+
+        if (existingFragment == null) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, fragment, tag)
+                    .addToBackStack(null)
+                    .commit();
+        } else {
+            fragmentManager.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 }

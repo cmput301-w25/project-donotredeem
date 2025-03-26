@@ -241,6 +241,22 @@
             android:text="About Us"
             android:padding="16dp" />
 
+        <TextView
+            android:id="@+id/nav_qr_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="QR Code"
+            android:textColor="#F5E6D3"
+            android:padding="16dp" />
+
+        <TextView
+            android:id="@+id/nav_mood_jar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="MoodJar"
+            android:textColor="#F5E6D3"
+            android:padding="16dp" />
+
 
         <TextView
             android:id="@+id/Sign_out"

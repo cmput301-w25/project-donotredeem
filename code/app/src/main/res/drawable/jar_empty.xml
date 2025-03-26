@@ -1,0 +1,20 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="120dp"
+    android:viewportWidth="100"
+    android:viewportHeight="120">
+
+    <!-- Jar Outline -->
+    <path
+        android:fillColor="#00FFFFFF"
+        android:strokeColor="#F5E6D3"
+        android:strokeWidth="2"
+        android:pathData="M20,10 L80,10 Q90,10 90,20 L90,110 Q90,120 80,120 L20,120 Q10,120 10,110 L10,20 Q10,10 20,10"/>
+
+    <!-- Neck -->
+    <path
+        android:fillColor="#00FFFFFF"
+        android:strokeColor="#F5E6D3"
+        android:strokeWidth="2"
+        android:pathData="M40,0 L60,0 L60,10 L40,10"/>
+</vector>
