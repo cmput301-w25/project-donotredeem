@@ -208,6 +208,7 @@ public class ProfilePage extends Fragment {
             navigateToFragment(new MoodJarFragment(), "MoodJar");
         });
 
+
         return view;
     }
 
