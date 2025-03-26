@@ -114,6 +114,8 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
         ImageButton friends_btn = view.findViewById(R.id.friends_icon);
         ImageButton distance_btn = view.findViewById(R.id.km_icon);
 
+        fetchUserMoodEvents(loggedInUsername);
+
 
         me_btn.setOnClickListener( new View.OnClickListener() {
                     @Override
@@ -511,13 +513,13 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
     private void updateMapMarkers(ArrayList<MoodEvent> moods_list, String display) {
         if (mMap == null || moods_list.isEmpty()) {
             Log.e("MAP", "updateMapMarkers: No mood events to display.");
-            LatLng edmonton = new LatLng(53.5444, -113.4909);
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(edmonton, 12); // Zoom level 12 is good for city view
-            mMap.moveCamera(cameraUpdate);
 
 
         }
         mMap.clear();
+        LatLng edmonton = new LatLng(53.5444, -113.4909);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(edmonton, 12); // Zoom level 12 is good for city view
+        mMap.moveCamera(cameraUpdate);
 
         String descriptor = "";
 
