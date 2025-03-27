@@ -7,14 +7,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
@@ -36,9 +37,10 @@ public class SearchedUser extends Fragment {
     private static final String ARG_USERNAME = "username";
     private String username;
     private Button Follow;
-    private TextView usernameTextView, bioTextView, followersTextView, followingTextView;
+    private TextView usernameTextView, bioTextView, followersTextView, followingTextView, moodTextView;
 
     private ListView followerListView, followingListView, recent_list;
+    private LinearLayout follower, following;
     private MoodEventAdapter adapter;
     private ArrayList<MoodEvent> moodHistoryList;
     private FirebaseFirestore db;
@@ -72,10 +74,14 @@ public class SearchedUser extends Fragment {
 
         // Initialize TextViews
         usernameTextView = view.findViewById(R.id.textView2);
-        bioTextView = view.findViewById(R.id.textView9);
+        bioTextView = view.findViewById(R.id.textView10);
         followersTextView = view.findViewById(R.id.textView7);
         followingTextView = view.findViewById(R.id.textView8);
+        moodTextView = view.findViewById(R.id.textView9);
         Follow = view.findViewById(R.id.button6);
+        follower = view.findViewById(R.id.followerLayout);
+        following = view.findViewById(R.id.followingLayout);
+
         Log.d("MyTag", "This is a debug message 222222222222.");
 
 //        // Initialize ListViews
@@ -84,6 +90,43 @@ public class SearchedUser extends Fragment {
 
         // Fetch and display user data
         fetchUserData(username);
+
+        follower.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkIfUserFollows(username, new OnFollowCheckListener() {
+                    @Override
+                    public void onFollowCheck(boolean isFollowing) {
+                        if (isFollowing) {
+                            FollowerFragment followerFragment = FollowerFragment.newInstance(username);
+                            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                            transaction.add(R.id.fragment_container, followerFragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+                        }
+                    }
+                });
+
+            }
+        });
+
+        following.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkIfUserFollows(username, new OnFollowCheckListener() {
+                    @Override
+                    public void onFollowCheck(boolean isFollowing) {
+                        if (isFollowing) {
+                            FollowingFragment followingFragment = FollowingFragment.newInstance(username);
+                            FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                            transaction.add(R.id.fragment_container, followingFragment);
+                            transaction.addToBackStack(null);
+                            transaction.commit();
+                        }
+                    }
+                });
+            }
+        });
 
 
         Follow.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +146,7 @@ public class SearchedUser extends Fragment {
                 // First check current follow status
                 userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
                     @Override
-                    public void onUserProfileFetched(Users targetUser) {
+                    public boolean onUserProfileFetched(Users targetUser) {
                         if (targetUser != null) {
                             // Check if logged-in user is already following
                             if (targetUser.getFollowerList() != null &&
@@ -136,11 +179,24 @@ public class SearchedUser extends Fragment {
                                             }
                                         });
                             } else {
+                                Log.d("MyTag", "2222222222223333333333");
                                 // Check if request already exists
                                 if (targetUser.getRequests() != null &&
                                         targetUser.getRequests().contains(loggedInUsername)) {
-                                    Follow.setText("Requested");
-                                    Follow.setEnabled(false);
+                                    Log.d("MyTag", "33333333333344444444444444");
+                                    userProfileManager.declineFollowRequest(loggedInUsername, username,
+                                            new UserProfileManager.OnUpdateListener() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    Follow.setText("Follow");
+                                                    Follow.setEnabled(false);
+                                                }
+                                                @Override
+                                                public void onError(Exception e) {
+                                                    handleError("Error removing request", e);
+                                                }
+                                            });
+
                                 } else {
                                     // Send follow request
                                     userProfileManager.addToRequestsList(username, loggedInUsername,
@@ -160,6 +216,7 @@ public class SearchedUser extends Fragment {
                                 }
                             }
                         }
+                        return false;
                     }
                     @Override
                     public void onUserProfileFetchError(Exception e) {
@@ -185,7 +242,7 @@ public class SearchedUser extends Fragment {
         Log.d("MyTag", "This is a debug message44444444444444444.");
         userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
             @Override
-            public void onUserProfileFetched(Users user) {
+            public boolean onUserProfileFetched(Users user) {
                 if (user != null) {
                     Log.d("MyTag", "This is a debug message5555555555555.");
                     // Set user details to TextViews
@@ -194,6 +251,7 @@ public class SearchedUser extends Fragment {
                     // Inside onUserProfileFetched in fetchUserData:
                     followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
                     followingTextView.setText(String.valueOf(user.getFollowing()));
+                    moodTextView.setText(String.valueOf(user.getMoods()));
                     Log.d("MyTag", "This is a debug message666666666666666.");
                     // Get logged-in user from SharedPreferences
                     SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
@@ -232,6 +290,7 @@ public class SearchedUser extends Fragment {
                 } else {
                     Log.e("SearchedUser", "User not found.");
                 }
+                return false;
             }
 
             @Override
@@ -418,6 +477,59 @@ public class SearchedUser extends Fragment {
             Log.e("Profile Page", "Invalid time format: " + timeString, e);
             return LocalTime.MIN;
         }
+    }
+
+
+    /**
+     * Callback to handle follow check result.
+     */
+    public interface OnFollowCheckListener {
+        void onFollowCheck(boolean isFollowing);
+    }
+
+
+    /**
+     * Checks if the logged-in user follows the target user asynchronously.
+     *
+     * @param targetUsername The username of the target user.
+     * @param callback       A callback that returns true if the user is following, false otherwise.
+     */
+    /**
+     * Checks if the logged-in user follows the target user asynchronously.
+     *
+     * @param targetUsername The username of the target user.
+     * @param callback       A callback that returns true if the user is following, false otherwise.
+     */
+    private void checkIfUserFollows(String targetUsername, final OnFollowCheckListener callback) {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        final String loggedInUsername = sharedPreferences.getString("username", null);
+
+        if (loggedInUsername == null) {
+            Log.e("SearchedUser", "No user is logged in.");
+            callback.onFollowCheck(false); // Return false if no user is logged in
+            return;
+        }
+
+        final UserProfileManager userProfileManager = new UserProfileManager();
+
+        userProfileManager.getUserProfileWithFollowers(targetUsername, new UserProfileManager.OnUserProfileFetchListener() {
+            @Override
+            public boolean onUserProfileFetched(Users targetUser) {
+                if (targetUser != null && targetUser.getFollowerList() != null) {
+                    boolean isFollowing = targetUser.getFollowerList().contains(loggedInUsername);
+                    callback.onFollowCheck(isFollowing); // Return true/false via callback
+                } else {
+                    callback.onFollowCheck(false);
+                }
+                return false;
+            }
+
+            @Override
+            public void onUserProfileFetchError(Exception e) {
+                Log.e("SearchedUser", "Error fetching user data", e);
+                callback.onFollowCheck(false); // Return false on error
+            }
+        });
     }
 
 //    // Method to send a follow request or follow the user

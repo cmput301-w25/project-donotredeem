@@ -1,7 +1,9 @@
 package com.example.donotredeem;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +33,10 @@ import com.example.donotredeem.Fragments.ProfilePage;
 import com.example.donotredeem.Fragments.Requests;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
+import com.google.firebase.firestore.MemoryCacheSettings;
+
 import androidx.fragment.app.Fragment;
 
 import org.w3c.dom.Text;
@@ -69,6 +75,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+//        FirebaseFirestore db = FirebaseFirestore.getInstance();
+//
+//        // Set cache settings (memory or disk-based)
+//        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+//                .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build()) // Enable memory cache
+//                .build();
+//
+//        // Apply settings to Firestore
+//        db.setFirestoreSettings(settings);
+
+        // Log to confirm Firestore is initialized
+        System.out.println("Firestore initialized with offline support!");
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new MainPage())
                 .commit();
@@ -98,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         addEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clearSavedFilters();
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment existingFragment = fragmentManager.findFragmentByTag("AddMoodEvent");
 
@@ -142,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 removeAddMoodEventIfExists();
+                clearSavedFilters();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new Map())
                         .addToBackStack(null)
@@ -153,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 removeAddMoodEventIfExists();
+                clearSavedFilters();
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, new MainPage())
                         .addToBackStack(null)
@@ -174,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
         // In MainActivity.java
         heartButton.setOnClickListener(v -> {
             removeAddMoodEventIfExists(); // Your existing cleanup method
+            clearSavedFilters();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, new RequestsFragment())
                     .addToBackStack(null)
@@ -186,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
                 removeAddMoodEventIfExists();
                 removeHistoryIfExists();
                 removeProfileIfExists();
+                clearSavedFilters();
 
                 getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
@@ -239,6 +263,18 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment_container, fragment, "AddMoodEvent")
                 .addToBackStack("AddMoodEvent")
                 .commit();
+    }
+
+    private void clearSavedFilters() {
+        SharedPreferences sharedPreferences = getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Set filter values to null (use remove() to delete if required)
+        editor.putString("keyword", null);
+        editor.putString("timeFilter", null);
+        editor.putString("selectedEmojis", null);
+
+        editor.apply(); // Commit changes
     }
 
 }

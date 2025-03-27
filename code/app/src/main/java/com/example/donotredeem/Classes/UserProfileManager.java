@@ -6,7 +6,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 
@@ -204,7 +203,7 @@ public class UserProfileManager {
      * Interface for handling the result of fetching a user profile.
      */
     public interface OnUserProfileFetchListener {
-        void onUserProfileFetched(Users user);
+        boolean onUserProfileFetched(Users user);
         void onUserProfileFetchError(Exception e);
     }
 

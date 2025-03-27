@@ -52,6 +52,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.donotredeem.Classes.NetworkUtils;
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
@@ -149,7 +150,10 @@ public class AddMoodEvent extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
+        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+            Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
+        }
+
 
         Log.d("AddMoodEvent", "onCreate called");
 
@@ -311,34 +315,48 @@ public class AddMoodEvent extends Fragment {
 
         location = view.findViewById(R.id.loc);
 
-        location.setOnClickListener(v -> {
-            location.requestFocus();
 
-            List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
-//            Intent intent = new Autocomplete.IntentBuilder(
-//                    AutocompleteActivityMode.OVERLAY, fields)
-//                    .setTypeFilter(TypeFilter.ADDRESS) // Focuses on addresses (street names included)
-//                    .build(requireActivity());
+        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+            location.setOnClickListener(v -> {
+                location.requestFocus();
 
-            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(requireActivity());
-            placeAutocompleteLauncher.launch(intent);
-        });
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+                //            Intent intent = new Autocomplete.IntentBuilder(
+                //                    AutocompleteActivityMode.OVERLAY, fields)
+                //                    .setTypeFilter(TypeFilter.ADDRESS) // Focuses on addresses (street names included)
+                //                    .build(requireActivity());
+
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(requireActivity());
+                placeAutocompleteLauncher.launch(intent);
+            });
+        } else{
+            location.setOnClickListener(v -> {
+                Snackbar.make(getView(), "Can't add location, you are offline.", Snackbar.LENGTH_SHORT).show();
+            });
+        }
 
 
         RadioButton location_button = view.findViewById(R.id.radioButton);
-        final boolean[] isSelected_loc = {false};
 
-        location_button.setOnClickListener(v -> {
-            if (isSelected_loc[0]) {
-                location.setText("");
-                location_button.setChecked(false);
-            } else {
-                checkLocationPermission();
-                location_button.setChecked(true);
-            }
+        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+            final boolean[] isSelected_loc = {false};
 
-            isSelected_loc[0] = !isSelected_loc[0];
-        });
+            location_button.setOnClickListener(v -> {
+                if (isSelected_loc[0]) {
+                    location.setText("");
+                    location_button.setChecked(false);
+                } else {
+                    checkLocationPermission();
+                    location_button.setChecked(true);
+                }
+
+                isSelected_loc[0] = !isSelected_loc[0];
+            });
+        } else{
+            location_button.setOnClickListener(v -> {
+                Snackbar.make(getView(), "Can't add location, you are offline.", Snackbar.LENGTH_SHORT).show();
+            });
+        }
 
 //        location.addTextChangedListener(new TextWatcher() {
 //            @Override
@@ -547,6 +565,32 @@ public class AddMoodEvent extends Fragment {
                 saveMoodToFirestore(privacy, descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial, timeText);
             }
 
+            if (!NetworkUtils.isNetworkAvailable(requireContext())) {
+                if (fragmentRoot != null) {
+                    Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+                    fragmentRoot.startAnimation(slideOut);
+
+                    slideOut.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            getParentFragmentManager().popBackStack(); //go to previous fragment
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+                    });
+                } else {
+                    getParentFragmentManager().popBackStack();
+                }
+            }
+
+//            Snackbar.make(getView(), "Mood event not saved!", Snackbar.LENGTH_LONG).show();
+
 //            if (fragmentRoot != null) {
 //                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
 //                fragmentRoot.startAnimation(slideOut);
@@ -747,10 +791,6 @@ public class AddMoodEvent extends Fragment {
     private void uploadImageAndSaveMood(Boolean privacy, String desc, String trigger,
                                         String date, String locationText, Uri imageUri,
                                         String mood, String social, String time) {
-        if (imageUri == null) {
-            saveMoodToFirestore(privacy, desc, trigger, date, locationText, null, mood, social, time);
-            return;
-        }
         String imageFileName = UUID.randomUUID().toString() + ".jpg";
         StorageReference imageRef = storageRef.child(imageFileName);
 

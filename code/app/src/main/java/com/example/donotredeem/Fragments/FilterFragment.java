@@ -369,6 +369,13 @@ public class FilterFragment extends DialogFragment {
             return LocalDate.now(); // Default to current date if parsing fails
         }
     }
+    private void clearSavedFilters() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear(); // Clears all key-value pairs stored in FilterPrefs
+        editor.apply(); // Apply the changes asynchronously
+    }
+
 
 }
 

@@ -3,27 +3,21 @@ package com.example.donotredeem.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
 import com.example.donotredeem.R;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.auth.User;
-
-import java.util.List;
 
 /**
  * Fragment for editing the user's profile details such as username, email, phone number, and bio.
@@ -65,9 +59,10 @@ public class EditProfile extends Fragment {
         UserProfileManager userProfileManager = new UserProfileManager();
         userProfileManager.getUserProfile(username, new UserProfileManager.OnUserProfileFetchListener() {
             @Override
-            public void onUserProfileFetched(Users user) {
+            public boolean onUserProfileFetched(Users user) {
                 setDetails(user);
                 userProfile = user;
+                return false;
             }
             @Override
             public void onUserProfileFetchError(Exception e) {
@@ -88,6 +83,8 @@ public class EditProfile extends Fragment {
                 userProfile.setEmail(editEmail.getText().toString());
                 userProfile.setBio(bio.getText().toString());
                 userProfileManager.updateUser(userProfile, username);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                fragmentManager.popBackStack();
             }
         });
 

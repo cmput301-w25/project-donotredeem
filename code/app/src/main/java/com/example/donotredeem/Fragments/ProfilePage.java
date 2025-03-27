@@ -1,8 +1,5 @@
 package com.example.donotredeem.Fragments;
 
-import static java.security.AccessController.getContext;
-
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -18,13 +15,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
-import com.example.donotredeem.Fragments.moodhistory;
+
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -43,7 +39,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -122,30 +117,20 @@ public class ProfilePage extends Fragment {
         follower.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                // Add FollowerFragment on top of the current fragment
-                FollowerFragment followerFragment = new FollowerFragment();
-                fragmentTransaction.add(R.id.fragment_container, followerFragment);
-
-                // Add to back stack so the back button can return to ProfilePage
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
+                FollowerFragment followerFragment = FollowerFragment.newInstance(username);
+                FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
+                transaction.add(R.id.fragment_container, followerFragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 
         following.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                // Add FollowingFragment on top of the current fragment
-                FollowingFragment followingFragment = new FollowingFragment();
+                FollowingFragment followingFragment = FollowingFragment.newInstance(username);
+                FragmentTransaction fragmentTransaction = requireActivity().getSupportFragmentManager().beginTransaction();
                 fragmentTransaction.add(R.id.fragment_container, followingFragment);
-
-                // Add to back stack so the back button can return to ProfilePage
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
@@ -245,7 +230,7 @@ public class ProfilePage extends Fragment {
         Log.d("MyTag", "This is a debug message44444444444444444.");
         userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
             @Override
-            public void onUserProfileFetched(Users user) {
+            public boolean onUserProfileFetched(Users user) {
                 if (user != null) {
                     Log.d("MyTag", "This is a debug message5555555555555.");
                     // Set user details to TextViews
@@ -266,6 +251,7 @@ public class ProfilePage extends Fragment {
                 } else {
                     Log.e("SearchedUser", "User not found.");
                 }
+                return false;
             }
 
             @Override

@@ -1,7 +1,7 @@
 package com.example.donotredeem.Fragments;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import static android.text.style.TtsSpan.ARG_USERNAME;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +26,23 @@ public class FollowerFragment extends Fragment {
     private List<String> follower_list;
     private FollowerAdapter adapter;
     private UserProfileManager userProfileManager;
+    private String username;
+
+    public static FollowerFragment newInstance(String username) {
+        FollowerFragment fragment = new FollowerFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_USERNAME, username);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            username = getArguments().getString(ARG_USERNAME);
+        }
+    }
 
     @Nullable
     @Override
@@ -34,18 +51,18 @@ public class FollowerFragment extends Fragment {
         followersListView = view.findViewById(R.id.commentsRecyclerView);
         userProfileManager = new UserProfileManager();
 
-        // Get current logged-in user
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-        String currentUser = sharedPreferences.getString("username", "");
+//        // Get current logged-in user
+//        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+//        String currentUser = sharedPreferences.getString("username", "");
 
-        loadRequests(currentUser);
+        loadRequests(username);
         return view;
     }
 
     private void loadRequests(String username) {
         userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
             @Override
-            public void onUserProfileFetched(Users user) {
+            public boolean onUserProfileFetched(Users user) {
                 follower_list = user.getFollowerList();
 
                 if (follower_list != null && !follower_list.isEmpty()) {
@@ -57,6 +74,7 @@ public class FollowerFragment extends Fragment {
                 } else {
                     Toast.makeText(requireContext(), "No followers found.", Toast.LENGTH_SHORT).show();
                 }
+                return false;
             }
 
             @Override

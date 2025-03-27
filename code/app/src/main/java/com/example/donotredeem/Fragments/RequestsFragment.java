@@ -41,10 +41,11 @@ public class RequestsFragment extends Fragment {
     private void loadRequests(String username) {
         userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
             @Override
-            public void onUserProfileFetched(Users user) {
+            public boolean onUserProfileFetched(Users user) {
                 requestsList = user.getRequests();
                 adapter = new RequestAdapter(requireContext(), requestsList);
                 requestsListView.setAdapter(adapter);
+                return false;
             }
 
             @Override

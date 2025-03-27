@@ -44,6 +44,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
+import com.example.donotredeem.Classes.NetworkUtils;
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.MoodType;
@@ -159,7 +160,9 @@ public class EditMoodEvent extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
+        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+            Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
+        }
 
         // Initialize Firebase
         db = FirebaseFirestore.getInstance();
@@ -356,33 +359,43 @@ public class EditMoodEvent extends Fragment {
 //            }
 //            @Override public void afterTextChanged(Editable s) { }
 //        });
+        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+            locationEdit.setOnClickListener(v -> {
+                locationEdit.requestFocus();
 
-        locationEdit.setOnClickListener(v -> {
-            locationEdit.requestFocus();
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
+                //            Intent intent = new Autocomplete.IntentBuilder(
+                //                    AutocompleteActivityMode.OVERLAY, fields)
+                //                    .setTypeFilter(TypeFilter.ADDRESS) // Focuses on addresses (street names included)
+                //                    .build(requireActivity());
 
-            List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
-//            Intent intent = new Autocomplete.IntentBuilder(
-//                    AutocompleteActivityMode.OVERLAY, fields)
-//                    .setTypeFilter(TypeFilter.ADDRESS) // Focuses on addresses (street names included)
-//                    .build(requireActivity());
-
-            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(requireActivity());
-            placeAutocompleteLauncher.launch(intent);
-        });
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(requireActivity());
+                placeAutocompleteLauncher.launch(intent);
+            });
+        } else{
+            locationEdit.setOnClickListener(v -> {
+                Snackbar.make(getView(), "Can't add location, you are offline.", Snackbar.LENGTH_SHORT).show();
+            });
+        }
         RadioButton location_button = view.findViewById(R.id.radioButton);
         final boolean[] isSelected_loc = {false};
+        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+            location_button.setOnClickListener(v -> {
+                if (isSelected_loc[0]) {
+                    locationEdit.setText("");
+                    location_button.setChecked(false);
+                } else {
+                    checkLocationPermission();
+                    location_button.setChecked(true);
+                }
 
-        location_button.setOnClickListener(v -> {
-            if (isSelected_loc[0]) {
-                locationEdit.setText("");
-                location_button.setChecked(false);
-            } else {
-                checkLocationPermission();
-                location_button.setChecked(true);
-            }
-
-            isSelected_loc[0] = !isSelected_loc[0];
-        });
+                isSelected_loc[0] = !isSelected_loc[0];
+            });
+        } else{
+            location_button.setOnClickListener(v -> {
+                Snackbar.make(getView(), "Can't add location, you are offline.", Snackbar.LENGTH_SHORT).show();
+            });
+        }
 
         // Date handling
         dateButton.setOnClickListener(v -> {
@@ -503,6 +516,31 @@ public class EditMoodEvent extends Fragment {
             } else {
                 updateMoodEventInFirestore(privacy, descText, triggerText, dateText, locationText, firebaseImageUrl,
                         selectedMoodName, selectedSocial, timeText);
+            }
+
+            if (!NetworkUtils.isNetworkAvailable(requireContext())) {
+                if (fragmentRoot != null) {
+                    Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+                    fragmentRoot.startAnimation(slideOut);
+
+                    slideOut.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            getParentFragmentManager().popBackStack(); //go to previous fragment
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+                    });
+                } else {
+                    getParentFragmentManager().popBackStack();
+                }
+
             }
 
 //            if (fragmentRoot != null) {
@@ -788,14 +826,25 @@ public class EditMoodEvent extends Fragment {
 
         moodEventRef.set(updatedMoodEvent)
                 .addOnSuccessListener(aVoid -> {
-                    Log.d(TAG, "Mood event updated!");
-                    Snackbar.make(requireView(), "Mood Event Updated!", Snackbar.LENGTH_LONG).show();
-                    incrementAndCheck(completedTasks, totalTasks);
+//                    Log.d(TAG, "Mood event updated!");
+////                    Snackbar.make(requireView(), "Mood Event Updated!", Snackbar.LENGTH_LONG).show();
+//                    Snackbar.make(getView(), "Mood event updated!", Snackbar.LENGTH_SHORT).show();
+//                    incrementAndCheck(completedTasks, totalTasks);
+                    if (isAdded() && getActivity() != null) {
+                        // Use activity's root view
+                        View rootView = getActivity().findViewById(android.R.id.content);
+                        Snackbar.make(rootView, "Mood event updated!", Snackbar.LENGTH_SHORT).show();
+                        incrementAndCheck(completedTasks, totalTasks);
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    Log.e(TAG, "Error updating mood event", e);
-                    showError("Error updating data!");
-                    return;
+//                    Log.e(TAG, "Error updating mood event", e);
+//                    showError("Error updating data!");
+//                    return;
+                    if (isAdded() && getActivity() != null) {
+                        View rootView = getActivity().findViewById(android.R.id.content);
+                        Snackbar.make(rootView, "Error updating data!", Snackbar.LENGTH_SHORT).show();
+                    }
                 });
 
 //        if (isAdded() && getActivity() != null) {

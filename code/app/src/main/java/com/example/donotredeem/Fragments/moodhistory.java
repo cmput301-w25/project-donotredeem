@@ -101,10 +101,9 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
         }
 
         view.findViewById(R.id.cancel_history).setOnClickListener(v -> {
-
+            clearSavedFilters();
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             fragmentManager.popBackStack();
-
         });
 
 
@@ -331,6 +330,21 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
             Log.e("MoodHistory", "Invalid time format: " + timeString, e);
             return LocalTime.MIN;
         }
+    }
+
+    /**
+     * Clears the saved filter preferences when the dialog is closed.
+     */
+    private void clearSavedFilters() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Set filter values to null (use remove() to delete if required)
+        editor.putString("keyword", null);
+        editor.putString("timeFilter", null);
+        editor.putString("selectedEmojis", null);
+
+        editor.apply(); // Commit changes
     }
 
 }
