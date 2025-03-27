@@ -104,11 +104,13 @@ public class UserProfileManager {
         String password = document.getString("password");
         String email = document.getString("email");
         String bio = document.getString("bio");
+        String pfp = document.getString("pfp");
         return new Users(
                 username,
                 password,
                 email,
-                bio
+                bio,
+                pfp
         );
     }
 
@@ -191,6 +193,7 @@ public class UserProfileManager {
         updates.put("password", updatedUser.getPassword());
         updates.put("email", updatedUser.getEmail());
         updates.put("bio", updatedUser.getBio());
+        updates.put("pfp", updatedUser.getProfilePictureUrl());
 
         // Directly reference the document by username (document ID)
         db.collection("User").document(username)
@@ -233,19 +236,23 @@ public class UserProfileManager {
 
                             // Extract other fields
                             String bio = document.getString("bio");
+                            String pfp = document.getString("pfp");
                             List<String> followersList = (List<String>) document.get("follower_list");
                             List<String> followingList = (List<String>) document.get("following_list");
                             List<String> requestsList = (List<String>) document.get("requests");
                             List<DocumentReference> moodRefs = (List<DocumentReference>) document.get("MoodRef");
 
+
                             // Create Users object
                             Users user = new Users(
                                     username,
                                     bio,
+                                    pfp,
                                     followersList,
                                     followingList,
                                     requestsList,
                                     moodRefs
+
                             );
 
                             callback.onUserProfileFetched(user);

@@ -80,6 +80,9 @@ dependencies {
     implementation("com.google.android.gms:play-services-maps:19.1.0")
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation("com.google.android.libraries.places:places:4.1.0")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
+    implementation(libs.circleimageview)
 
     implementation(libs.appcompat)
     implementation(libs.material)

@@ -1,5 +1,7 @@
 package com.example.donotredeem.Classes;
 
+import androidx.annotation.Nullable;
+
 import com.google.firebase.firestore.DocumentReference;
 
 import java.util.List;
@@ -27,6 +29,7 @@ public class Users {
     private List<String> requests;
     private List<DocumentReference> moodRefs;
     private String bio;
+    private String profilePictureUrl;
 
     /**
      * Empty Users Constructors
@@ -78,14 +81,15 @@ public class Users {
 //        this.requests = requests;
 //    }
 
-    public Users(String username, String password, String email, String bio) {
+    public Users(String username, String password, String email, String bio, String profilePictureUrl) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.bio = bio;
+        this.profilePictureUrl = profilePictureUrl;
     }
 
-    public Users(String username, String bio, List<String> followerList,
+    public Users(String username, String bio, String profilePictureUrl, List<String> followerList,
                  List<String> followingList, List<String> requests, List<DocumentReference> moodRefs) {
         this.username = username;
         this.bio = bio;
@@ -93,6 +97,7 @@ public class Users {
         this.followingList = followingList;
         this.requests = requests;
         this.moodRefs = moodRefs;
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     public String getUsername() {
@@ -113,6 +118,14 @@ public class Users {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
     }
 
     public void setEmail(String email) {

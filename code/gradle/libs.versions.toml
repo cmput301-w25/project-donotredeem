@@ -1,5 +1,6 @@
 [versions]
 agp = "8.8.1"
+circleimageview = "3.1.0"
 googleProtobufJavalite = "3.21.12"
 googleServices = "4.4.2"
 junit = "4.13.2"
@@ -18,6 +19,7 @@ protobufJavalite = "3.25.1"
 fragment = "1.8.6"
 
 [libraries]
+circleimageview = { module = "de.hdodenhof:circleimageview", version.ref = "circleimageview" }
 espresso-contrib = { module = "androidx.test.espresso:espresso-contrib", version.ref = "espressoCore" }
 google-protobuf-javalite-v32112 = { module = "com.google.protobuf:protobuf-javalite", version.ref = "googleProtobufJavalite" }
 google-services = { module = "com.google.gms:google-services", version.ref = "googleServices" }

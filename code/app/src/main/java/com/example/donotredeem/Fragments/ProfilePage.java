@@ -8,7 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,6 +21,9 @@ import androidx.annotation.Nullable;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
 
@@ -49,10 +55,11 @@ import java.util.List;
 public class ProfilePage extends Fragment {
     private ListView recent_list;
     private MoodEventAdapter adapter;
+    float originalX, originalY;
     private ArrayList<MoodEvent> moodHistoryList;
     private FirebaseFirestore db;
     private String loggedInUsername;
-
+    private ImageView profileImage;
     private String username;
     private Button Follow;
     private TextView usernameTextView, bioTextView, followersTextView, followingTextView, moodTextView;
@@ -83,6 +90,7 @@ public class ProfilePage extends Fragment {
         follower = view.findViewById(R.id.followerLayout);
         following = view.findViewById(R.id.followingLayout);
         mood = view.findViewById(R.id.moodLayout);
+        profileImage = view.findViewById(R.id.user_icon);
 //        Follow = view.findViewById(R.id.button6);
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
@@ -241,7 +249,70 @@ public class ProfilePage extends Fragment {
                     Log.d("MyTag", "User following count: " + user.getFollowing());
                     followingTextView.setText(String.valueOf(user.getFollowing()));
                     moodTextView.setText(String.valueOf(user.getMoods()));
-                    
+
+                    String profilePicUrl = user.getProfilePictureUrl();
+                    Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
+
+
+                    if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
+                        Log.d("pls", "onUserProfileFetched: bro this is not null");
+                        Glide.with(requireContext())
+                                .load(user.getProfilePictureUrl())
+//                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .apply(new RequestOptions().circleCrop())
+                                .into(profileImage);
+                    } else {
+                        profileImage.setImageResource(R.drawable.user);
+                    }
+
+//                    final boolean[] isExpanded = {false};
+//
+//                    profileImage.setOnClickListener(v -> {
+//                        if (!isExpanded[0]) {
+//                            // Bring the profileImage to the front
+//                            profileImage.bringToFront();
+//
+//                            // Get the center of the screen
+//                            int screenWidth = requireActivity().getWindow().getDecorView().getWidth();
+//                            int screenHeight = requireActivity().getWindow().getDecorView().getHeight();
+//                            int centerX = (screenWidth - profileImage.getWidth()) / 2;
+//                            int centerY = (screenHeight - profileImage.getHeight()) / 2;
+//
+//                            // Move the imageView to the center
+//                            profileImage.animate()
+//                                    .x(centerX)
+//                                    .y(centerY)
+//                                    .setDuration(300)
+//                                    .start();
+//
+//                            Animation zoomIn = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_in);
+//                            profileImage.startAnimation(zoomIn);
+//
+//                            isExpanded[0] = true;
+//                        }
+//                    });
+//
+//                    View rootView = requireActivity().findViewById(R.id.rootView);
+//
+//                    rootView.setOnClickListener(v -> {
+//                        if (isExpanded[0]) {
+//                            // Move the image back to its original position
+//                            profileImage.animate()
+//                                    .x(originalX)
+//                                    .y(originalY)
+//                                    .setDuration(300)
+//                                    .start();
+//
+//
+//                            Animation zoomOut = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_out);
+//                            profileImage.startAnimation(zoomOut);
+//
+//                            // Reset state
+//                            isExpanded[0] = false;
+//                        }
+//                    });
+
+
 
                     Log.d("MyTag", "This is a debug message666666666666666.");
 
