@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ public class FollowingFragment extends Fragment {
     private FollowerAdapter adapter;
     private UserProfileManager userProfileManager;
     private String username;
+    private ImageView closeButton;  // Declare the close button
 
     public static FollowingFragment newInstance(String username) {
         FollowingFragment fragment = new FollowingFragment();
@@ -52,6 +54,17 @@ public class FollowingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_following, container, false);
         followingListView = view.findViewById(R.id.commentsRecyclerView);
         userProfileManager = new UserProfileManager();
+        closeButton = view.findViewById(R.id.imageView7); // Initialize the close button - imageView7
+        // Set click listener for the close button
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Close the fragment
+                if (getFragmentManager() != null) {
+                    getFragmentManager().beginTransaction().remove(FollowingFragment.this).commit();
+                }
+            }
+        });
 
 //        // Get current logged-in user
 //        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
