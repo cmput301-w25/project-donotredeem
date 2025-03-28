@@ -21,6 +21,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class MainPageAdapter extends ArrayAdapter<MoodEvent> {
     private Context context;
     private ArrayList<MoodEvent> Events;
@@ -58,6 +60,9 @@ public class MainPageAdapter extends ArrayAdapter<MoodEvent> {
         TextView MainTextDescription = MainView.findViewById(R.id.main_text_desc);
         ImageView MainPictureDescription = MainView.findViewById(R.id.main_picture_desc);
 
+        CircleImageView profilePic = MainView.findViewById(R.id.pfp_icon);
+
+
         if (Current_Mood_Event != null) {
             MainEmoState.setText(Current_Mood_Event.getEmotionalState());
             MainTime.setText(Current_Mood_Event.getTime().toString());
@@ -65,6 +70,9 @@ public class MainPageAdapter extends ArrayAdapter<MoodEvent> {
             UserName.setText(Current_Mood_Event.getUsername());
             MainDate.setText(Current_Mood_Event.getDate().toString());
             MainTextDescription.setText(Current_Mood_Event.getExplainText());
+
+            loadProfilePicture(Current_Mood_Event.getUsername(), profilePic);
+
         }
 
         String imageUri = Current_Mood_Event.getExplainPicture();
@@ -146,6 +154,27 @@ public class MainPageAdapter extends ArrayAdapter<MoodEvent> {
 
 
         return MainView;
+    }
+
+    private void loadProfilePicture(String username, CircleImageView imageView) {
+        db.collection("User")
+                .document(username)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String pfpUrl = documentSnapshot.getString("pfp");
+                        if (pfpUrl != null && !pfpUrl.isEmpty()) {
+                            Glide.with(imageView.getContext())
+                                    .load(pfpUrl)
+                                    .placeholder(R.drawable.ic_account_circle)
+                                    .error(R.drawable.ic_account_circle)
+                                    .into(imageView);
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    imageView.setImageResource(R.drawable.ic_account_circle);
+                });
     }
 
 
