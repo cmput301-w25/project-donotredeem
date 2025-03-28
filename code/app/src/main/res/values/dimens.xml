@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="moodjar_padding">16dp</dimen>
+    <dimen name="moodjar_image_size">180dp</dimen>
+    <dimen name="moodjar_text_primary">18sp</dimen>
+    <dimen name="moodjar_text_secondary">14sp</dimen>
+    <dimen name="dialog_margin_horizontal">24dp</dimen>
+    <dimen name="dialog_margin_top">16dp</dimen>
+    <dimen name="dialog_margin_bottom">16dp</dimen>
+</resources>
