@@ -3,15 +3,22 @@ package com.example.donotredeem;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.donotredeem.Comment;
 import com.example.donotredeem.R;
 import java.util.ArrayList;
 import java.util.Locale;
 import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.SimpleDateFormat;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
 
@@ -34,6 +41,26 @@ public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.Commen
         holder.authorTextView.setText(currentComment.getAuthor());
         holder.commentTextView.setText(currentComment.getCommentText());
         holder.timestampTextView.setText(formatTimestamp(currentComment.getTimestamp()));
+        loadProfilePicture(currentComment.getAuthor(), holder.authorIcon);
+    }
+
+    private void loadProfilePicture(String username, ImageView imageView) {
+        FirebaseFirestore.getInstance()
+                .collection("User")
+                .document(username)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String pfpUrl = documentSnapshot.getString("pfp");
+                        if (pfpUrl != null && !pfpUrl.isEmpty()) {
+                            Glide.with(imageView.getContext())
+                                    .load(pfpUrl)
+                                    .placeholder(R.drawable.ic_account_circle)
+                                    .error(R.drawable.ic_account_circle)
+                                    .into(imageView);
+                        }
+                    }
+                });
     }
 
     @Override
@@ -85,12 +112,14 @@ private String formatTimestamp(Timestamp timestamp) {
 }
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
         public TextView authorTextView, commentTextView, timestampTextView;
+        public CircleImageView authorIcon;
 
         public CommentViewHolder(@NonNull View itemView) {
             super(itemView);
             authorTextView = itemView.findViewById(R.id.comment_author);
             commentTextView = itemView.findViewById(R.id.comment_text);
             timestampTextView = itemView.findViewById(R.id.comment_timestamp);
+            authorIcon = itemView.findViewById(R.id.author_icon);
         }
     }
 

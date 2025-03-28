@@ -15,7 +15,6 @@ public class Comment {
         this.author = author;
         this.commentText = commentText;
         this.timestamp = timestamp;
-//        this.pfp = pfp;
     }
 
     public String getAuthor() {
@@ -28,10 +27,6 @@ public class Comment {
 
     public Timestamp getTimestamp() {
         return timestamp;
-    }
-
-    public String getPfp() {
-        return pfp;
     }
 
 }
