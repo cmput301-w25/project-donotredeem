@@ -113,7 +113,9 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
         filter_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Create FilterFragment and pass the current mood list
+
+                Log.d("espresso test", "clickedddd");
+
                 FilterFragment filterFragment = new FilterFragment();
                 Bundle args = new Bundle();
                 args.putSerializable("moodEvents", moodHistoryList);
