@@ -225,7 +225,7 @@ public class ProfilePage extends Fragment {
 
         sidePanel.findViewById(R.id.nav_analytics).setOnClickListener(v -> {
             drawerLayout.closeDrawer(sidePanel);
-            navigateToFragment(new CalendarActivity(), "MoodJar");
+            navigateToFragment(new CalendarActivity(), "Analytics");
         });
 
 
