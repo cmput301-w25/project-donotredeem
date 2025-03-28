@@ -129,7 +129,7 @@
         android:id="@+id/imageButton"
         android:layout_width="50dp"
         android:layout_height="51dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="30dp"
         android:backgroundTint="#222121"
         android:scaleType="fitCenter"
         android:tint="#F5E6D3"
@@ -138,5 +138,12 @@
         app:layout_constraintStart_toEndOf="@+id/side_panel"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/close" />
+
+    <FrameLayout
+        android:id="@+id/side_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-16dp"
+        tools:layout_editor_absoluteY="0dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

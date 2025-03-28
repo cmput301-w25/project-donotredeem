@@ -163,72 +163,86 @@ public class ProfilePage extends Fragment {
             }
         });
 
+        ImageView side_panel = view.findViewById(R.id.side_panel_button);
 
+        side_panel.setOnClickListener(v -> {
+             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
-        LinearLayout sidePanel = view.findViewById(R.id.side_panel);
+                transaction.setCustomAnimations(R.anim.panel_slide_in, 0);
 
-        view.findViewById(R.id.side_panel_button).setOnClickListener(v -> {
-            // Open the drawer (side panel)
-            drawerLayout.openDrawer(sidePanel); //side panel box
+                SidePanel sidePanelFragment = new SidePanel();
+                transaction.replace(R.id.profile_container, sidePanelFragment, "SidePanel");
+                transaction.addToBackStack(null);
+                transaction.commit();
+
         });
 
-        sidePanel.findViewById(R.id.panel_close).setOnClickListener(v -> {
-            drawerLayout.closeDrawer(sidePanel); //side panel closing
-        });
-
-        sidePanel.findViewById(R.id.nav_history).setOnClickListener(v -> {
-            drawerLayout.closeDrawer(sidePanel);
-
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            Fragment existingFragment = fragmentManager.findFragmentByTag("moodhistory");
-
-            if (existingFragment == null) {
-
-                moodhistory historyFragment = new moodhistory();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, historyFragment, "moodhistory")
-                        .addToBackStack(null)
-                        .commit();
-            } else {
-                fragmentManager.popBackStack("moodhistory", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
-        });
-
-        sidePanel.findViewById(R.id.nav_profile).setOnClickListener(v -> {
-            drawerLayout.closeDrawer(sidePanel); //edit profile in panel
-
-            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-            Fragment existingFragment = fragmentManager.findFragmentByTag("EditProfile");
-
-            if (existingFragment == null) {
-                EditProfile profileFragment = new EditProfile();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, profileFragment, "EditProfile")
-                        .addToBackStack(null)
-                        .commit();
-            } else {
-                fragmentManager.popBackStack("EditProfile", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            }
-        });
-
-        // Add QR Code Navigation
-        sidePanel.findViewById(R.id.nav_qr_code).setOnClickListener(v -> {
-            drawerLayout.closeDrawer(sidePanel);
-            navigateToFragment(new QRCodeFragment(), "QRCode");
-        });
-
-        sidePanel.findViewById(R.id.nav_mood_jar).setOnClickListener(v -> {
-            drawerLayout.closeDrawer(sidePanel);
-            navigateToFragment(new MoodJarFragment(), "MoodJar");
-        });
-
-        sidePanel.findViewById(R.id.nav_analytics).setOnClickListener(v -> {
-            drawerLayout.closeDrawer(sidePanel);
-            navigateToFragment(new AnalyticsFragment(), "Analytics");
-        });
+//        sidePanel.findViewById(R.id.nav_analytics).setOnClickListener(v -> {
+//            drawerLayout.closeDrawer(sidePanel);
+//            navigateToFragment(new AnalyticsFragment(), "Analytics");
+//        });
 
 
+//        DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
+//        LinearLayout sidePanel = view.findViewById(R.id.side_panel);
+//
+//        view.findViewById(R.id.side_panel_button).setOnClickListener(v -> {
+//            // Open the drawer (side panel)
+//            drawerLayout.openDrawer(sidePanel); //side panel box
+//        });
+//
+//        sidePanel.findViewById(R.id.panel_close).setOnClickListener(v -> {
+//            drawerLayout.closeDrawer(sidePanel); //side panel closing
+//        });
+//
+//        sidePanel.findViewById(R.id.nav_history).setOnClickListener(v -> {
+//            drawerLayout.closeDrawer(sidePanel);
+//
+//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//            Fragment existingFragment = fragmentManager.findFragmentByTag("moodhistory");
+//
+//            if (existingFragment == null) {
+//
+//                moodhistory historyFragment = new moodhistory();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.fragment_container, historyFragment, "moodhistory")
+//                        .addToBackStack(null)
+//                        .commit();
+//            } else {
+//                fragmentManager.popBackStack("moodhistory", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//            }
+//        });
+//
+//        sidePanel.findViewById(R.id.nav_profile).setOnClickListener(v -> {
+//            drawerLayout.closeDrawer(sidePanel); //edit profile in panel
+//
+//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//            Fragment existingFragment = fragmentManager.findFragmentByTag("EditProfile");
+//
+//            if (existingFragment == null) {
+//                EditProfile profileFragment = new EditProfile();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.fragment_container, profileFragment, "EditProfile")
+//                        .addToBackStack(null)
+//                        .commit();
+//            } else {
+//                fragmentManager.popBackStack("EditProfile", FragmentManager.POP_BACK_STACK_INCLUSIVE);
+//            }
+//        });
+//
+//        // Add QR Code Navigation
+//        sidePanel.findViewById(R.id.nav_qr_code).setOnClickListener(v -> {
+//            drawerLayout.closeDrawer(sidePanel);
+//            navigateToFragment(new QRCodeFragment(), "QRCode");
+//        });
+//
+//        sidePanel.findViewById(R.id.nav_mood_jar).setOnClickListener(v -> {
+//            drawerLayout.closeDrawer(sidePanel);
+//            navigateToFragment(new MoodJarFragment(), "MoodJar");
+//        });
+//
+//
         return view;
     }
 

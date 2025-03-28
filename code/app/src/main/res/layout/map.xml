@@ -16,16 +16,15 @@
         android:id="@+id/mood_map_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:text="Mood map"
-        android:textSize="55sp"
-        android:textStyle="bold"
-        android:paddingStart="50dp"
-        android:textColor="@android:color/black"
         android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/amatica_sc_bold"
+        android:paddingStart="10dp"
         android:paddingTop="16dp"
-        />
-<!--    android:fontFamily="@font/amatica_sc_bold"-->
+        android:text="Mood map"
+        android:textColor="@android:color/black"
+        android:textSize="60sp"
+        android:textStyle="bold" />
 
     <ImageButton
         android:id="@+id/filter_icon"
