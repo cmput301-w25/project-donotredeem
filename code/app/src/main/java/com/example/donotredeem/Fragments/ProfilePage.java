@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.donotredeem.CalendarActivity;
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
 
@@ -220,6 +221,11 @@ public class ProfilePage extends Fragment {
         sidePanel.findViewById(R.id.nav_mood_jar).setOnClickListener(v -> {
             drawerLayout.closeDrawer(sidePanel);
             navigateToFragment(new MoodJarFragment(), "MoodJar");
+        });
+
+        sidePanel.findViewById(R.id.nav_analytics).setOnClickListener(v -> {
+            drawerLayout.closeDrawer(sidePanel);
+            navigateToFragment(new CalendarActivity(), "MoodJar");
         });
 
 
