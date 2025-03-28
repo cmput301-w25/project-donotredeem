@@ -150,6 +150,7 @@ public class SearchedUser extends Fragment {
                     @Override
                     public boolean onUserProfileFetched(Users targetUser) {
                         if (targetUser != null) {
+                            Log.d("MyTag", "heloooooooooooo.");
                             // Check if logged-in user is already following
                             if (targetUser.getFollowerList() != null &&
                                     targetUser.getFollowerList().contains(loggedInUsername)) {
@@ -181,17 +182,17 @@ public class SearchedUser extends Fragment {
                                             }
                                         });
                             } else {
-                                Log.d("MyTag", "2222222222223333333333");
+                                Log.d("MyTag", "This is a debug message 222222nmvjhgvjgkvkmvkh222222.");
                                 // Check if request already exists
                                 if (targetUser.getRequests() != null &&
                                         targetUser.getRequests().contains(loggedInUsername)) {
                                     Log.d("MyTag", "33333333333344444444444444");
-                                    userProfileManager.declineFollowRequest(loggedInUsername, username,
+                                    userProfileManager.declineFollowRequest(username, loggedInUsername,
                                             new UserProfileManager.OnUpdateListener() {
                                                 @Override
                                                 public void onSuccess() {
                                                     Follow.setText("Follow");
-                                                    Follow.setEnabled(false);
+                                                    Follow.setEnabled(true);
                                                 }
                                                 @Override
                                                 public void onError(Exception e) {
@@ -206,7 +207,7 @@ public class SearchedUser extends Fragment {
                                                 @Override
                                                 public void onSuccess() {
                                                     Follow.setText("Requested");
-                                                    Follow.setEnabled(false);
+                                                    Follow.setEnabled(true);
                                                     fetchUserData(username); // Refresh data
                                                 }
 
@@ -277,7 +278,7 @@ public class SearchedUser extends Fragment {
                             } else if (requestsList.contains(loggedInUsername)) {
                                 // Request pending
                                 Follow.setText("Requested");
-                                Follow.setEnabled(false);
+                                Follow.setEnabled(true);
                             } else {
                                 // Not following
                                 Follow.setText("Follow");
@@ -308,6 +309,7 @@ public class SearchedUser extends Fragment {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
                 Follow.setText("Follow");
+                Follow.setEnabled(true);
                 // Update counts
                 int currentFollowers = Integer.parseInt(followersTextView.getText().toString());
                 followersTextView.setText(String.valueOf(currentFollowers - 1));
