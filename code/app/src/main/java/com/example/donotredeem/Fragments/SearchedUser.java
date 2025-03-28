@@ -18,6 +18,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
 import com.example.donotredeem.MoodEvent;
@@ -83,6 +85,7 @@ public class SearchedUser extends Fragment {
         Follow = view.findViewById(R.id.button6);
         follower = view.findViewById(R.id.followerLayout);
         following = view.findViewById(R.id.followingLayout);
+        profileImage = view.findViewById(R.id.user_icon);
 
         Log.d("MyTag", "This is a debug message 222222222222.");
 
@@ -255,6 +258,22 @@ public class SearchedUser extends Fragment {
                     followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
                     followingTextView.setText(String.valueOf(user.getFollowing()));
                     moodTextView.setText(String.valueOf(user.getMoods()));
+
+                    String profilePicUrl = user.getProfilePictureUrl();
+                    Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
+
+
+                    if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
+                        Log.d("pls", "onUserProfileFetched: bro this is not null");
+                        Glide.with(requireContext())
+                                .load(user.getProfilePictureUrl())
+//                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .apply(new RequestOptions().circleCrop())
+                                .into(profileImage);
+                    } else {
+                        profileImage.setImageResource(R.drawable.user);
+                    }
+
                     Log.d("MyTag", "This is a debug message666666666666666.");
                     // Get logged-in user from SharedPreferences
                     SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);

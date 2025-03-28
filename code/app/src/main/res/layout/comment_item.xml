@@ -15,7 +15,7 @@
         android:padding="12dp">
 
         <!-- Author Icon -->
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/author_icon"
             android:layout_width="32dp"
             android:layout_height="32dp"

@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_icon"
             android:layout_width="107dp"
             android:layout_height="109dp"
@@ -176,7 +176,11 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/jomolhari"
-            android:text="follow"
+
+            android:clickable="true"
+            android:focusable="true"
+            android:enabled="true"
+
             android:textColor="#F5E6D3"
             android:textColorLink="#812222"
             android:textSize="12sp"
