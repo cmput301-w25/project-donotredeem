@@ -19,13 +19,13 @@
         android:background="#37474F"
         android:padding="16dp">
 
-        <ImageView
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/pfp"
             android:layout_width="65dp"
             android:layout_height="66dp"
             android:padding="4dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/pfpicon"
+            android:src="@drawable/ic_account_circle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
