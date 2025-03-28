@@ -51,7 +51,7 @@ public class MainPageAdapter extends ArrayAdapter<MoodEvent> {
 
         CardView Details = MainView.findViewById(R.id.main_page_details);
 
-        TextView MainEmoState = MainView.findViewById(R.id.emotion);
+        TextView MainEmoState = MainView.findViewById(R.id.main_mood_text);
         TextView MainTime = MainView.findViewById(R.id.main_time);
         TextView MainDate = MainView.findViewById(R.id.main_date);
         TextView MainLocation = MainView.findViewById(R.id.main_location);
