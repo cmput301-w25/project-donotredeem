@@ -11,11 +11,11 @@ public class Comment {
     // Empty constructor required for Firestore
     public Comment() {}
 
-    public Comment(String author, String commentText, Timestamp timestamp, String pfp) {
+    public Comment(String author, String commentText, Timestamp timestamp) {
         this.author = author;
         this.commentText = commentText;
         this.timestamp = timestamp;
-        this.pfp = pfp;
+//        this.pfp = pfp;
     }
 
     public String getAuthor() {
