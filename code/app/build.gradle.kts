@@ -98,5 +98,6 @@ dependencies {
     // QR Code Generation
     implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
 
-
+    //moodJar Stuff
+    implementation ("com.airbnb.android:lottie:6.1.0")
 }
