@@ -3,6 +3,8 @@ package com.example.donotredeem.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
+import com.example.donotredeem.Classes.NetworkUtils;
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
 
@@ -41,6 +45,8 @@ import com.example.donotredeem.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.MetadataChanges;
+import com.google.firebase.firestore.Source;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -246,111 +252,188 @@ public class ProfilePage extends Fragment {
         return view;
     }
 
-    private void fetchUserData(String username) {
-        if (username == null || username.isEmpty()) {
-            Log.e("SearchedUser", "Username is null/empty");
+//    private void fetchUserData(String username) {
+//        if (username == null || username.isEmpty()) {
+//            Log.e("SearchedUser", "Username is null/empty");
+//            return;
+//        }
+//        Log.d("MyTag", "This is a debug message 333333333333.");
+//
+//
+//        UserProfileManager userProfileManager = new UserProfileManager();
+//        Log.d("MyTag", "This is a debug message44444444444444444.");
+//        userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
+//            @Override
+//            public boolean onUserProfileFetched(Users user) {
+//                if (user != null) {
+//                    Log.d("MyTag", "This is a debug message5555555555555.");
+//                    // Set user details to TextViews
+//                    usernameTextView.setText(user.getUsername());
+//                    bioTextView.setText(user.getBio());
+//                    // Inside onUserProfileFetched in fetchUserData:
+//                    followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
+//                    Log.d("MyTag", "User following count: " + user.getFollowing());
+//                    followingTextView.setText(String.valueOf(user.getFollowing()));
+//                    moodTextView.setText(String.valueOf(user.getMoods()));
+//
+//                    String profilePicUrl = user.getProfilePictureUrl();
+//                    Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
+//
+//
+//                    if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
+//                        Log.d("pls", "onUserProfileFetched: bro this is not null");
+//                        Context context = getContext();
+//                        if (context != null) {
+//                        Glide.with(requireContext())
+//                                .load(user.getProfilePictureUrl())
+////                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                .apply(new RequestOptions().circleCrop())
+//                                .into(profileImage);}
+//                    } else {
+//                        profileImage.setImageResource(R.drawable.user);
+//                    }
+//
+////                    final boolean[] isExpanded = {false};
+////
+////                    profileImage.setOnClickListener(v -> {
+////                        if (!isExpanded[0]) {
+////                            // Bring the profileImage to the front
+////                            profileImage.bringToFront();
+////
+////                            // Get the center of the screen
+////                            int screenWidth = requireActivity().getWindow().getDecorView().getWidth();
+////                            int screenHeight = requireActivity().getWindow().getDecorView().getHeight();
+////                            int centerX = (screenWidth - profileImage.getWidth()) / 2;
+////                            int centerY = (screenHeight - profileImage.getHeight()) / 2;
+////
+////                            // Move the imageView to the center
+////                            profileImage.animate()
+////                                    .x(centerX)
+////                                    .y(centerY)
+////                                    .setDuration(300)
+////                                    .start();
+////
+////                            Animation zoomIn = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_in);
+////                            profileImage.startAnimation(zoomIn);
+////
+////                            isExpanded[0] = true;
+////                        }
+////                    });
+////
+////                    View rootView = requireActivity().findViewById(R.id.rootView);
+////
+////                    rootView.setOnClickListener(v -> {
+////                        if (isExpanded[0]) {
+////                            // Move the image back to its original position
+////                            profileImage.animate()
+////                                    .x(originalX)
+////                                    .y(originalY)
+////                                    .setDuration(300)
+////                                    .start();
+////
+////
+////                            Animation zoomOut = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_out);
+////                            profileImage.startAnimation(zoomOut);
+////
+////                            // Reset state
+////                            isExpanded[0] = false;
+////                        }
+////                    });
+//
+//
+//
+//                    Log.d("MyTag", "This is a debug message666666666666666.");
+//
+////                    // Display follower and following lists
+////                    updateListView(followerListView, user.getFollowerList(), "No followers");
+////                    updateListView(followingListView, user.getFollowingList(), "Not following anyone");
+//                } else {
+//                    Log.e("SearchedUser", "User not found.");
+//                }
+//                return false;
+//            }
+//
+//            @Override
+//            public void onUserProfileFetchError(Exception e) {
+//                Log.e("SearchedUser", "Error fetching user data", e);
+//            }
+//        });
+//    }
+private void fetchUserData(String username) {
+    if (db == null) {
+        db = FirebaseFirestore.getInstance(); // Reinitialize if null
+    }
+    DocumentReference userRef = db.collection("User").document(username);
+
+    // Add metadata listener for offline support
+    userRef.addSnapshotListener(MetadataChanges.INCLUDE, (documentSnapshot, error) -> {
+        if (error != null) {
+            Log.e("ProfilePage", "Listen error", error);
             return;
         }
-        Log.d("MyTag", "This is a debug message 333333333333.");
 
+        if (documentSnapshot != null && documentSnapshot.exists()) {
+            boolean isFromCache = documentSnapshot.getMetadata().isFromCache();
 
-        UserProfileManager userProfileManager = new UserProfileManager();
-        Log.d("MyTag", "This is a debug message44444444444444444.");
-        userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
-            @Override
-            public boolean onUserProfileFetched(Users user) {
-                if (user != null) {
-                    Log.d("MyTag", "This is a debug message5555555555555.");
-                    // Set user details to TextViews
-                    usernameTextView.setText(user.getUsername());
-                    bioTextView.setText(user.getBio());
-                    // Inside onUserProfileFetched in fetchUserData:
-                    followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
-                    Log.d("MyTag", "User following count: " + user.getFollowing());
-                    followingTextView.setText(String.valueOf(user.getFollowing()));
-                    moodTextView.setText(String.valueOf(user.getMoods()));
+            // Parse with new constructor
+            int moods = documentSnapshot.getLong("moods") != null ?
+                    documentSnapshot.getLong("moods").intValue() : 0;
 
-                    String profilePicUrl = user.getProfilePictureUrl();
-                    Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
+            List<DocumentReference> moodRefs = (List<DocumentReference>)
+                    documentSnapshot.get("MoodRef");
 
+            Users user = new Users(
+                    documentSnapshot.getId(),
+                    documentSnapshot.getString("bio"),
+                    documentSnapshot.getString("pfp"),
+                    (List<String>) documentSnapshot.get("follower_list"),
+                    (List<String>) documentSnapshot.get("following_list"),
+                    (List<String>) documentSnapshot.get("requests"),
+                    (List<DocumentReference>) documentSnapshot.get("MoodRef"),
+                    moods
 
-                    if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
+            );
+
+            // Update UI
+            usernameTextView.setText(user.getUsername());
+            bioTextView.setText(user.getBio());
+            // Inside onUserProfileFetched in fetchUserData:
+            followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
+            Log.d("MyTag", "User following count: " + user.getFollowing());
+            followingTextView.setText(String.valueOf(user.getFollowing()));
+
+            String profilePicUrl = user.getProfilePictureUrl();
+            Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
+
+            moodTextView.setText(String.valueOf(user.getMoods()));
+            if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
                         Log.d("pls", "onUserProfileFetched: bro this is not null");
+                        Context context = getContext();
+                        if (context != null) {
                         Glide.with(requireContext())
                                 .load(user.getProfilePictureUrl())
 //                                .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .apply(new RequestOptions().circleCrop())
-                                .into(profileImage);
+                                .into(profileImage);}
                     } else {
                         profileImage.setImageResource(R.drawable.user);
                     }
 
-//                    final boolean[] isExpanded = {false};
-//
-//                    profileImage.setOnClickListener(v -> {
-//                        if (!isExpanded[0]) {
-//                            // Bring the profileImage to the front
-//                            profileImage.bringToFront();
-//
-//                            // Get the center of the screen
-//                            int screenWidth = requireActivity().getWindow().getDecorView().getWidth();
-//                            int screenHeight = requireActivity().getWindow().getDecorView().getHeight();
-//                            int centerX = (screenWidth - profileImage.getWidth()) / 2;
-//                            int centerY = (screenHeight - profileImage.getHeight()) / 2;
-//
-//                            // Move the imageView to the center
-//                            profileImage.animate()
-//                                    .x(centerX)
-//                                    .y(centerY)
-//                                    .setDuration(300)
-//                                    .start();
-//
-//                            Animation zoomIn = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_in);
-//                            profileImage.startAnimation(zoomIn);
-//
-//                            isExpanded[0] = true;
-//                        }
-//                    });
-//
-//                    View rootView = requireActivity().findViewById(R.id.rootView);
-//
-//                    rootView.setOnClickListener(v -> {
-//                        if (isExpanded[0]) {
-//                            // Move the image back to its original position
-//                            profileImage.animate()
-//                                    .x(originalX)
-//                                    .y(originalY)
-//                                    .setDuration(300)
-//                                    .start();
-//
-//
-//                            Animation zoomOut = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_out);
-//                            profileImage.startAnimation(zoomOut);
-//
-//                            // Reset state
-//                            isExpanded[0] = false;
-//                        }
-//                    });
-
-
-
-                    Log.d("MyTag", "This is a debug message666666666666666.");
-
-//                    // Display follower and following lists
-//                    updateListView(followerListView, user.getFollowerList(), "No followers");
-//                    updateListView(followingListView, user.getFollowingList(), "Not following anyone");
-                } else {
-                    Log.e("SearchedUser", "User not found.");
+//            if (isFromCache) {
+//                Toast.makeText(getContext(),
+//                        "Offline - showing cached data",
+//                        Toast.LENGTH_SHORT).show();
+//            }
+            if (isAdded() && getContext() != null) {
+                if (isFromCache) {
+                    Toast.makeText(requireContext(),
+                            "Offline - cached data",
+                            Toast.LENGTH_SHORT).show();
                 }
-                return false;
             }
-
-            @Override
-            public void onUserProfileFetchError(Exception e) {
-                Log.e("SearchedUser", "Error fetching user data", e);
-            }
-        });
-    }
+        }
+    });
+}
 
     /**
      * Fetches mood events for the logged-in user from Firebase Firestore.
@@ -485,9 +568,13 @@ public class ProfilePage extends Fragment {
         });
 
         // Update adapter with valid context
+        if (isAdded() && getContext() != null) {
         adapter = new MoodEventAdapter(requireContext(), sortedList);
         recent_list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+        } else {
+            Log.w("ProfilePage", "Fragment not attached during display update");
+        }
     }
 
     private void fetchUserMoodEvents(String username) {
@@ -514,44 +601,151 @@ public class ProfilePage extends Fragment {
                 });
     }
 
+//    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+//        ArrayList<MoodEvent> tempList = new ArrayList<>();
+//        final int[] fetchedCount = {0};
+//
+//        for (DocumentReference moodRef : moodRefs) {
+//            moodRef.get().addOnSuccessListener(documentSnapshot -> {
+//                if (documentSnapshot.exists()) {
+//                    try {
+//                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
+//                        if (moodEvent != null) {
+//                            tempList.add(moodEvent);
+//                        }
+//                    } catch (Exception e) {
+//                        Log.e("MoodHistory", "Error converting document", e);
+//                    }
+//                }
+//
+//                fetchedCount[0]++;
+//                // Inside fetchMoodEvents
+//                if (fetchedCount[0] == moodRefs.size()) {
+//                    moodHistoryList.clear();
+//                    moodHistoryList.addAll(tempList);
+//                    sortMoodEvents();
+//
+//                    if (isAdded() && getContext() != null) { // Check fragment attachment
+//                        if (moodHistoryList.size() > 3) {
+//                            ArrayList<MoodEvent> RecentHistoryList = new ArrayList<>(moodHistoryList.subList(0, 3));
+//                            Display(RecentHistoryList);
+//                        } else {
+//                            Display(moodHistoryList);
+//                        }
+//                    }
+//                }
+//            }).addOnFailureListener(e -> {
+//                Log.e("MoodHistory", "Error fetching document", e);
+//                fetchedCount[0]++;
+//            });
+//        }
+//    }
+//private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+//    ArrayList<MoodEvent> tempList = new ArrayList<>();
+//    final int[] fetchedCount = {0};
+//    final boolean isOnline = isNetworkAvailable();
+//
+//    for (DocumentReference moodRef : moodRefs) {
+//        Source source = isOnline ? Source.SERVER : Source.CACHE;
+//
+//        moodRef.get(source).addOnCompleteListener(task -> {
+//            if (task.isSuccessful() && task.getResult() != null) {
+//                DocumentSnapshot document = task.getResult();
+//                try {
+//                    MoodEvent moodEvent = document.toObject(MoodEvent.class);
+//                    if (moodEvent != null) {
+//                        tempList.add(moodEvent);
+//                    }
+//                } catch (Exception e) {
+//                    Log.e("ProfilePage", "Error converting document", e);
+//                }
+//            }
+//
+//            fetchedCount[0]++;
+//            if (fetchedCount[0] == moodRefs.size()) {
+//                moodHistoryList.clear();
+//                moodHistoryList.addAll(tempList);
+//                sortMoodEvents();
+//
+//                if (isAdded() && getContext() != null) {
+//                    if (!isOnline) {
+//                        Toast.makeText(getContext(),
+//                                "Offline - showing cached data",
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//
+//                    if (moodHistoryList.size() > 3) {
+//                        Display(new ArrayList<>(moodHistoryList.subList(0, 3)));
+//                    } else {
+//                        Display(moodHistoryList);
+//                    }
+//                }
+//            }
+//        });
+//    }
+//}
     private void fetchMoodEvents(List<DocumentReference> moodRefs) {
         ArrayList<MoodEvent> tempList = new ArrayList<>();
         final int[] fetchedCount = {0};
+        final boolean isOnline = isNetworkAvailable();
 
         for (DocumentReference moodRef : moodRefs) {
-            moodRef.get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
+            Source source = isOnline ? Source.DEFAULT : Source.CACHE;
+
+            moodRef.get(source).addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    DocumentSnapshot document = task.getResult();
                     try {
-                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
+                        MoodEvent moodEvent = document.toObject(MoodEvent.class);
                         if (moodEvent != null) {
                             tempList.add(moodEvent);
                         }
                     } catch (Exception e) {
-                        Log.e("MoodHistory", "Error converting document", e);
+                        Log.e("ProfilePage", "Error converting document", e);
                     }
                 }
 
                 fetchedCount[0]++;
-                // Inside fetchMoodEvents
                 if (fetchedCount[0] == moodRefs.size()) {
                     moodHistoryList.clear();
                     moodHistoryList.addAll(tempList);
                     sortMoodEvents();
 
-                    if (isAdded() && getContext() != null) { // Check fragment attachment
+                    if (isAdded() && getContext() != null) {
+                        if (!isOnline) {
+                            Toast.makeText(getContext(),
+                                    "Offline - showing cached data",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
                         if (moodHistoryList.size() > 3) {
-                            ArrayList<MoodEvent> RecentHistoryList = new ArrayList<>(moodHistoryList.subList(0, 3));
-                            Display(RecentHistoryList);
+                            Display(new ArrayList<>(moodHistoryList.subList(0, 3)));
                         } else {
                             Display(moodHistoryList);
                         }
                     }
                 }
-            }).addOnFailureListener(e -> {
-                Log.e("MoodHistory", "Error fetching document", e);
-                fetchedCount[0]++;
             });
         }
+    }
+
+//    private boolean isNetworkAvailable() {
+//        ConnectivityManager cm = (ConnectivityManager) getActivity()
+//                .getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+//        return activeNetwork != null && activeNetwork.isConnected();
+//    }
+//    private boolean isNetworkAvailable() {
+//        Context context = getContext();
+//        return context != null && NetworkUtils.isNetworkAvailable(context);
+//    }
+    private boolean isNetworkAvailable() {
+        Context context = getContext();
+        if (context == null) return false;
+
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
     }
 
 //    private void Display(ArrayList<MoodEvent> moodHistoryList) {
@@ -606,9 +800,16 @@ public class ProfilePage extends Fragment {
      * Redirects the user to the login page if the username is not found in SharedPreferences.
      */
     private void redirectToLogin() {
-        Intent intent = new Intent(getActivity(), LogIn.class);
-        startActivity(intent);
-        requireActivity().finish();
+//        Intent intent = new Intent(getActivity(), LogIn.class);
+//        startActivity(intent);
+//        requireActivity().finish();
+        if (isAdded()) {  // Ensure fragment is attached
+            Intent intent = new Intent(requireActivity(), LogIn.class);
+            startActivity(intent);
+            requireActivity().finish();
+        } else {
+            Log.w("ProfilePage", "Redirect attempted when fragment detached");
+        }
     }
     private void navigateToFragment(Fragment fragment, String tag) {
         FragmentManager fragmentManager = getActivity().getSupportFragmentManager();

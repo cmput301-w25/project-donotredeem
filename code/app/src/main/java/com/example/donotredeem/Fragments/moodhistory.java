@@ -3,7 +3,6 @@ package com.example.donotredeem.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,23 +16,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
+import com.example.donotredeem.Classes.NetworkUtils;
 import com.example.donotredeem.LogIn;
-import com.example.donotredeem.MainActivity;
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Source;
 
-import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,7 +78,9 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
 
         db = FirebaseFirestore.getInstance();
 
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        Context context = getContext();
+        if (context == null) return view;
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         if (!sharedPreferences.contains("username")) {
             Log.e("MainPageDebug", "Username not found in SharedPreferences, redirecting to login");
             redirectToLogin();
@@ -195,40 +193,99 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
 //            });
 //        }
 //    }
+//    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+//        if (!isAdded()) return; // Stop if fragment is not attached
+//
+//        ArrayList<MoodEvent> tempList = new ArrayList<>();
+//        final int[] fetchedCount = {0};
+//
+//        for (DocumentReference moodRef : moodRefs) {
+//            moodRef.get().addOnSuccessListener(documentSnapshot -> {
+//                if (!isAdded()) return;
+//
+//                if (documentSnapshot.exists()) {
+//                    try {
+//                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
+//                        if (moodEvent != null) {
+//                            tempList.add(moodEvent);
+//                        }
+//                    } catch (Exception e) {
+//                        Log.e("MoodHistory", "Error converting document", e);
+//                    }
+//                }
+//
+//                fetchedCount[0]++;
+//                if (fetchedCount[0] == moodRefs.size()) {
+//                    if (!isAdded()) return; // Stop if fragment is not attached
+//                    moodHistoryList.clear();
+//                    moodHistoryList.addAll(tempList);
+//                    Display(moodHistoryList);
+//                }
+//            }).addOnFailureListener(e -> {
+//                Log.e("MoodHistory", "Error fetching document", e);
+//                fetchedCount[0]++;
+//            });
+//        }
+//    }
     private void fetchMoodEvents(List<DocumentReference> moodRefs) {
-        if (!isAdded()) return; // Stop if fragment is not attached
+        if (!isAdded()) return;
 
         ArrayList<MoodEvent> tempList = new ArrayList<>();
         final int[] fetchedCount = {0};
+        final Source source = isNetworkAvailable() ?
+                Source.DEFAULT :  // Correct value
+                Source.CACHE;
+
 
         for (DocumentReference moodRef : moodRefs) {
-            moodRef.get().addOnSuccessListener(documentSnapshot -> {
-                if (!isAdded()) return;
 
-                if (documentSnapshot.exists()) {
+            moodRef.get(source).addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    DocumentSnapshot document = task.getResult();
                     try {
-                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
+                        MoodEvent moodEvent = document.toObject(MoodEvent.class);
                         if (moodEvent != null) {
                             tempList.add(moodEvent);
                         }
                     } catch (Exception e) {
-                        Log.e("MoodHistory", "Error converting document", e);
+                        Log.e("moodhistory", "Error converting document", e);
                     }
                 }
 
                 fetchedCount[0]++;
                 if (fetchedCount[0] == moodRefs.size()) {
-                    if (!isAdded()) return; // Stop if fragment is not attached
                     moodHistoryList.clear();
                     moodHistoryList.addAll(tempList);
+
+//                    if (!isOnline) {
+//                        Toast.makeText(getContext(),
+//                                "Offline - showing cached data",
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+//                    if (!source && getContext() != null) {
+//                        Toast.makeText(requireContext(),  // Changed to requireContext() for safer access
+//                                "Offline - showing cached data",
+//                                Toast.LENGTH_SHORT).show();
+//                    }
+
                     Display(moodHistoryList);
                 }
-            }).addOnFailureListener(e -> {
-                Log.e("MoodHistory", "Error fetching document", e);
-                fetchedCount[0]++;
             });
+
         }
     }
+
+//    private boolean isNetworkAvailable() {
+//        ConnectivityManager cm = (ConnectivityManager) getActivity()
+//                .getSystemService(Context.CONNECTIVITY_SERVICE);
+//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+//        return activeNetwork != null && activeNetwork.isConnected();
+//    }
+    private boolean isNetworkAvailable() {
+        Context context = getContext();
+        return context != null && NetworkUtils.isNetworkAvailable(context);
+    }
+
 
     /**
      * Sorts and displays the mood event list in reverse chronological order.

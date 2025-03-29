@@ -41,6 +41,11 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import com.google.firebase.firestore.Source;
+
+import java.util.List;
+
 /**
  * LogIn activity for the application.
  *
@@ -87,7 +92,7 @@ public class LogIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_page);
 
-        FirebaseApp.initializeApp(this);
+//        FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
@@ -130,9 +135,9 @@ public class LogIn extends AppCompatActivity {
                 DocumentReference userDocRef = db.collection("User").document(username);
                 userDocRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
+                    public void onComplete(@NonNull Task<DocumentSnapshot> userTask) {
+                        if (userTask.isSuccessful()) {
+                            DocumentSnapshot document = userTask.getResult();
                             if (document.exists()) {
                                 Log.d(TAG, "User document found: " + document.getData());
                                 String storedPassword = document.getString("password");
@@ -161,6 +166,23 @@ public class LogIn extends AppCompatActivity {
                                         editor.apply();
 //                                        startActivity(new Intent(LogIn.this, MainActivity.class));
 //                                        finish();
+                                        FirebaseFirestore.getInstance()
+                                                .collection("User")
+                                                .document(username)
+                                                .get(Source.SERVER) // Force network to ensure fresh data
+                                                .addOnSuccessListener(userDoc -> {
+                                                    List<DocumentReference> moodRefs = (List<DocumentReference>) userDoc.get("MoodRef");
+                                                    if (moodRefs != null) {
+                                                        for (DocumentReference ref : moodRefs) {
+                                                            // Prefetch and cache each mood event
+                                                            ref.get(Source.SERVER).addOnCompleteListener(task -> {
+                                                                if (task.isSuccessful()) {
+                                                                    Log.d(TAG, "Prefetched mood event: " + ref.getId());
+                                                                }
+                                                            });
+                                                        }
+                                                    }
+                                                });
                                         startActivity(new Intent(LogIn.this, MoodSelectionActivity.class));
                                         finish();
                                         }, 2000);
@@ -179,7 +201,7 @@ public class LogIn extends AppCompatActivity {
 
                             }
                         } else {
-                            Log.e(TAG, "Firestore error: ", task.getException());
+                            Log.e(TAG, "Firestore error: ", userTask.getException());
                         }
                         //firebaseIdlingResource.decrement();
                     }

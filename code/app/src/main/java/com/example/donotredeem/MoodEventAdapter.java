@@ -262,6 +262,15 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                     .delete()
                     .addOnSuccessListener(aVoid -> {
                         Log.d("MoodEventAdapter", "Deleted MoodEvent with ID: " + moodEventId);
+//                            db.collection("User")
+//                                .whereEqualTo("username", username)
+//                                .get()
+//                                    .addOnSuccessListener(queryDocumentSnapshots -> {
+//                                                DocumentSnapshot userDoc = queryDocumentSnapshots.getDocuments().get(0);
+//
+//                                                DocumentReference userDocRef = userDoc.getReference();
+//                                                userDocRef.update("moods", FieldValue.increment(-1));
+//                                            })
                         // Optionally, remove the reference from the user's document
                         removeMoodRefFromUser(moodEventId);
                         removeFromAllMoodJars(moodEventId);
@@ -295,7 +304,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         DocumentSnapshot userDoc = queryDocumentSnapshots.getDocuments().get(0);
                         DocumentReference userDocRef = userDoc.getReference();
-
+                        userDocRef.update("moods", FieldValue.increment(-1));
                         // Remove the correct DocumentReference, not the String ID
                         userDocRef.update("MoodRef", FieldValue.arrayRemove(moodEventRef))
                                 .addOnSuccessListener(aVoid -> Log.d("MoodEventAdapter", "Removed MoodEvent reference from user document"))

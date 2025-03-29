@@ -33,6 +33,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -150,8 +151,12 @@ public class AddMoodEvent extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (NetworkUtils.isNetworkAvailable(requireContext())) {
-            Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
+//        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+//            Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
+//        }
+        Context context = getContext();
+        if (context != null && NetworkUtils.isNetworkAvailable(context)) {
+            Places.initialize(context, "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
         }
 
 
@@ -258,6 +263,7 @@ public class AddMoodEvent extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        try {
         View view = inflater.inflate(R.layout.add_mood, container, false);
         View fragmentRoot = view.findViewById(R.id.fragment_root);
         EditText description = view.findViewById(R.id.desc);
@@ -316,7 +322,9 @@ public class AddMoodEvent extends Fragment {
         location = view.findViewById(R.id.loc);
 
 
-        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+//        if (NetworkUtils.isNetworkAvailable(requireContext()))
+        Context context = getContext();
+        if (context != null && NetworkUtils.isNetworkAvailable(context)) {
             location.setOnClickListener(v -> {
                 location.requestFocus();
 
@@ -338,7 +346,8 @@ public class AddMoodEvent extends Fragment {
 
         RadioButton location_button = view.findViewById(R.id.radioButton);
 
-        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+//        if (NetworkUtils.isNetworkAvailable(requireContext()))
+            if (context != null && NetworkUtils.isNetworkAvailable(context)) {
             final boolean[] isSelected_loc = {false};
 
             location_button.setOnClickListener(v -> {
@@ -565,7 +574,8 @@ public class AddMoodEvent extends Fragment {
                 saveMoodToFirestore(privacy, descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial, timeText);
             }
 
-            if (!NetworkUtils.isNetworkAvailable(requireContext())) {
+//            if (!NetworkUtils.isNetworkAvailable(requireContext()))
+            if (context != null && !NetworkUtils.isNetworkAvailable(context)) {
                 if (fragmentRoot != null) {
                     Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
                     fragmentRoot.startAnimation(slideOut);
@@ -641,6 +651,10 @@ public class AddMoodEvent extends Fragment {
         });
 
         return view;
+        } catch (Exception e) {
+            Log.e("AddMoodEvent", "Error creating view", e);
+            return new FrameLayout(getContext()); // Return empty view as fallback
+        }
     }
 
     /**
@@ -853,6 +867,10 @@ public class AddMoodEvent extends Fragment {
     private void saveMoodToFirestore(Boolean privacy, String desc, String trigger,
                                      String date, String locationText, String imageUrl,
                                      String mood, String social, String time) {
+        if (!isAdded() || getActivity() == null) {
+            Log.w("AddMoodEvent", "Fragment not attached during save");
+            return;
+        }
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         String loggedInUsername = sharedPreferences.getString("username", null);
@@ -869,8 +887,12 @@ public class AddMoodEvent extends Fragment {
 
         moodEventRef.set(moodEvent)
                 .addOnSuccessListener(aVoid -> {
+
                     Log.d(TAG, "Mood event saved!");
-                    Snackbar.make(requireView(), "Mood Event Saved!", Snackbar.LENGTH_LONG).show();
+                    if (isAdded() && getView() != null) {
+                        Snackbar.make(getView(), "Mood Event Saved!", Snackbar.LENGTH_LONG).show();
+                    }
+//                    Snackbar.make(requireView(), "Mood Event Saved!", Snackbar.LENGTH_LONG).show();
                     incrementAndCheck(completedTasks, totalTasks);
                 })
                 .addOnFailureListener(e -> {
@@ -885,6 +907,7 @@ public class AddMoodEvent extends Fragment {
 
             if (loggedInUsername != null) {
                 DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
+                userDocRef.update( "moods", FieldValue.increment(1));
                 userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
                         .addOnSuccessListener(aVoid -> {
                             Log.d(TAG, "User document updated with mood event reference");
@@ -915,10 +938,37 @@ public class AddMoodEvent extends Fragment {
     /**
      * Runs an exit animation and then pops the fragment from the back stack.
      */
+//    private void popFragment() {
+//        if (isAdded() && getActivity() != null) {
+//            requireActivity().runOnUiThread(() -> {
+//                if (fragmentRoot != null) {
+//                    Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
+//                    fragmentRoot.startAnimation(slideOut);
+//                    slideOut.setAnimationListener(new Animation.AnimationListener() {
+//                        @Override
+//                        public void onAnimationStart(Animation animation) {}
+//
+//                        @Override
+//                        public void onAnimationEnd(Animation animation) {
+//                            if (isAdded() && getActivity() != null) {
+//                                requireActivity().getSupportFragmentManager().popBackStack();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onAnimationRepeat(Animation animation) {}
+//                    });
+//                } else {
+//                    requireActivity().getSupportFragmentManager().popBackStack();
+//                }
+//            });
+//        }
+//    }
     private void popFragment() {
         if (isAdded() && getActivity() != null) {
             requireActivity().runOnUiThread(() -> {
-                if (fragmentRoot != null) {
+                // Add view existence check
+                if (fragmentRoot != null && fragmentRoot.getParent() != null) {
                     Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
                     fragmentRoot.startAnimation(slideOut);
                     slideOut.setAnimationListener(new Animation.AnimationListener() {
@@ -927,7 +977,7 @@ public class AddMoodEvent extends Fragment {
 
                         @Override
                         public void onAnimationEnd(Animation animation) {
-                            if (isAdded() && getActivity() != null) {
+                            if (isAdded()) {
                                 requireActivity().getSupportFragmentManager().popBackStack();
                             }
                         }
@@ -936,7 +986,9 @@ public class AddMoodEvent extends Fragment {
                         public void onAnimationRepeat(Animation animation) {}
                     });
                 } else {
-                    requireActivity().getSupportFragmentManager().popBackStack();
+                    if (isAdded()) {
+                        requireActivity().getSupportFragmentManager().popBackStack();
+                    }
                 }
             });
         }

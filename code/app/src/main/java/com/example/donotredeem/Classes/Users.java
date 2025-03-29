@@ -30,6 +30,7 @@ public class Users {
     private List<DocumentReference> moodRefs;
     private String bio;
     private String profilePictureUrl;
+    private int moods;
 
     /**
      * Empty Users Constructors
@@ -90,7 +91,7 @@ public class Users {
     }
 
     public Users(String username, String bio, String profilePictureUrl, List<String> followerList,
-                 List<String> followingList, List<String> requests, List<DocumentReference> moodRefs) {
+                 List<String> followingList, List<String> requests, List<DocumentReference> moodRefs, int moods) {
         this.username = username;
         this.bio = bio;
         this.followerList = followerList;
@@ -98,6 +99,7 @@ public class Users {
         this.requests = requests;
         this.moodRefs = moodRefs;
         this.profilePictureUrl = profilePictureUrl;
+        this.moods = moods;
     }
 
     public String getUsername() {
@@ -237,6 +239,6 @@ public class Users {
         this.requests = requests;
     }
 
-    public int getMoods(){return moodRefs != null ?  moodRefs.size() : 0;}
+    public int getMoods(){return moods;}
 }
 

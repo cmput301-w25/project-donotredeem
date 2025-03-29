@@ -241,7 +241,8 @@ public class UserProfileManager {
                             List<String> followingList = (List<String>) document.get("following_list");
                             List<String> requestsList = (List<String>) document.get("requests");
                             List<DocumentReference> moodRefs = (List<DocumentReference>) document.get("MoodRef");
-
+                            int moods = document.getLong("moods") != null ?
+                                    document.getLong("moods").intValue() : 0;
 
                             // Create Users object
                             Users user = new Users(
@@ -251,7 +252,8 @@ public class UserProfileManager {
                                     followersList,
                                     followingList,
                                     requestsList,
-                                    moodRefs
+                                    moodRefs,
+                                    moods
 
                             );
 
