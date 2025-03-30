@@ -67,12 +67,6 @@ public class AddMoodEventTest {
     @Before
     public void seedDatabase() throws InterruptedException {
 
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        SharedPreferences prefs = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-        prefs.edit()
-                .putString("username", "User1")
-                .apply();
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference usersRef = db.collection("User");
         Users[] user_data = {
@@ -83,17 +77,10 @@ public class AddMoodEventTest {
             usersRef.document(users.getUsername()).set(users);
         }
         Thread.sleep(2000);
+
     }
 
-    @Before
-    public void clearPrefs() throws InterruptedException {
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
-                .edit()
-                .clear()
-                .apply();
-        Thread.sleep(2000);
-    }
+
 
 
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
@@ -130,8 +117,9 @@ public class AddMoodEventTest {
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
 
     }
+
     @Test
-    public void MoodNotAdded() {
+    public void MoodNotAdded() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
         onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
 
@@ -147,17 +135,18 @@ public class AddMoodEventTest {
     }
 
     @Test
-    public void MoodRequired() {
+    public void MoodRequired() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
         onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
 
         onView(withId(R.id.button)).perform(scrollTo(), click());
         onView(withText("Please select a mood!"))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+
     }
 
     @Test
-    public void DescriptionRequired() {
+    public void DescriptionRequired() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
         onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
 
@@ -166,7 +155,6 @@ public class AddMoodEventTest {
 
         onView(withText("Provide either a description or an image!"))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-
     }
 
 //    @Test
@@ -206,7 +194,7 @@ public class AddMoodEventTest {
 //    }
 
     @Test
-    public void DescriptionConstraints() {
+    public void DescriptionConstraints() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
         onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
 
@@ -214,7 +202,6 @@ public class AddMoodEventTest {
         onView(withId(R.id.desc)).perform(ViewActions.typeText("This description does not allow more than two hundred characters you can do anything it wont allow lol hahaha you lose ok yay bye this testing is not good okay i am just doing time pass okkkk just adding more characters lol is it working???"));
 
         onView(withId(R.id.desc)).check(matches(CustomMatchers.withTextLength(lessThanOrEqualTo(200))));
-
     }
 
     @After
