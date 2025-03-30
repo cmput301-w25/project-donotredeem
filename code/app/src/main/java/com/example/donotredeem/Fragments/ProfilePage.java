@@ -171,17 +171,34 @@ public class ProfilePage extends Fragment {
 
         ImageView side_panel = view.findViewById(R.id.side_panel_button);
 
+//        side_panel.setOnClickListener(v -> {
+//             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                FragmentTransaction transaction = fragmentManager.beginTransaction();
+//
+//                transaction.setCustomAnimations(R.anim.panel_slide_in, 0);
+//
+//                SidePanel sidePanelFragment = new SidePanel();
+//                transaction.replace(R.id.profile_container, sidePanelFragment, "SidePanel");
+//                transaction.addToBackStack(null);
+//                transaction.commit();
+//
+//        });
         side_panel.setOnClickListener(v -> {
-             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-                transaction.setCustomAnimations(R.anim.panel_slide_in, 0);
+            // Set both enter and exit animations
+            transaction.setCustomAnimations(
+                    R.anim.panel_slide_in,  // Enter animation
+                    0,                       // Exit animation (for current fragment)
+                    0,                       // Pop enter animation
+                    R.anim.panel_slide_out   // Pop exit animation
+            );
 
-                SidePanel sidePanelFragment = new SidePanel();
-                transaction.replace(R.id.profile_container, sidePanelFragment, "SidePanel");
-                transaction.addToBackStack(null);
-                transaction.commit();
-
+            SidePanel sidePanelFragment = new SidePanel();
+            transaction.replace(R.id.profile_container, sidePanelFragment, "SidePanel");
+            transaction.addToBackStack(null);
+            transaction.commit();
         });
 
 //        sidePanel.findViewById(R.id.nav_analytics).setOnClickListener(v -> {

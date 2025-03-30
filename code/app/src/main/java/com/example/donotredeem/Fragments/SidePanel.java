@@ -144,37 +144,33 @@ public class SidePanel extends Fragment {
 
         close = view.findViewById(R.id.imageButton);
 
+//        close.setOnClickListener(v -> {
+//            if (fragmentRoot != null) {
+//                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.panel_slide_out);
+//                fragmentRoot.startAnimation(slideOut);
+//
+//                slideOut.setAnimationListener(new Animation.AnimationListener() {
+//                    @Override
+//                    public void onAnimationStart(Animation animation) {
+//                    }
+//
+//                    @Override
+//                    public void onAnimationEnd(Animation animation) {
+//                        Log.d("MUYYYY", "ANIMATION WORKS");
+//                        getParentFragmentManager().popBackStack(); //go to previous fragment
+//                    }
+//
+//                    @Override
+//                    public void onAnimationRepeat(Animation animation) {
+//                    }
+//                });
+//            } else {
+//                getParentFragmentManager().popBackStack();
+//            }
+//        });
         close.setOnClickListener(v -> {
-            if (fragmentRoot != null) {
-                Log.e("HEER", "this is not null bro what the jhell");
-                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.panel_slide_out);
-                slideOut.setFillAfter(true);
-                fragmentRoot.startAnimation(slideOut);
-
-                slideOut.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) { }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-//                        getParentFragmentManager().popBackStack();
-//                        fragmentRoot.postDelayed(() -> {
-//                            getParentFragmentManager().popBackStack();
-//                        }, 50);
-
-                        fragmentRoot.postDelayed(() -> {
-                            Log.e("HEER", "Now popping back stack...");
-                            getParentFragmentManager().popBackStack();
-                        }, 750);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) { }
-                });
-            } else {
-                Log.e("HEER", "IS THIS HAPPENIGN" );
-                getParentFragmentManager().popBackStack();
-            }
+            // Simply pop the back stack - animation will be handled automatically
+            getParentFragmentManager().popBackStack();
         });
 
 
