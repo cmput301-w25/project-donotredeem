@@ -7,4 +7,7 @@
     <dimen name="dialog_margin_horizontal">24dp</dimen>
     <dimen name="dialog_margin_top">16dp</dimen>
     <dimen name="dialog_margin_bottom">16dp</dimen>
+    <dimen name="emoji_chart_size">2dp</dimen>
+    <dimen name="emoji_chart_margin">8dp</dimen>
+    <dimen name="chart_bottom_padding">15dp</dimen>
 </resources>
