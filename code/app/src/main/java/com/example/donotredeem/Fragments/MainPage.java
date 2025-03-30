@@ -27,6 +27,7 @@ import com.example.donotredeem.LogIn;
 import com.example.donotredeem.MainPageAdapter;
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodEventAdapter;
+import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
@@ -34,27 +35,48 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.User;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 /**
  * The {@code MainPage} class represents the main screen of the app after login.
  * It displays the logged-in user's name and provides a sign-out option.
  */
-public class MainPage extends Fragment {
+public class MainPage extends Fragment implements FilterFragment.FilterMoodListener, Serializable {
 
     private FirebaseFirestore db;
     private ListView Main_list;
     private MainPageAdapter main_page_adapter;
     private String loggedInUsername;
-    private List<MoodEvent> MainMoodList;
+    private ArrayList<MoodEvent> fullMoodList = new ArrayList<>();
+    private ArrayList<MoodEvent> originalMoodList = new ArrayList<>();
+    private ArrayList<MoodEvent> displayedMoodList = new ArrayList<>();
+    private int loadCount = 3;
+    private TextView viewMoreBtn, viewLessBtn, filterBtn;
     private ImageView searchBtn;
+    private int end;
 
-    private TextView view_more_btn;
+
+    @Override
+    public void filterMood(ArrayList<MoodEvent> filteredList) {
+//        displayedMoodList.clear();
+//        displayedMoodList.addAll(filteredList);
+//        Display(filteredList);
+//        main_page_adapter = new MainPageAdapter(getContext(), filteredList);
+//        Main_list.setAdapter(main_page_adapter);
+//        main_page_adapter.notifyDataSetChanged();
+
+        displayedMoodList.clear();
+        displayedMoodList.addAll(filteredList);
+        updateDisplayedMoods();
+
+    }
 
     /**
      * Called to instantiate the fragment's view.
@@ -71,15 +93,18 @@ public class MainPage extends Fragment {
         View view = inflater.inflate(R.layout.main_page, container, false);
 
         db = FirebaseFirestore.getInstance();
-        Button button = view.findViewById(R.id.temp_sign_out);
+//        Button button = view.findViewById(R.id.temp_sign_out);
         //TextView textView = view.findViewById(R.id.user);
-        MainMoodList = new ArrayList<MoodEvent>();
+
         Main_list =  view.findViewById(R.id.main_listView);
         searchBtn = view.findViewById(R.id.imageView4);
-        view_more_btn = view.findViewById(R.id.view_more_button);
+//        view_more_btn = view.findViewById(R.id.view_more_button);
 
+        viewMoreBtn = view.findViewById(R.id.view_more_button);
+        viewLessBtn = view.findViewById(R.id.view_less_button);
 
-        // Retrieve the username from SharedPreferences (saved during login)
+        filterBtn = view.findViewById(R.id.advanced_options);
+
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         if (!sharedPreferences.contains("username")) {
             Log.e("MainPageDebug", "Username not found in SharedPreferences, redirecting to login");
@@ -100,7 +125,6 @@ public class MainPage extends Fragment {
             FetchFollowingUsers(loggedInUsername);
         }
 
-        button.setOnClickListener(view1 -> logout());
 
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,19 +137,68 @@ public class MainPage extends Fragment {
             }
         });
 
-        view_more_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new All_following_moods())
-                        .addToBackStack(null)
-                        .commit();
+        viewMoreBtn.setOnClickListener(view1 ->  {
+//            @Override
+//            public void onClick(View view) {
+//                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                fragmentManager.beginTransaction()
+//                        .replace(R.id.fragment_container, new All_following_moods())
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
+            loadCount += 5;
+            displayedMoodList.clear();
+            fullMoodList.addAll(originalMoodList);
+            end = Math.min(loadCount, fullMoodList.size());
+            displayedMoodList.addAll(fullMoodList.subList(0, end));
+            updateDisplayedMoods();
+
+        });
+
+        viewLessBtn.setOnClickListener(view1 -> {
+            if (loadCount > 5) {
+                loadCount -= 5;
+                displayedMoodList.clear();
+                fullMoodList.addAll(originalMoodList);
+                end = Math.min(loadCount, fullMoodList.size());
+                displayedMoodList.addAll(fullMoodList.subList(0, end));
+                updateDisplayedMoods();
             }
         });
+        displayedMoodList.clear();
+        fullMoodList.addAll(originalMoodList);
+        end = Math.min(loadCount, fullMoodList.size());
+        displayedMoodList.addAll(fullMoodList.subList(0, end));
+        updateDisplayedMoods();
+
+        filterBtn.setOnClickListener(view1 -> {
+            fullMoodList.clear();
+            Log.e("MyTag", "fullMood 1:" + fullMoodList.toString());
+            fullMoodList.addAll(originalMoodList);
+            Log.e("MyTag", "fullMood 2:" + fullMoodList.toString());
+            fullMoodList = sort(fullMoodList);
+            Log.d("MY", "count: "+ loadCount);
+            displayedMoodList.clear();
+            displayedMoodList.addAll(fullMoodList.subList(0, Math.min(loadCount, fullMoodList.size())));
+
+            Log.e("MyTag", "displayMood :" + displayedMoodList.toString());
+
+            Log.e("FILTER", "This is what is being sent " + displayedMoodList.size());
+
+            FilterFragment filterFragment = new FilterFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("moodEvents", displayedMoodList);
+            filterFragment.setArguments(args);
+            filterFragment.setTargetFragment(MainPage.this, 0);
+            filterFragment.show(getParentFragmentManager(), "filter");
+
+        });
+
 
         return view;
     }
+
+
 
 
 //    private void FetchFollowingUsers(String username) {
@@ -177,39 +250,6 @@ public class MainPage extends Fragment {
                     }
                 });
     }
-
-//    private void FetchPublicEvents(List<String> FollowedUsers) {
-//        if (!isAdded()) return; // Stop if fragment is not attached
-//
-//        ArrayList<MoodEvent> tempList = new ArrayList<>();
-//        final int[] fetchedCount = {0}; // track total moods fetched
-//
-//        if (FollowedUsers.isEmpty()) {
-//            Display(tempList);
-//            return;
-//        }
-//
-//        for (String FollowedUser : FollowedUsers) {
-//            db.collection("User")
-//                    .whereEqualTo("username", FollowedUser)
-//                    .addSnapshotListener((querySnapshot, error) -> {
-//                        if (querySnapshot != null && !querySnapshot.isEmpty()) {
-//                            DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
-//                            List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
-//
-//                            if (moodRefsList != null && !moodRefsList.isEmpty()) {
-//                                FetchMoods(moodRefsList, tempList, FollowedUsers.size(), fetchedCount);
-//                            } else {
-//                                fetchedCount[0]++;
-//                                if (fetchedCount[0] == FollowedUsers.size()) {
-//                                    Display(tempList);
-//                                }
-//                            }
-//                        }
-//                    });
-//        }
-//    }
-
     private void FetchPublicEvents(List<String> FollowedUsers) {
         if (!isAdded()) return; // Stop if fragment is not attached
 
@@ -272,7 +312,7 @@ public class MainPage extends Fragment {
 
                 moodsFetched[0]++;
 
-                if (moodsFetched[0] == moodRefs.size()) { // All moods for this user are fetched
+                if (moodsFetched[0] == moodRefs.size()) {
                     tempList.addAll(userMoodEvents);
                     fetchedCount[0]++;
 
@@ -316,10 +356,15 @@ public class MainPage extends Fragment {
 
 
     private void Display(ArrayList<MoodEvent> moodHistoryList) {
-        if (!isAdded()) return; //stop if fragment is not attached
+        if (!isAdded()) return;
 
         Context context = getContext();
-        if (context == null) return; //no null pointer crash
+        if (context == null) return; // no null pointer crash
+
+        if(originalMoodList.isEmpty()){
+            originalMoodList.addAll(moodHistoryList);
+        }
+
 
         ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
         sortedList.sort((event1, event2) -> {
@@ -332,21 +377,44 @@ public class MainPage extends Fragment {
 
                 LocalTime time1 = parseStringToTime(event1.getTime());
                 LocalTime time2 = parseStringToTime(event2.getTime());
-                return time2.compareTo(time1);
+                return time2.compareTo(time1); // Latest time first
             } catch (Exception e) {
                 Log.e("Sorting", "Error comparing events", e);
-                return 0;
+                return 0; // If any error occurs, return 0 (no change)
             }
         });
+        Log.d("my tag", "sorted list: " + sortedList.toString());
+        fullMoodList.clear();
+        Log.d("my tag", "full mood list: " + fullMoodList.toString());
+        fullMoodList.addAll(sortedList);
 
-        sortedList = new ArrayList<>(sortedList.subList(0, Math.min(3, sortedList.size())));
-
-
-        main_page_adapter = new MainPageAdapter(context, sortedList);
-        Main_list.setAdapter(main_page_adapter);
-        main_page_adapter.notifyDataSetChanged();
+        displayedMoodList.clear();
+        fullMoodList.addAll(originalMoodList);
+        end = Math.min(loadCount, fullMoodList.size());
+        displayedMoodList.addAll(fullMoodList.subList(0, end));
+        updateDisplayedMoods();
     }
 
+    private ArrayList<MoodEvent> sort(ArrayList<MoodEvent> moodHistoryList){
+        ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
+        sortedList.sort((event1, event2) -> {
+            try {
+                LocalDate date1 = parseStringToDate(event1.getDate());
+                LocalDate date2 = parseStringToDate(event2.getDate());
+
+                int dateCompare = date2.compareTo(date1);
+                if (dateCompare != 0) return dateCompare;
+
+                LocalTime time1 = parseStringToTime(event1.getTime());
+                LocalTime time2 = parseStringToTime(event2.getTime());
+                return time2.compareTo(time1); // Latest time first
+            } catch (Exception e) {
+                Log.e("Sorting", "Error comparing events", e);
+                return 0; // If any error occurs, return 0 (no change)
+            }
+        });
+        return sortedList;
+    }
 
     private LocalDate parseStringToDate(String dateString) {
         try {
@@ -377,23 +445,6 @@ public class MainPage extends Fragment {
     }
 
     /**
-     * Logs out the user by signing out from Firebase and clearing login data.
-     * Redirects the user to the login screen.
-     */
-    private void logout() {
-        FirebaseAuth.getInstance().signOut();
-
-        // Clear stored login data
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
-
-        // Redirect to login screen
-        redirectToLogin();
-    }
-
-    /**
      * Redirects the user to the login screen and clears the activity stack.
      */
     private void redirectToLogin() {
@@ -403,5 +454,42 @@ public class MainPage extends Fragment {
         if (getActivity() != null) {
             getActivity().finish();
         }
+    }
+
+    private void updateDisplayedMoods() {
+
+
+        Log.d("MY", "fullMoodList: "+ fullMoodList.toString());
+        Log.d("MY", "count: "+ loadCount);
+
+
+        if (main_page_adapter == null) {
+            main_page_adapter = new MainPageAdapter(getContext(), displayedMoodList);
+            Main_list.setAdapter(main_page_adapter);
+        } else {
+            main_page_adapter.notifyDataSetChanged();
+        }
+
+        viewMoreBtn.setVisibility(end < fullMoodList.size() ? View.VISIBLE : View.GONE);
+        viewLessBtn.setVisibility(loadCount > 3 ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        clearSavedFilters();
+    }
+
+    private void clearSavedFilters() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Set filter values to null (use remove() to delete if required)
+        editor.putString("keyword", null);
+        editor.putString("timeFilter", null);
+        editor.putString("selectedEmojis", null);
+
+        editor.apply(); // Commit changes
+
     }
 }

@@ -1,11 +1,8 @@
 package com.example.donotredeem;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -13,33 +10,25 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 //import com.example.donotredeem.Fragments.AddMoodEvent;
+import com.bumptech.glide.Glide;
 import com.example.donotredeem.Fragments.AddMoodEvent;
-import com.example.donotredeem.Fragments.Analytics;
 import com.example.donotredeem.Fragments.MainPage;
 import com.example.donotredeem.Fragments.Map;
 import com.example.donotredeem.Fragments.RequestsFragment;
-import com.example.donotredeem.Fragments.moodhistory;
 import com.example.donotredeem.Fragments.ProfilePage;
-import com.example.donotredeem.Fragments.Requests;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreSettings;
-import com.google.firebase.firestore.MemoryCacheSettings;
 
 import androidx.fragment.app.Fragment;
 
-import org.w3c.dom.Text;
+import de.hdodenhof.circleimageview.CircleImageView;
+
 /**
  * MainActivity serves as the primary activity for the application and provides
  * navigation between various fragments using button interactions.
@@ -57,11 +46,14 @@ import org.w3c.dom.Text;
 public class MainActivity extends AppCompatActivity {
 
     public static String past_location;
-    private ImageButton addEvent, mapButton, homeButton, heartButton, profilePage;
+    private ImageButton addEvent, mapButton, homeButton, heartButton;
     FirebaseAuth auth;
     Button button;
     TextView textView;
     FirebaseUser user;
+    private FirebaseFirestore db;
+    private String username;
+    private CircleImageView profilePage;
     /**
      * Called when the activity is starting.
      *
@@ -75,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
+        db = FirebaseFirestore.getInstance();
 //        FirebaseFirestore db = FirebaseFirestore.getInstance();
 //
 //        // Set cache settings (memory or disk-based)
@@ -111,7 +105,12 @@ public class MainActivity extends AppCompatActivity {
         mapButton = findViewById(R.id.map_button);
         homeButton = findViewById(R.id.grid_button);
         heartButton = findViewById(R.id.heart_button);
-        profilePage = findViewById(R.id.profilepage);
+        this.profilePage = findViewById(R.id.profilepage);
+//        CircleImageView profilePage = findViewById(R.id.profilepage);
+
+        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        username = sharedPreferences.getString("username", null);
+        loadProfilePicture(username, profilePage);
 
 
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -203,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         });
 
-        profilePage.setOnClickListener(new View.OnClickListener() {
+        this.profilePage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 removeAddMoodEventIfExists();
@@ -275,6 +274,28 @@ public class MainActivity extends AppCompatActivity {
         editor.putString("selectedEmojis", null);
 
         editor.apply(); // Commit changes
+    }
+    private void loadProfilePicture(String username, CircleImageView imageView) {
+        db.collection("User")
+                .document(username)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        String pfpUrl = documentSnapshot.getString("pfp");
+                        if (pfpUrl != null && !pfpUrl.isEmpty()) {
+                            Glide.with(MainActivity.this)
+                                    .load(pfpUrl)
+                                    .placeholder(R.drawable.ic_account_circle)  // Fallback image while loading
+                                    .error(R.drawable.ic_account_circle)        // Fallback if loading fails
+                                    .into(imageView);
+                        } else {
+                            imageView.setImageResource(R.drawable.ic_account_circle);  // Fallback if no image
+                        }
+                    } else {
+                        imageView.setImageResource(R.drawable.ic_account_circle);
+                    }
+                })
+                .addOnFailureListener(e -> imageView.setImageResource(R.drawable.ic_account_circle));
     }
 
 }

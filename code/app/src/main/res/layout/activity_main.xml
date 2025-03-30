@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView android:id="@+id/emoji_recycler_view"
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/emoji_recycler_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"

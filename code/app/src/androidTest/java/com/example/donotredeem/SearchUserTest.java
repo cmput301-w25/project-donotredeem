@@ -3,19 +3,15 @@ package com.example.donotredeem;
 import static android.content.ContentValues.TAG;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.CoreMatchers.allOf;
 
 import android.util.Log;
 
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.donotredeem.Classes.Users;
@@ -30,7 +26,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -39,9 +34,7 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 
-@RunWith(AndroidJUnit4.class)
-@LargeTest
-public class RegisterUserTest {
+public class SearchUserTest {
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
@@ -81,7 +74,7 @@ public class RegisterUserTest {
 
         String moodEventId1 = UUID.randomUUID().toString();
         GeoPoint location1 = new GeoPoint(53.5461, -113.4938);
-        MoodEvent moodEvent1 = new MoodEvent(location1, "User1", true, moodEventId1, "Happy", "03/02/2025",
+        MoodEvent moodEvent1 = new MoodEvent(location1, "User1", true, moodEventId1, "Happy", "03/08/2025",
                 "14:30", "University Campus", "Alone", "Saw a cute rabbit", "Hello description", "");
 
         DocumentReference moodEventRef1 = db.collection("MoodEvents").document(moodEventId1);
@@ -91,7 +84,7 @@ public class RegisterUserTest {
         String moodEventId2 = UUID.randomUUID().toString();
 
         GeoPoint location2 = new GeoPoint(53.5264, -113.5241);
-        MoodEvent moodEvent2 = new MoodEvent(location2, "User1", true, moodEventId2, "Angry", "29/03/2025",
+        MoodEvent moodEvent2 = new MoodEvent(location2, "User1", true, moodEventId2, "Angry", "03/08/2025",
                 "15:00", "Library", "Alone", "Loud noise", "Annoyed by the noise", "");
 
         DocumentReference moodEventRef2 = db.collection("MoodEvents").document(moodEventId2);
@@ -105,6 +98,7 @@ public class RegisterUserTest {
 
         Thread.sleep(2000);
 
+        ManualLoginCauseIDKMocking();
     }
 
 
@@ -132,27 +126,30 @@ public class RegisterUserTest {
         }
     }
 
+    public void ManualLoginCauseIDKMocking() throws InterruptedException {
+        onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
+        onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
 
-
-    @Test
-    public void RegisterSuccessful() throws InterruptedException {
-        onView(withId(R.id.button4)).perform(click());
-
-        onView(withId(R.id.sign_up_id)).check(matches(isDisplayed()));
-        onView(withId(R.id.sign_up_name_text)).perform(ViewActions.typeText("bruh"));
-        onView(withId(R.id.sign_up_email_text)).perform(ViewActions.typeText("bruh@gmail.com"));
-        onView(withId(R.id.sign_up_phone_number_text)).perform(ViewActions.typeText("1234567890"));
-        onView(withId(R.id.sign_up_done)).perform(click());
-
-        onView(withId(R.id.sign_up_id_2)).check(matches(isDisplayed()));
-        onView(withId(R.id.sign_up_username_text)).perform(ViewActions.typeText("bruh"));
-        onView(withId(R.id.sign_up_password_text)).perform(ViewActions.typeText("password"));
-        onView(withId(R.id.sign_up_done)).perform(click());
-
-        onView(withId(R.id.sign_up_id_2)).check(matches(isDisplayed()));
-
+        onView(withId(R.id.btnLogin)).perform(click());
+        Thread.sleep(5000);
+        onView(withId(R.id.skip_button)).perform(click());
+        onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
+        Thread.sleep(5000);
 
     }
 
+    @Test
+    public void SearchingUser() throws InterruptedException {
+        onView(withId(R.id.imageView4)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.search)).check(matches(isDisplayed()));
+        onView(withId(R.id.search_bar)).perform(click());
+        onView(withId(R.id.search_bar)).perform(ViewActions.typeText("User2"));
+        Thread.sleep(1000);
+        onView(withId(R.id.card_user)).perform(click());
 
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.textView2)).check(matches(withText("User2")));
+
+    }
 }
