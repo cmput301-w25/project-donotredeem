@@ -103,7 +103,7 @@ public class LogIn extends AppCompatActivity {
         editTextUsername = findViewById(R.id.etUsername);
         editTextPassword = findViewById(R.id.etPassword);
         buttonLogIn = findViewById(R.id.btnLogin);
-        buttonGoogleSignIn = findViewById(R.id.btnGoogle);
+//        buttonGoogleSignIn = findViewById(R.id.btnGoogle);
 
         TextView show_pass = findViewById(R.id.show_pass);
         ImageView pass_icon = findViewById(R.id.pass_icon);
@@ -128,11 +128,33 @@ public class LogIn extends AppCompatActivity {
                 if (editTextPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
                     // If it's currently hidden, make it visible
                     editTextPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                    pass_icon.setImageResource(R.drawable.password_visible);  // Show the eye icon (password visible)
+                    pass_icon.setImageResource(R.drawable.password_visible);
+                    show_pass.setText("Hide password");
+                    // Show the eye icon (password visible)
                 } else {
                     // If it's currently visible, make it hidden
                     editTextPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    pass_icon.setImageResource(R.drawable.password_invisible);  // Show the eye icon (password hidden)
+                    pass_icon.setImageResource(R.drawable.password_invisible);
+                    show_pass.setText("Show password");// Show the eye icon (password hidden)
+                }
+            }
+        });
+
+        show_pass.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Check if the password is currently visible or not
+                if (editTextPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
+                    // If it's currently hidden, make it visible
+                    editTextPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    pass_icon.setImageResource(R.drawable.password_visible);
+                    show_pass.setText("Hide password");
+                    // Show the eye icon (password visible)
+                } else {
+                    // If it's currently visible, make it hidden
+                    editTextPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    pass_icon.setImageResource(R.drawable.password_invisible);
+                    show_pass.setText("Show password");// Show the eye icon (password hidden)
                 }
             }
         });
@@ -236,12 +258,12 @@ public class LogIn extends AppCompatActivity {
         });
 
         // Handle Google Sign-In Button Click
-        buttonGoogleSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signInWithGoogle();
-            }
-        });
+//        buttonGoogleSignIn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                signInWithGoogle();
+//            }
+//        });
     }
     /**
      * Initiates the Google Sign-In process by launching the sign-in intent.

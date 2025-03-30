@@ -372,6 +372,8 @@ public class Register extends AppCompatActivity {
     private Spinner moodFrequencySpinner;
     private String moodRecurrence = "";
 
+    Boolean reccurences;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -427,7 +429,8 @@ public class Register extends AppCompatActivity {
                 if (exitOnBack) {
                     finish(); // Exit registration on first page
                 } else {
-                    currentPage--;
+                    if ((currentPage == 7) && (reccurences == false)){currentPage = currentPage - 2;}
+                    else {currentPage--;}
                     showPage(currentPage); // Navigate to previous page
                 }
             });
@@ -537,14 +540,17 @@ private void setupReminderButtons() {
         if (v.getId() == R.id.yes_remindermood) {
             reminderMood = "YES";
             yesButton.setBackgroundColor(Color.parseColor("#4CAF50"));
+            currentPage++;
+            reccurences = true;
         } else {
             reminderMood = "NO";
             noButton.setBackgroundColor(Color.parseColor("#4CAF50"));
+            currentPage = currentPage + 2;
+            reccurences = false;
         }
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             storeData(currentPage);
-            currentPage++;
             showPage(currentPage);
         }, 200);
     };
