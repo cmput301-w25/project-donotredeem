@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.test.espresso.action.ViewActions;
@@ -24,6 +25,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.donotredeem.Classes.Users;
 
@@ -64,17 +66,35 @@ public class AddMoodEventTest {
 
     @Before
     public void seedDatabase() throws InterruptedException {
+
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        SharedPreferences prefs = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        prefs.edit()
+                .putString("username", "User1")
+                .apply();
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference usersRef = db.collection("User");
         Users[] user_data = {
-                new Users("User1", "Password1", "user1@gmail.com", "This is my bio.", ""),
-                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio", "")
+                new Users("User1", "Password1", "user1@gmail.com", "This is my bio."),
+                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio")
         };
         for (Users users : user_data) {
             usersRef.document(users.getUsername()).set(users);
         }
         Thread.sleep(2000);
     }
+
+    @Before
+    public void clearPrefs() throws InterruptedException {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+                .edit()
+                .clear()
+                .apply();
+        Thread.sleep(2000);
+    }
+
 
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
