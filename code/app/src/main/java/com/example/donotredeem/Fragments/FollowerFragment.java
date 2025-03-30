@@ -53,15 +53,13 @@ public class FollowerFragment extends Fragment {
         followersListView = view.findViewById(R.id.commentsRecyclerView);
         userProfileManager = new UserProfileManager();
         closeButton = view.findViewById(R.id.imageView8); // Initialize the close button
+        view.setOnClickListener(v -> dismissFragment());
         // Set click listener for the close button
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Close the fragment
-                if (getFragmentManager() != null) {
-                    getFragmentManager().beginTransaction().remove(FollowerFragment.this).commit();
-                }
-            }
+        closeButton.setOnClickListener(v -> dismissFragment());
+        // Prevent inner layout clicks from closing
+        View innerLayout = view.findViewById(R.id.inner_layout); // Add ID to your LinearLayout
+        innerLayout.setOnClickListener(v -> {
+            // Consume the click event
         });
 
 //        // Get current logged-in user
@@ -95,5 +93,10 @@ public class FollowerFragment extends Fragment {
                 Toast.makeText(requireContext(), "Error loading followers", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+    private void dismissFragment() {
+        if (getParentFragmentManager() != null) {
+            getParentFragmentManager().popBackStack();
+        }
     }
 }
