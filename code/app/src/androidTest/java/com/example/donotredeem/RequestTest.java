@@ -160,11 +160,14 @@ public class RequestTest {
                 .addOnFailureListener(e -> Log.e("Test", "Failed to update requisition", e));
 
         Thread.sleep(2000);
-    }
-    @Test
-    public void User2RequestedView() throws InterruptedException {
+
         log_in_log_out_transitions();
+        onView(withId(R.id.heart_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.request_card)).check(matches(isDisplayed()));
+
     }
+
 
     public void log_in_log_out_transitions() throws InterruptedException {
         LogoutFromUser1();
@@ -174,8 +177,7 @@ public class RequestTest {
 
         onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
         Thread.sleep(1000);
-        onView(withId(R.id.heart_button)).perform(click());
-        Thread.sleep(1000);
+
     }
 
 
