@@ -6,4 +6,3 @@
     android:orientation="horizontal"
     android:overScrollMode="never"
     xmlns:android="http://schemas.android.com/apk/res/android" />
-

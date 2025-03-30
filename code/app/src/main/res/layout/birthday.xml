@@ -16,7 +16,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="40dp"
         android:src="@drawable/ic_arrow_back"
-        android:contentDescription="back_button"
+        android:contentDescription="@string/backbutton"
         android:background="?attr/selectableItemBackgroundBorderless"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -26,6 +26,7 @@
         android:id="@+id/balloons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        tools:ignore="contentDescription"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -35,6 +36,7 @@
         app:srcCompat="@drawable/balloons" />
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/bday_boy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -66,7 +68,8 @@
         android:layout_height="53dp"
         android:layout_marginTop="16dp"
         android:autofillHints="date"
-        android:background="#433838"
+        android:background="#BAB5B5"
+        android:textColor="#FFFFFF"
         android:ems="10"
         android:fontFamily="@font/inter"
         android:hint="@string/dd_mm_yy"
