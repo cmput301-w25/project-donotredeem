@@ -54,21 +54,30 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
     private ListView Main_list;
     private MainPageAdapter main_page_adapter;
     private String loggedInUsername;
-    private ArrayList<MoodEvent> fullMoodList = new ArrayList<>();
     private ArrayList<MoodEvent> originalMoodList = new ArrayList<>();
     private ArrayList<MoodEvent> displayedMoodList = new ArrayList<>();
-    private int loadCount = 3;
+    private ArrayList<MoodEvent> backupMoodList = new ArrayList<>();
+
     private TextView viewMoreBtn, viewLessBtn, filterBtn;
     private ImageView searchBtn;
-    private int end;
 
 
     @Override
     public void filterMood(ArrayList<MoodEvent> filteredList) {
 
-        displayedMoodList.clear();
-        displayedMoodList.addAll(filteredList);
-        updateDisplayedMoods();
+        backupMoodList.clear();
+        backupMoodList.addAll(filteredList);
+
+        main_page_adapter = new MainPageAdapter(getContext(), backupMoodList);
+        Main_list.setAdapter(main_page_adapter);
+
+        if (!backupMoodList.equals(displayedMoodList)) {
+            viewMoreBtn.setVisibility(View.GONE);
+            viewLessBtn.setVisibility(View.GONE);
+        } else {
+            viewMoreBtn.setVisibility(displayedMoodList.size() == 3 ? View.VISIBLE : View.GONE);
+            viewLessBtn.setVisibility(displayedMoodList.size() > 3 ? View.VISIBLE : View.GONE);
+        }
 
     }
 
@@ -87,16 +96,11 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
         View view = inflater.inflate(R.layout.main_page, container, false);
 
         db = FirebaseFirestore.getInstance();
-//        Button button = view.findViewById(R.id.temp_sign_out);
-        //TextView textView = view.findViewById(R.id.user);
 
         Main_list =  view.findViewById(R.id.main_listView);
         searchBtn = view.findViewById(R.id.imageView4);
-//        view_more_btn = view.findViewById(R.id.view_more_button);
-
         viewMoreBtn = view.findViewById(R.id.view_more_button);
         viewLessBtn = view.findViewById(R.id.view_less_button);
-
         filterBtn = view.findViewById(R.id.advanced_options);
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
@@ -110,11 +114,10 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
         }
 
         if (loggedInUsername == null) {
-            // No user logged in, redirect to login screen
             redirectToLogin();
-            return view; // Early return
+            return view;
+
         } else {
-            // Fetch user details from Firestore
             Log.d("MainPageDebug", "Fetching user details for: " + loggedInUsername);
             FetchFollowingUsers(loggedInUsername);
         }
@@ -125,61 +128,42 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
             public void onClick(View view) {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_container, new Explore())
+                        .hide(MainPage.this)
+                        .add(R.id.fragment_container, new Explore())
                         .addToBackStack(null)
                         .commit();
+
             }
         });
 
         viewMoreBtn.setOnClickListener(view1 ->  {
-//            @Override
-//            public void onClick(View view) {
-//                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container, new All_following_moods())
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
-            loadCount += 5;
+
             displayedMoodList.clear();
-//            fullMoodList.addAll(originalMoodList);
-            Log.d("fuck u", "fullMoodList:"+ fullMoodList.toString());
-            end = Math.min(loadCount, fullMoodList.size());
-            displayedMoodList.addAll(fullMoodList.subList(0, end));
+            displayedMoodList.addAll(originalMoodList);
             updateDisplayedMoods();
 
         });
 
         viewLessBtn.setOnClickListener(view1 -> {
-            if (loadCount > 5) {
-                loadCount -= 5;
-                displayedMoodList.clear();
-//                fullMoodList.addAll(originalMoodList);
-                end = Math.min(loadCount, fullMoodList.size());
-                displayedMoodList.addAll(fullMoodList.subList(0, end));
-                updateDisplayedMoods();
-            }
+
+            displayedMoodList.clear();
+            displayedMoodList.addAll(originalMoodList.subList(0,3));
+            updateDisplayedMoods();
+
         });
 
-        displayedMoodList.clear();
-        fullMoodList.addAll(originalMoodList);
-        end = Math.min(loadCount, fullMoodList.size());
-        displayedMoodList.addAll(fullMoodList.subList(0, end));
-        updateDisplayedMoods();
 
         filterBtn.setOnClickListener(view1 -> {
-            fullMoodList.clear();
-            Log.e("MyTag", "fullMood 1:" + fullMoodList.toString());
-            fullMoodList.addAll(originalMoodList);
-            Log.e("MyTag", "fullMood 2:" + fullMoodList.toString());
-            fullMoodList = sort(fullMoodList);
-            Log.d("MY", "count: "+ loadCount);
-            displayedMoodList.clear();
-            displayedMoodList.addAll(fullMoodList.subList(0, Math.min(loadCount, fullMoodList.size())));
 
-            Log.e("MyTag", "displayMood :" + displayedMoodList.toString());
 
-            Log.e("FILTER", "This is what is being sent " + displayedMoodList.size());
+            if (displayedMoodList.size() <= 3) {
+                displayedMoodList.clear();
+                displayedMoodList.addAll(originalMoodList.subList(0, Math.min(3, originalMoodList.size())));
+
+            } else {
+                displayedMoodList.clear();
+                displayedMoodList.addAll(originalMoodList);
+            }
 
             FilterFragment filterFragment = new FilterFragment();
             Bundle args = new Bundle();
@@ -188,39 +172,13 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
             filterFragment.setTargetFragment(MainPage.this, 0);
             filterFragment.show(getParentFragmentManager(), "filter");
 
+
         });
 
 
         return view;
     }
 
-
-
-
-//    private void FetchFollowingUsers(String username) {
-//        if (username == null) {
-//            Log.e("Main Page", "No username found in SharedPreferences");
-//            return;
-//        }
-//
-//        db.collection("User")
-//                .whereEqualTo("username", username)
-//                .addSnapshotListener((querySnapshot, error) -> {
-//                    if (!querySnapshot.isEmpty()) {
-//                        DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
-//                        Log.d("Main Page", "User found: " + userDoc.getData());
-//                        List<String> FollowedUsers = (List<String>) userDoc.get("following_list");
-//                        if (FollowedUsers != null && !FollowedUsers.isEmpty()) {
-//                            FetchPublicEvents(FollowedUsers);
-//                        } else {
-//                            Log.d("Main Page", "No followed users.");
-//                            Display(new ArrayList<>());
-//                        }
-//                    } else {
-//                        Log.e("Main Page", "No user found with username: " + username);
-//                    }
-//                });
-//    }
 
     private void FetchFollowingUsers(String username) {
         if (username == null) {
@@ -264,6 +222,7 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
                         if (querySnapshot != null && !querySnapshot.isEmpty()) {
                             DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
                             List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
+                            Log.d("My tag","what bakchodi is this "+moodRefsList.toString() );
 
                             if (moodRefsList != null && !moodRefsList.isEmpty()) {
                                 FetchMoods(moodRefsList, tempList, FollowedUsers.size(), fetchedCount);
@@ -309,7 +268,6 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
                 moodsFetched[0]++;
 
                 if (moodsFetched[0] == moodRefs.size()) {
-                    tempList.clear();
                     tempList.addAll(userMoodEvents);
                     fetchedCount[0]++;
 
@@ -320,36 +278,6 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
             });
         }
     }
-
-
-    /**
-     * Fetches the user details from Firestore and updates the UI with the logged-in username.
-     *
-     * @param textView The TextView where the username should be displayed.
-     */
-    private void fetchUserDetails(TextView textView) {
-        if (loggedInUsername == null) {
-            Log.e("MainPageDebug", "loggedInUsername is null, redirecting to login");
-            redirectToLogin();
-            return;
-        }
-
-        DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
-        userDocRef.get()
-                .addOnSuccessListener(document -> {
-                    if (document.exists()) {
-                        textView.setText(loggedInUsername);
-                    } else {
-                        Log.e("MainPageDebug", "User not found in Firestore");
-                        redirectToLogin();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Log.e("MainPageDebug", "Firestore error: " + e.getMessage());
-                    redirectToLogin();
-                });
-    }
-
 
     private void Display(ArrayList<MoodEvent> moodHistoryList) {
         if (!isAdded()) return;
@@ -377,23 +305,15 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
 
         if (originalMoodList.isEmpty()){
             originalMoodList.addAll(sortedList);
-            Log.d("fuck fuck u", "Display: original list from shuru " + originalMoodList.toString());
+
         }
 
 
-        Log.d("my tag", "sorted list: " + sortedList.toString());
-        fullMoodList.clear();
-        Log.d("my tag", "full mood list: " + fullMoodList.toString());
-        fullMoodList.addAll(sortedList);
-        Log.d("fuck fuck u", "Display: original list from shuru " + fullMoodList.toString());
-
         displayedMoodList.clear();
-//        fullMoodList.addAll(originalMoodList);
-        Log.d("fuck fuck u", "Display: full list from shuru " + fullMoodList.toString());
+        displayedMoodList.addAll(originalMoodList.subList(0, Math.min(3, originalMoodList.size())));
+//        Log.d("fuck fuck u", "Display: display list from shuru " + displayedMoodList.toString());
 
-        end = Math.min(loadCount, fullMoodList.size());
-        displayedMoodList.addAll(fullMoodList.subList(0, end));
-        Log.d("fuck fuck u", "Display: display list from shuru " + displayedMoodList.toString());
+//
 
         updateDisplayedMoods();
     }
@@ -461,21 +381,17 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
 
     private void updateDisplayedMoods() {
 
+//        if (main_page_adapter == null) {
+        main_page_adapter = new MainPageAdapter(getContext(), displayedMoodList);
+        Main_list.setAdapter(main_page_adapter);
+//        } else {
+//            main_page_adapter.notifyDataSetChanged();
+//        }
 
-        Log.d("MY", "fullMoodList: "+ fullMoodList.toString());
-        Log.d("MY", "count: "+ loadCount);
-
-
-        if (main_page_adapter == null) {
-            main_page_adapter = new MainPageAdapter(getContext(), displayedMoodList);
-            Main_list.setAdapter(main_page_adapter);
-        } else {
-            main_page_adapter.notifyDataSetChanged();
-        }
-
-        viewMoreBtn.setVisibility(end < fullMoodList.size() ? View.VISIBLE : View.GONE);
-        viewLessBtn.setVisibility(loadCount > 3 ? View.VISIBLE : View.GONE);
+        viewMoreBtn.setVisibility(displayedMoodList.size() == 3 ? View.VISIBLE : View.GONE);
+        viewLessBtn.setVisibility(displayedMoodList.size() > 3 ? View.VISIBLE : View.GONE);
     }
+
 
     @Override
     public void onDestroyView() {
@@ -487,12 +403,11 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
-        // Set filter values to null (use remove() to delete if required)
         editor.putString("keyword", null);
         editor.putString("timeFilter", null);
         editor.putString("selectedEmojis", null);
 
-        editor.apply(); // Commit changes
+        editor.apply();
 
     }
 }

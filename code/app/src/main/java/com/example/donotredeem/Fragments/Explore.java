@@ -81,7 +81,7 @@ public class Explore extends Fragment {
     private void onItemClicked(String username) {
         SearchedUser searchedUserFragment = SearchedUser.newInstance(username);
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, searchedUserFragment);
+        transaction.add(R.id.fragment_container, searchedUserFragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
