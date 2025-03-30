@@ -25,7 +25,7 @@
         android:layout_width="250dp"
         android:layout_height="350dp"
         android:layout_centerInParent="true"
-        android:contentDescription="Mood Jar"
+        android:contentDescription="@string/mood_jar"
         android:src="@drawable/jar_empty" />
 
 <!--    <com.airbnb.lottie.LottieAnimationView-->
@@ -55,7 +55,7 @@
         android:layout_below="@id/jar_image"
         android:layout_centerHorizontal="true"
         android:backgroundTint="#4CAF50"
-        android:text="Unlock Jar"
+        android:text="@string/unlock_jar"
         android:textColor="#F5E6D3"
         android:visibility="gone" />
 
@@ -67,7 +67,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:backgroundTint="#4CAF50"
-        android:text="Add Positive Note"
+        android:text="@string/add_positive_note"
         android:textColor="#F5E6D3" />
 
 </RelativeLayout>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,7 +17,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="RtlHardcoded">
 
         <TextView
             android:id="@+id/title"
@@ -25,7 +27,7 @@
             android:layout_marginTop="75dp"
             android:fontFamily="@font/jomolhari"
             android:padding="16dp"
-            android:text="feelin'"
+            android:text="@string/feelin"
             android:textColor="#F5E6D3"
             android:textSize="34sp"
             android:textStyle="bold|italic" />
@@ -34,8 +36,8 @@
             android:id="@+id/nav_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="History"
-            android:textSize="17dp"
+            android:text="@string/history"
+            android:textSize="17sp"
             android:layout_marginTop="20dp"
             android:textColor="#F5E6D3"
             android:padding="16dp" />
@@ -45,16 +47,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#F5E6D3"
-            android:textSize="17dp"
-            android:text="Profile"
+            android:textSize="17sp"
+            android:text="@string/profile"
             android:padding="16dp" />
 
         <TextView
             android:id="@+id/nav_analytics"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Analytics"
-            android:textSize="17dp"
+            android:text="@string/analytics"
+            android:textSize="17sp"
             android:textColor="#F5E6D3"
             android:padding="16dp" />
 
@@ -64,16 +66,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#F5E6D3"
-            android:textSize="17dp"
-            android:text="About Us"
+            android:textSize="17sp"
+            android:text="@string/about_us_small"
             android:padding="16dp" />
 
         <TextView
             android:id="@+id/nav_qr_code"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="QR Code"
-            android:textSize="17dp"
+            android:text="@string/qr_code"
+            android:textSize="17sp"
             android:textColor="#F5E6D3"
             android:padding="16dp" />
 
@@ -81,8 +83,8 @@
             android:id="@+id/nav_mood_jar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="MoodJar"
-            android:textSize="17dp"
+            android:text="@string/moodjar"
+            android:textSize="17sp"
             android:textColor="#F5E6D3"
             android:padding="16dp" />
 
@@ -92,12 +94,13 @@
             android:layout_width="match_parent"
             android:textColor="#F5E6D3"
             android:layout_height="wrap_content"
-            android:text="Sign Out"
-            android:textSize="17dp"
+            android:text="@string/sign_out"
+            android:textSize="17sp"
             android:padding="16dp" />
     </LinearLayout>
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/imageView5"
         android:layout_width="333dp"
         android:layout_height="365dp"
@@ -108,6 +111,7 @@
         app:srcCompat="@drawable/hapi" />
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/imageView6"
         android:layout_width="333dp"
         android:layout_height="365dp"
@@ -118,18 +122,19 @@
         app:srcCompat="@drawable/angry" />
 
     <ImageButton
+        tools:ignore="contentDescription"
         android:id="@+id/imageButton"
         android:layout_width="50dp"
         android:layout_height="51dp"
         android:layout_marginTop="30dp"
         android:backgroundTint="#222121"
         android:scaleType="fitCenter"
-        android:tint="#F5E6D3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.917"
         app:layout_constraintStart_toEndOf="@+id/side_panel"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/close" />
+        app:srcCompat="@drawable/close"
+        app:tint="#F5E6D3" />
 
     <FrameLayout
         android:id="@+id/side_container"

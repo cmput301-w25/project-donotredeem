@@ -16,13 +16,14 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="40dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="back_button"
+        android:contentDescription="@string/back_button"
         android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="#FFFFFF" />
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/mood_recur_img"
         android:layout_width="338dp"
         android:layout_height="394dp"
@@ -61,7 +62,7 @@
         android:id="@+id/next_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next"
+        android:text="@string/next"
         android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -36,6 +36,7 @@
 
 
             <ImageView
+                tools:ignore="contentDescription"
                 android:id="@+id/emojiIcon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -68,7 +69,7 @@
                         android:id="@+id/Emotional_State"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Sad"
+                        android:text="@string/sad"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         android:layout_marginStart="13dp"
@@ -83,7 +84,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:src="@drawable/few_people"
-                        android:contentDescription="describes"
+                        android:contentDescription="@string/describes"
                         android:visibility="visible"
                         app:tint="#222121"
                         app:layout_constraintEnd_toStartOf="@id/PrivacyImage"
@@ -96,7 +97,7 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:src="@drawable/locked"
-                        android:contentDescription="describes"
+                        android:contentDescription="@string/describes"
                         android:visibility="visible"
                         app:tint="#222121"
                         android:layout_marginEnd="15dp"
@@ -113,7 +114,7 @@
                         android:src="@drawable/ic_jar"
                         android:layout_marginEnd="8dp"
                         app:tint="#222121"
-                        android:contentDescription="Add to Mood Jar"
+                        android:contentDescription="@string/add_to_mood_jar"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@id/SituationImage"/>
@@ -142,6 +143,7 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        tools:ignore="contentDescription"
                         android:id="@+id/timelineImage"
                         android:layout_width="80dp"
                         android:layout_marginTop="3dp"
@@ -163,7 +165,7 @@
                             android:layout_height="wrap_content"
                             android:id="@+id/Additional_details"
                             android:maxLength="20"
-                            android:text="Optional Text Description Here"
+                            android:text="@string/desc_hist_cont"
                             android:visibility="gone"
                             android:textSize="14sp"/>
 
@@ -176,7 +178,7 @@
                                 android:id="@+id/Mood_Date"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Date: "
+                                android:text="@string/date_hist_cont"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
 
@@ -184,7 +186,7 @@
                                 android:id="@+id/Specific_Date"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="12/09/2013"
+                                android:text="@string/_12_09_2013"
                                 android:textSize="14sp"/>
                         </LinearLayout>
 
@@ -197,7 +199,7 @@
                                 android:id="@+id/Mood_Time"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Time: "
+                                android:text="@string/timehist_content"
                                 android:textSize="14sp"
                                 android:textStyle="bold" />
 
@@ -205,7 +207,7 @@
                                 android:id="@+id/Specific_Time"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="12:09 AM"
+                                android:text="@string/time_hist_content"
                                 android:textSize="14sp"/>
                         </LinearLayout>
 

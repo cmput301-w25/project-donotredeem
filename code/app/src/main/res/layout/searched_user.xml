@@ -25,7 +25,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView9"
             app:srcCompat="@drawable/user"
-            app:tint="#F5E6D3" />
+            app:tint="#F5E6D3"/>
 
         <LinearLayout
             android:id="@+id/linearLayout2"
@@ -52,7 +52,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/jomolhari"
-                    android:text="Followers"
+                    android:text="@string/followers"
                     android:textColor="#F5E6D3"
                     android:textSize="17sp"
                     android:textStyle="italic" />
@@ -63,7 +63,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/jomolhari"
-                    android:text="0"
+                    android:text="@string/_0"
                     android:textColor="#F5E6D3"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -83,7 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/jomolhari"
-                    android:text="Following"
+                    android:text="@string/following"
                     android:textColor="#F5E6D3"
                     android:textSize="17sp"
                     android:textStyle="italic" />
@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/jomolhari"
-                    android:text="0"
+                    android:text="@string/_0"
                     android:textColor="#F5E6D3"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -112,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/jomolhari"
-                    android:text="Moods"
+                    android:text="@string/moods"
                     android:textColor="#F5E6D3"
                     android:textSize="17sp"
                     android:textStyle="italic" />
@@ -123,7 +123,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:fontFamily="@font/jomolhari"
-                    android:text="0"
+                    android:text="@string/_0"
                     android:textColor="#F5E6D3"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -153,7 +153,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="44dp"
             android:fontFamily="@font/jomolhari"
-            android:text="Example Bio. Maximum of 50 characters"
+            android:text="@string/bio_searched_user"
             android:textColor="#F5E6D3"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -166,7 +166,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="48dp"
             android:fontFamily="@font/jomolhari"
-            android:text="Username"
+            android:text="@string/username_small"
             android:textColor="#F5E6D3"
             android:textSize="25sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -195,9 +195,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_icon"
             app:strokeColor="#F5E6D3"
-            app:strokeWidth="2dp" />
+            app:strokeWidth="2dp"
+            tools:ignore="SmallSp" />
 
         <ImageView
+            tools:ignore="contentDescription"
             android:id="@+id/imageView9"
             android:layout_width="27dp"
             android:layout_height="26dp"
@@ -209,6 +211,5 @@
             app:tint="#FFFFFF" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -38,7 +38,7 @@
             android:layout_marginTop="20dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:text="Username"
+            android:text="@string/username_small"
             android:textColor="#FFFFFF"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -65,7 +65,7 @@
                 android:background="@drawable/btn_accept_stroke"
                 android:drawableStart="@drawable/ic_check"
                 android:drawablePadding="4dp"
-                android:text="Accept"
+                android:text="@string/accept"
                 android:textAllCaps="false"
                 android:textColor="#4CAF50"
                 android:textSize="14sp" />
@@ -77,7 +77,7 @@
                 android:background="@drawable/btn_decline_solid"
                 android:drawableStart="@drawable/ic_close"
                 android:drawablePadding="4dp"
-                android:text="Decline"
+                android:text="@string/decline"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 android:textSize="14sp" />

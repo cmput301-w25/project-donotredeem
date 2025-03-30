@@ -15,6 +15,7 @@
     <!-- Scan Button centered below QR Code -->
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/qrCodeImage"
         android:layout_width="300dp"
         android:layout_height="300dp"
@@ -30,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="28dp"
         android:backgroundTint="#4CAF50"
-        android:text="Scan QR Code"
+        android:text="@string/scan_qr_code"
         android:textColor="#F5E6D3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -38,6 +39,7 @@
         app:layout_constraintTop_toBottomOf="@id/qrCodeImage" />
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/qr_back"
         android:layout_width="36dp"
         android:layout_height="36dp"
