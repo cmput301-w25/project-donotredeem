@@ -22,12 +22,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
+import com.example.donotredeem.MainPageAdapter;
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.MetadataChanges;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -45,9 +48,10 @@ public class SearchedUser extends Fragment {
 
     private ListView followerListView, followingListView, recent_list;
     private LinearLayout follower, following;
-    private MoodEventAdapter adapter;
+    private MainPageAdapter adapter;
     private ArrayList<MoodEvent> moodHistoryList;
     private FirebaseFirestore db;
+    private ListenerRegistration userDataListener; // Add this line
 
 
     public static SearchedUser newInstance(String username) {
@@ -95,6 +99,8 @@ public class SearchedUser extends Fragment {
 
         // Fetch and display user data
         fetchUserData(username);
+
+
 
         follower.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -236,91 +242,188 @@ public class SearchedUser extends Fragment {
         return view;
     }
 
-    private void fetchUserData(String username) {
-        if (username == null || username.isEmpty()) {
-            Log.e("SearchedUser", "Username is null/empty");
+//    private void fetchUserData(String username) {
+//        if (username == null || username.isEmpty()) {
+//            Log.e("SearchedUser", "Username is null/empty");
+//            return;
+//        }
+//        Log.d("MyTag", "This is a debug message 333333333333.");
+//
+//
+//        UserProfileManager userProfileManager = new UserProfileManager();
+//        Log.d("MyTag", "This is a debug message44444444444444444.");
+//        userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
+//            @Override
+//            public boolean onUserProfileFetched(Users user) {
+//                if (user != null) {
+//                    Log.d("MyTag", "This is a debug message5555555555555.");
+//                    // Set user details to TextViews
+//                    usernameTextView.setText(user.getUsername());
+//                    bioTextView.setText(user.getBio());
+//                    // Inside onUserProfileFetched in fetchUserData:
+//                    followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
+//                    followingTextView.setText(String.valueOf(user.getFollowing()));
+//                    moodTextView.setText(String.valueOf(user.getMoods()));
+//
+//                    String profilePicUrl = user.getProfilePictureUrl();
+//                    Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
+//
+//
+//                    if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
+//                        Log.d("pls", "onUserProfileFetched: bro this is not null");
+//                        Glide.with(requireContext())
+//                                .load(user.getProfilePictureUrl())
+////                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                .apply(new RequestOptions().circleCrop())
+//                                .into(profileImage);
+//                    } else {
+//                        profileImage.setImageResource(R.drawable.user);
+//                    }
+//
+//                    Log.d("MyTag", "This is a debug message666666666666666.");
+//                    // Get logged-in user from SharedPreferences
+//                    SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+//                    String loggedInUsername = sharedPreferences.getString("username", null);
+//                    Log.d("SearchedUser", "Logged-in username: " + loggedInUsername);
+//
+//
+//                    if (loggedInUsername != null) {
+//                        // Check follow status
+//                        List<String> followerList = user.getFollowerList() != null ? user.getFollowerList() : new ArrayList<>();
+//                        List<String> requestsList = user.getRequests() != null ? user.getRequests() : new ArrayList<>();
+//                        Log.d("SearchedUser", "Follower List: " + followerList.toString());
+//
+//                        requireActivity().runOnUiThread(() -> {
+//                            if (followerList.contains(loggedInUsername)) {
+//                                Log.d("MyTag", "This is a debug message77777777777777777.");
+//                                // Already following
+//                                Follow.setText("Following");
+//                                fetchUserMoodEvents(username);
+//                                Follow.setEnabled(true);
+//                            } else if (requestsList.contains(loggedInUsername)) {
+//                                // Request pending
+//                                Follow.setText("Requested");
+//                                Follow.setEnabled(true);
+//                            } else {
+//                                // Not following
+//                                Follow.setText("Follow");
+//                                Follow.setEnabled(true);
+//                            }
+//                        });
+//                    }
+//
+////                    // Display follower and following lists
+////                    updateListView(followerListView, user.getFollowerList(), "No followers");
+////                    updateListView(followingListView, user.getFollowingList(), "Not following anyone");
+//                } else {
+//                    Log.e("SearchedUser", "User not found.");
+//                }
+//                return false;
+//            }
+//
+//            @Override
+//            public void onUserProfileFetchError(Exception e) {
+//                Log.e("SearchedUser", "Error fetching user data", e);
+//            }
+//        });
+//    }
+
+private void fetchUserData(String username) {
+    if (db == null) {
+        db = FirebaseFirestore.getInstance(); // Reinitialize if null
+    }
+    DocumentReference userRef = db.collection("User").document(username);
+
+    // Add metadata listener for offline support
+//    userRef.addSnapshotListener(MetadataChanges.INCLUDE, (documentSnapshot, error) -> {
+    userDataListener = userRef.addSnapshotListener(MetadataChanges.INCLUDE, (documentSnapshot, error) -> {
+        if (!isAdded()) return; // Critical check here
+        if (error != null) {
+            Log.e("ProfilePage", "Listen error", error);
             return;
         }
-        Log.d("MyTag", "This is a debug message 333333333333.");
+
+        if (documentSnapshot != null && documentSnapshot.exists()) {
+            boolean isFromCache = documentSnapshot.getMetadata().isFromCache();
+
+            // Parse with new constructor
+            int moods = documentSnapshot.getLong("moods") != null ?
+                    documentSnapshot.getLong("moods").intValue() : 0;
+
+            List<DocumentReference> moodRefs = (List<DocumentReference>)
+                    documentSnapshot.get("MoodRef");
+
+            Users user = new Users(
+                    documentSnapshot.getId(),
+                    documentSnapshot.getString("bio"),
+                    documentSnapshot.getString("pfp"),
+                    (List<String>) documentSnapshot.get("follower_list"),
+                    (List<String>) documentSnapshot.get("following_list"),
+                    (List<String>) documentSnapshot.get("requests"),
+                    (List<DocumentReference>) documentSnapshot.get("MoodRef"),
+                    moods
+
+            );
+
+            // Update UI
+            usernameTextView.setText(user.getUsername());
+            bioTextView.setText(user.getBio());
+            // Inside onUserProfileFetched in fetchUserData:
+            followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
+            Log.d("MyTag", "User following count: " + user.getFollowing());
+            followingTextView.setText(String.valueOf(user.getFollowing()));
+
+            String profilePicUrl = user.getProfilePictureUrl();
+            Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
+
+            moodTextView.setText(String.valueOf(user.getMoods()));
+            if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
+                Log.d("pls", "onUserProfileFetched: bro this is not null");
+                Context context = getContext();
+                if (context != null) {
+                    Glide.with(requireContext())
+                            .load(user.getProfilePictureUrl())
+                            //                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .apply(new RequestOptions().circleCrop())
+                            .into(profileImage);}
+            } else {
+                profileImage.setImageResource(R.drawable.user);
+            }
+            if (isAdded()) {
+                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+                String loggedInUsername = sharedPreferences.getString("username", null);
+                Log.d("SearchedUser", "Logged-in username: " + loggedInUsername);
 
 
-        UserProfileManager userProfileManager = new UserProfileManager();
-        Log.d("MyTag", "This is a debug message44444444444444444.");
-        userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
-            @Override
-            public boolean onUserProfileFetched(Users user) {
-                if (user != null) {
-                    Log.d("MyTag", "This is a debug message5555555555555.");
-                    // Set user details to TextViews
-                    usernameTextView.setText(user.getUsername());
-                    bioTextView.setText(user.getBio());
-                    // Inside onUserProfileFetched in fetchUserData:
-                    followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
-                    followingTextView.setText(String.valueOf(user.getFollowing()));
-                    moodTextView.setText(String.valueOf(user.getMoods()));
+                if (loggedInUsername != null) {
+                    // Check follow status
+                    List<String> followerList = user.getFollowerList() != null ? user.getFollowerList() : new ArrayList<>();
+                    List<String> requestsList = user.getRequests() != null ? user.getRequests() : new ArrayList<>();
+                    Log.d("SearchedUser", "Follower List: " + followerList.toString());
 
-                    String profilePicUrl = user.getProfilePictureUrl();
-                    Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
-
-
-                    if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
-                        Log.d("pls", "onUserProfileFetched: bro this is not null");
-                        Glide.with(requireContext())
-                                .load(user.getProfilePictureUrl())
-//                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .apply(new RequestOptions().circleCrop())
-                                .into(profileImage);
-                    } else {
-                        profileImage.setImageResource(R.drawable.user);
-                    }
-
-                    Log.d("MyTag", "This is a debug message666666666666666.");
-                    // Get logged-in user from SharedPreferences
-                    SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-                    String loggedInUsername = sharedPreferences.getString("username", null);
-                    Log.d("SearchedUser", "Logged-in username: " + loggedInUsername);
-
-
-                    if (loggedInUsername != null) {
-                        // Check follow status
-                        List<String> followerList = user.getFollowerList() != null ? user.getFollowerList() : new ArrayList<>();
-                        List<String> requestsList = user.getRequests() != null ? user.getRequests() : new ArrayList<>();
-                        Log.d("SearchedUser", "Follower List: " + followerList.toString());
-
-                        requireActivity().runOnUiThread(() -> {
-                            if (followerList.contains(loggedInUsername)) {
-                                Log.d("MyTag", "This is a debug message77777777777777777.");
-                                // Already following
-                                Follow.setText("Following");
-                                fetchUserMoodEvents(username);
-                                Follow.setEnabled(true);
-                            } else if (requestsList.contains(loggedInUsername)) {
-                                // Request pending
-                                Follow.setText("Requested");
-                                Follow.setEnabled(true);
-                            } else {
-                                // Not following
-                                Follow.setText("Follow");
-                                Follow.setEnabled(true);
-                            }
-                        });
-                    }
-
-//                    // Display follower and following lists
-//                    updateListView(followerListView, user.getFollowerList(), "No followers");
-//                    updateListView(followingListView, user.getFollowingList(), "Not following anyone");
-                } else {
-                    Log.e("SearchedUser", "User not found.");
+                    requireActivity().runOnUiThread(() -> {
+                        if (followerList.contains(loggedInUsername)) {
+                            Log.d("MyTag", "This is a debug message77777777777777777.");
+                            // Already following
+                            Follow.setText("Following");
+                            fetchUserMoodEvents(username, 1);
+                            Follow.setEnabled(true);
+                        } else if (requestsList.contains(loggedInUsername)) {
+                            // Request pending
+                            Follow.setText("Requested");
+                            Follow.setEnabled(true);
+                        } else {
+                            // Not following
+                            Follow.setText("Follow");
+                            Follow.setEnabled(true);
+                            fetchUserMoodEvents(username, 0);
+                        }
+                    });
                 }
-                return false;
             }
-
-            @Override
-            public void onUserProfileFetchError(Exception e) {
-                Log.e("SearchedUser", "Error fetching user data", e);
-            }
-        });
-    }
+        }
+    });
+}
 
 
     // Helper method to update UI after unfollow
@@ -348,7 +451,7 @@ public class SearchedUser extends Fragment {
     }
 
 
-    private void fetchUserMoodEvents(String username) {
+    private void fetchUserMoodEvents(String username, int display) {
         if (username == null) {
             Log.e("MoodHistory", "No username found in SharedPreferences");
             return;
@@ -362,7 +465,7 @@ public class SearchedUser extends Fragment {
                         Log.d("MoodHistory", "User found: " + userDoc.getData());
                         List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
                         if (moodRefsList != null && !moodRefsList.isEmpty()) {
-                            fetchMoodEvents(moodRefsList); // Fetch the referenced mood events
+                            fetchMoodEvents(moodRefsList, display); // Fetch the referenced mood events
                         } else {
                             Log.d("MoodHistory", "No mood events found.");
                         }
@@ -372,29 +475,70 @@ public class SearchedUser extends Fragment {
                 });
     }
 
-    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+//    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
+//        ArrayList<MoodEvent> tempList = new ArrayList<>();
+//        final int[] fetchedCount = {0};
+//
+//        for (DocumentReference moodRef : moodRefs) {
+//            moodRef.get().addOnSuccessListener(documentSnapshot -> {
+//                if (documentSnapshot.exists()) {
+//                    try {
+//                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
+//                        if (moodEvent != null && !moodEvent.getPrivacy()) {
+//                            tempList.add(moodEvent);
+//                        }
+//                    } catch (Exception e) {
+//                        Log.e("MoodHistory", "Error converting document", e);
+//                    }
+//                }
+//
+//                fetchedCount[0]++;
+//                if (fetchedCount[0] == moodRefs.size()) {
+//                    moodHistoryList.clear();
+//                    moodHistoryList.addAll(tempList);
+//                    sortMoodEvents();
+//
+//                    if (isAdded() && getContext() != null) { // Check fragment attachment
+//                        if (moodHistoryList.size() > 2) {
+//                            ArrayList<MoodEvent> RecentHistoryList = new ArrayList<>(moodHistoryList.subList(0, 2));
+//                            Display(RecentHistoryList);
+//                        } else {
+//                            Display(moodHistoryList);
+//                        }
+//                    }
+//                }
+//            }).addOnFailureListener(e -> {
+//                Log.e("MoodHistory", "Error fetching document", e);
+//                fetchedCount[0]++;
+//            });
+//        }
+//    }
+
+    private void fetchMoodEvents(List<DocumentReference> moodRefs, int display) {
         ArrayList<MoodEvent> tempList = new ArrayList<>();
         final int[] fetchedCount = {0};
 
         for (DocumentReference moodRef : moodRefs) {
-            moodRef.get().addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot.exists()) {
+            moodRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null) {
+                    DocumentSnapshot document = task.getResult();
                     try {
-                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
-                        if (moodEvent != null && !moodEvent.getPrivacy()) {
+                        MoodEvent moodEvent = document.toObject(MoodEvent.class);
+                        if (moodEvent != null) {
                             tempList.add(moodEvent);
                         }
                     } catch (Exception e) {
-                        Log.e("MoodHistory", "Error converting document", e);
+                        Log.e("ProfilePage", "Error converting document", e);
                     }
                 }
 
                 fetchedCount[0]++;
                 if (fetchedCount[0] == moodRefs.size()) {
                     moodHistoryList.clear();
-                    moodHistoryList.addAll(tempList);
-                    sortMoodEvents();
-
+                    if(display == 1) {
+                        moodHistoryList.addAll(tempList);
+                        sortMoodEvents();
+                    }
                     if (isAdded() && getContext() != null) { // Check fragment attachment
                         if (moodHistoryList.size() > 2) {
                             ArrayList<MoodEvent> RecentHistoryList = new ArrayList<>(moodHistoryList.subList(0, 2));
@@ -463,7 +607,7 @@ public class SearchedUser extends Fragment {
         });
 
         // Update adapter with valid context
-        adapter = new MoodEventAdapter(requireActivity(), moodHistoryList);
+        adapter = new MainPageAdapter(requireActivity(), moodHistoryList);
         recent_list.setAdapter(adapter);
         adapter.notifyDataSetChanged();
     }
@@ -553,6 +697,15 @@ public class SearchedUser extends Fragment {
                 callback.onFollowCheck(false); // Return false on error
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (userDataListener != null) {
+            userDataListener.remove();
+            userDataListener = null;
+        }
     }
 
 //    // Method to send a follow request or follow the user

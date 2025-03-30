@@ -359,81 +359,81 @@ public class ProfilePage extends Fragment {
 //            }
 //        });
 //    }
-private void fetchUserData(String username) {
-    if (db == null) {
-        db = FirebaseFirestore.getInstance(); // Reinitialize if null
-    }
-    DocumentReference userRef = db.collection("User").document(username);
-
-    // Add metadata listener for offline support
-    userRef.addSnapshotListener(MetadataChanges.INCLUDE, (documentSnapshot, error) -> {
-        if (error != null) {
-            Log.e("ProfilePage", "Listen error", error);
-            return;
+    private void fetchUserData(String username) {
+        if (db == null) {
+            db = FirebaseFirestore.getInstance(); // Reinitialize if null
         }
+        DocumentReference userRef = db.collection("User").document(username);
 
-        if (documentSnapshot != null && documentSnapshot.exists()) {
-            boolean isFromCache = documentSnapshot.getMetadata().isFromCache();
+        // Add metadata listener for offline support
+        userRef.addSnapshotListener(MetadataChanges.INCLUDE, (documentSnapshot, error) -> {
+            if (error != null) {
+                Log.e("ProfilePage", "Listen error", error);
+                return;
+            }
 
-            // Parse with new constructor
-            int moods = documentSnapshot.getLong("moods") != null ?
-                    documentSnapshot.getLong("moods").intValue() : 0;
+            if (documentSnapshot != null && documentSnapshot.exists()) {
+                boolean isFromCache = documentSnapshot.getMetadata().isFromCache();
 
-            List<DocumentReference> moodRefs = (List<DocumentReference>)
-                    documentSnapshot.get("MoodRef");
+                // Parse with new constructor
+                int moods = documentSnapshot.getLong("moods") != null ?
+                        documentSnapshot.getLong("moods").intValue() : 0;
 
-            Users user = new Users(
-                    documentSnapshot.getId(),
-                    documentSnapshot.getString("bio"),
-                    documentSnapshot.getString("pfp"),
-                    (List<String>) documentSnapshot.get("follower_list"),
-                    (List<String>) documentSnapshot.get("following_list"),
-                    (List<String>) documentSnapshot.get("requests"),
-                    (List<DocumentReference>) documentSnapshot.get("MoodRef"),
-                    moods
+                List<DocumentReference> moodRefs = (List<DocumentReference>)
+                        documentSnapshot.get("MoodRef");
 
-            );
+                Users user = new Users(
+                        documentSnapshot.getId(),
+                        documentSnapshot.getString("bio"),
+                        documentSnapshot.getString("pfp"),
+                        (List<String>) documentSnapshot.get("follower_list"),
+                        (List<String>) documentSnapshot.get("following_list"),
+                        (List<String>) documentSnapshot.get("requests"),
+                        (List<DocumentReference>) documentSnapshot.get("MoodRef"),
+                        moods
 
-            // Update UI
-            usernameTextView.setText(user.getUsername());
-            bioTextView.setText(user.getBio());
-            // Inside onUserProfileFetched in fetchUserData:
-            followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
-            Log.d("MyTag", "User following count: " + user.getFollowing());
-            followingTextView.setText(String.valueOf(user.getFollowing()));
+                );
 
-            String profilePicUrl = user.getProfilePictureUrl();
-            Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
+                // Update UI
+                usernameTextView.setText(user.getUsername());
+                bioTextView.setText(user.getBio());
+                // Inside onUserProfileFetched in fetchUserData:
+                followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
+                Log.d("MyTag", "User following count: " + user.getFollowing());
+                followingTextView.setText(String.valueOf(user.getFollowing()));
 
-            moodTextView.setText(String.valueOf(user.getMoods()));
-            if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
-                        Log.d("pls", "onUserProfileFetched: bro this is not null");
-                        Context context = getContext();
-                        if (context != null) {
-                        Glide.with(requireContext())
-                                .load(user.getProfilePictureUrl())
-//                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                                .apply(new RequestOptions().circleCrop())
-                                .into(profileImage);}
-                    } else {
-                        profileImage.setImageResource(R.drawable.user);
+                String profilePicUrl = user.getProfilePictureUrl();
+                Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
+
+                moodTextView.setText(String.valueOf(user.getMoods()));
+                if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
+                            Log.d("pls", "onUserProfileFetched: bro this is not null");
+                            Context context = getContext();
+                            if (context != null) {
+                            Glide.with(requireContext())
+                                    .load(user.getProfilePictureUrl())
+    //                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                    .apply(new RequestOptions().circleCrop())
+                                    .into(profileImage);}
+                        } else {
+                            profileImage.setImageResource(R.drawable.user);
+                        }
+
+    //            if (isFromCache) {
+    //                Toast.makeText(getContext(),
+    //                        "Offline - showing cached data",
+    //                        Toast.LENGTH_SHORT).show();
+    //            }
+                if (isAdded() && getContext() != null) {
+                    if (isFromCache) {
+                        Toast.makeText(requireContext(),
+                                "Offline - cached data",
+                                Toast.LENGTH_SHORT).show();
                     }
-
-//            if (isFromCache) {
-//                Toast.makeText(getContext(),
-//                        "Offline - showing cached data",
-//                        Toast.LENGTH_SHORT).show();
-//            }
-            if (isAdded() && getContext() != null) {
-                if (isFromCache) {
-                    Toast.makeText(requireContext(),
-                            "Offline - cached data",
-                            Toast.LENGTH_SHORT).show();
                 }
             }
-        }
-    });
-}
+        });
+    }
 
     /**
      * Fetches mood events for the logged-in user from Firebase Firestore.
