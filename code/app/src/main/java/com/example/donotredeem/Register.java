@@ -755,7 +755,8 @@ private void setupMoodRecurrence() {
         user.put("following", 0);  // Not following anyone initially
         user.put("followers_list", new java.util.ArrayList<>());  // Empty follower list
         user.put("following_list", new java.util.ArrayList<>());  // Empty following list
-        user.put("requests", new java.util.ArrayList<>());  // Initialize requests as empty
+        user.put("requests", new java.util.ArrayList<>()); // Initialize requests as empty
+        user.put("moods", 0);
 
         db.collection("User").document(username)
                 .set(user)
