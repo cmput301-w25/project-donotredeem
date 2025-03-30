@@ -25,7 +25,7 @@ import com.example.donotredeem.R;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class SidePanel extends Fragment {
-    TextView history, profile, analytics, about_us, qr_code, settings, mood_jar, sign_out;
+    TextView history, profile, analytics, about_us, qr_code,mood_jar, sign_out;
     ImageButton close;
 
     @Override
@@ -38,7 +38,6 @@ public class SidePanel extends Fragment {
         analytics = view.findViewById(R.id.nav_analytics);
         about_us = view.findViewById(R.id.nav_about_us);
         qr_code = view.findViewById(R.id.nav_qr_code);
-        settings = view.findViewById(R.id.nav_settings);
         mood_jar = view.findViewById(R.id.nav_mood_jar);
         sign_out = view.findViewById(R.id.Sign_out);
 
@@ -111,9 +110,6 @@ public class SidePanel extends Fragment {
 
     });
 
-        settings.setOnClickListener(v->{
-
-        });
 
         mood_jar.setOnClickListener(v->{
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
