@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
@@ -44,7 +45,7 @@ public class SearchedUser extends Fragment {
     private String username;
     private Button Follow;
     private TextView usernameTextView, bioTextView, followersTextView, followingTextView, moodTextView;
-    private ImageView profileImage;
+    private ImageView profileImage, cancel_button;
 
     private ListView followerListView, followingListView, recent_list;
     private LinearLayout follower, following;
@@ -90,6 +91,13 @@ public class SearchedUser extends Fragment {
         follower = view.findViewById(R.id.followerLayout);
         following = view.findViewById(R.id.followingLayout);
         profileImage = view.findViewById(R.id.user_icon);
+        cancel_button = view.findViewById(R.id.imageView9);
+
+
+        cancel_button.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.popBackStack();
+        });
 
         Log.d("MyTag", "This is a debug message 222222222222.");
 
