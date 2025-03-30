@@ -461,7 +461,7 @@ public class Register extends AppCompatActivity {
 
     private void initializePage3() {
         etBirthDate = findViewById(R.id.editTextDate);
-        calender = findViewById(R.id.calender);
+        calender = findViewById(R.id.calendarButton);
         btnNext = findViewById(R.id.next_button_bday);
         etBirthDate.setText(birthDate != null ? birthDate : "");
         calender.setOnClickListener(v ->{
