@@ -27,6 +27,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -160,8 +161,11 @@ public class EditMoodEvent extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (NetworkUtils.isNetworkAvailable(requireContext())) {
-            Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
+//        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+//            Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
+        Context context = getContext();
+        if (context != null && NetworkUtils.isNetworkAvailable(context)) {
+            Places.initialize(context, "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
         }
 
         // Initialize Firebase
@@ -226,6 +230,7 @@ public class EditMoodEvent extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        try{
         // Inflate the layout (assumed to be similar to add_mood.xml)
         View view = inflater.inflate(R.layout.edit_mood, container, false);
         View fragmentRoot = view.findViewById(R.id.fragment_root_edit);
@@ -359,7 +364,9 @@ public class EditMoodEvent extends Fragment {
 //            }
 //            @Override public void afterTextChanged(Editable s) { }
 //        });
-        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+//        if (NetworkUtils.isNetworkAvailable(requireContext()))
+        Context context = getContext();
+         if (context != null && NetworkUtils.isNetworkAvailable(context)) {
             locationEdit.setOnClickListener(v -> {
                 locationEdit.requestFocus();
 
@@ -379,8 +386,9 @@ public class EditMoodEvent extends Fragment {
         }
         RadioButton location_button = view.findViewById(R.id.radioButton);
         final boolean[] isSelected_loc = {false};
-        if (NetworkUtils.isNetworkAvailable(requireContext())) {
-            location_button.setOnClickListener(v -> {
+//        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+            if (context != null && NetworkUtils.isNetworkAvailable(context)) {
+                location_button.setOnClickListener(v -> {
                 if (isSelected_loc[0]) {
                     locationEdit.setText("");
                     location_button.setChecked(false);
@@ -598,6 +606,10 @@ public class EditMoodEvent extends Fragment {
 
 
         return view;
+        } catch (Exception e) {
+            Log.e("EditMoodEvent", "Error creating view", e);
+            return new FrameLayout(getContext()); // Return empty view as fallback
+        }
     }
 
     /**
@@ -879,7 +891,8 @@ public class EditMoodEvent extends Fragment {
     private void popFragment() {
         if (isAdded() && getActivity() != null) {
             requireActivity().runOnUiThread(() -> {
-                if (fragmentRoot != null) {
+//                if (fragmentRoot != null) {
+                if (fragmentRoot != null && fragmentRoot.getParent() != null) {
                     Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
                     fragmentRoot.startAnimation(slideOut);
                     slideOut.setAnimationListener(new Animation.AnimationListener() {
@@ -888,7 +901,8 @@ public class EditMoodEvent extends Fragment {
 
                         @Override
                         public void onAnimationEnd(Animation animation) {
-                            if (isAdded() && getActivity() != null) {
+//                            if (isAdded() && getActivity() != null) {
+                            if (isAdded()) {
                                 requireActivity().getSupportFragmentManager().popBackStack();
                             }
                         }
