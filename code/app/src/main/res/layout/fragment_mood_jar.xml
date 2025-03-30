@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -9,23 +9,45 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical">
 
+
     <TextView
         android:id="@+id/countdown_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/jar_image"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         android:layout_centerHorizontal="true"
         android:textColor="#F5E6D3"
         android:textSize="24sp"
+        app:layout_constraintBottom_toTopOf="@id/jar_image"
         android:textStyle="bold"
         android:visibility="visible"/>
+
+
+    <ImageView
+        android:id="@+id/jar_back"
+        android:layout_width="27dp"
+        android:layout_height="26dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="40dp"
+        android:layout_marginStart="20dp"
+        app:srcCompat="@drawable/close"
+        app:tint="#FFFFFF" />
 
     <ImageView
         android:id="@+id/jar_image"
         android:layout_width="250dp"
         android:layout_height="350dp"
         android:layout_centerInParent="true"
-        android:contentDescription="@string/mood_jar"
+        android:layout_marginBottom="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/jar_back"
+        app:layout_constraintBottom_toTopOf="@id/unlock_button"
+        android:layout_marginTop="40dp"
+        android:contentDescription="Mood Jar"
         android:src="@drawable/jar_empty" />
 
 <!--    <com.airbnb.lottie.LottieAnimationView-->
@@ -48,14 +70,19 @@
         app:lottie_renderMode="hardware"
         android:layerType="hardware"/>
 
+
     <Button
         android:id="@+id/unlock_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/jar_image"
         android:layout_centerHorizontal="true"
         android:backgroundTint="#4CAF50"
-        android:text="@string/unlock_jar"
+        android:text="Unlock Jar"
+        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toTopOf="@id/add_note_button"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/jar_image"
         android:textColor="#F5E6D3"
         android:visibility="gone" />
 
@@ -66,11 +93,15 @@
         android:layout_below="@id/unlock_button"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="40dp"
         android:backgroundTint="#4CAF50"
-        android:text="@string/add_positive_note"
+        android:text="Add Positive Note"
         android:textColor="#F5E6D3" />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
     <!--<?xml version="1.0" encoding="utf-8"?>-->
     <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
     <!--    android:layout_width="match_parent"-->

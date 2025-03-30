@@ -10,10 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,6 +34,7 @@ public class Explore extends Fragment {
     private RecyclerView recyclerView;
     private EditText searchBar;
     private UserAdapter adapter;
+    ImageView back_button;
     private String username;
 
     @Nullable
@@ -50,6 +53,12 @@ public class Explore extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = new UserAdapter(new ArrayList<>(), this::onItemClicked);
         recyclerView.setAdapter(adapter);
+        back_button = view.findViewById(R.id.search_back);
+
+        back_button.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.popBackStack();
+        });
 
         fetchUsernamesFromFirestore();
 

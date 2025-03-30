@@ -321,6 +321,7 @@
 
 package com.example.donotredeem;
 
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -348,6 +349,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -366,6 +368,7 @@ public class Register extends AppCompatActivity {
     // UI Elements
     private EditText etName, etEmail, etPhoneNo, etUsername, etPassword, etBirthDate;
     private Button btnNext;
+    private ImageButton calender;
 
     private int currentPage = 1;
     private String reminderMood = "";
@@ -458,9 +461,27 @@ public class Register extends AppCompatActivity {
 
     private void initializePage3() {
         etBirthDate = findViewById(R.id.editTextDate);
+        calender = findViewById(R.id.calender);
         btnNext = findViewById(R.id.next_button_bday);
         etBirthDate.setText(birthDate != null ? birthDate : "");
+        calender.setOnClickListener(v ->{
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH); //january is 0
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), (view1, selectedYear, selectedMonth, selectedDay) -> {
+
+                String selectedDate = String.format("%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear);
+                etBirthDate.setText(selectedDate);
+
+            }, year, month, day
+            );
+
+            datePickerDialog.show();
+        });
     }
+
 
 //    private void initializeActivitiesPage() {
 //        btnNext = findViewById(R.id.next_button_activities);

@@ -27,6 +27,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -50,7 +51,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class MoodJarFragment extends Fragment {
-    private ImageView jarImage;
+    private ImageView jarImage, back_button;
     private Button addNoteButton, unlockButton;
     private TextView countdownText;
     private LottieAnimationView fireworksAnimation;
@@ -82,6 +83,13 @@ public class MoodJarFragment extends Fragment {
         setupCountdown();
         setupUnlockButton();
         loadNotes();
+
+        back_button = view.findViewById(R.id.jar_back);
+
+        back_button.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.popBackStack();
+        });
 
         return view;
     }
