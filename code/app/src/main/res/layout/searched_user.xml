@@ -197,6 +197,15 @@
             app:strokeColor="#F5E6D3"
             app:strokeWidth="2dp" />
 
+        <ImageView
+            android:id="@+id/imageView9"
+            android:layout_width="27dp"
+            android:layout_height="26dp"
+            app:srcCompat="@drawable/ic_arrow_back"
+            app:tint="#FFFFFF"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="16dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
