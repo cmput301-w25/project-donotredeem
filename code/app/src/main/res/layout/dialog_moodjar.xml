@@ -40,7 +40,7 @@
                 android:layout_marginTop="16dp"
                 android:backgroundTint="#4CAF50"
                 android:paddingHorizontal="24dp"
-                android:text="Close"
+                android:text="@string/close"
                 android:textColor="#F5E6D3"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

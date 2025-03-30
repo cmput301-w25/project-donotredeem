@@ -18,7 +18,7 @@
         android:layout_marginBottom="16dp"
         android:fontFamily="sans-serif-medium"
         android:gravity="center"
-        android:text="Select Image Source"
+        android:text="@string/select_image_source"
         android:textColor="#F5E6D3"
         android:textSize="20sp"
         android:textStyle="bold" />
@@ -33,7 +33,7 @@
         android:elevation="4dp"
         android:paddingHorizontal="24dp"
         android:paddingVertical="12dp"
-        android:text="Camera"
+        android:text="@string/camera"
         android:textColor="@color/black"
         android:textSize="16sp" />
 
@@ -47,7 +47,7 @@
         android:elevation="4dp"
         android:paddingHorizontal="24dp"
         android:paddingVertical="12dp"
-        android:text="Gallery"
+        android:text="@string/gallery"
         android:textColor="@color/black"
         android:textSize="16sp" />
 

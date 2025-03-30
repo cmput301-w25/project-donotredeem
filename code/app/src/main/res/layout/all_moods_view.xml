@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -19,6 +20,7 @@
         >
 
         <ImageView
+            tools:ignore="contentDescription"
             android:id="@+id/cancel_all_moods"
             android:layout_width="35dp"
             android:layout_height="35dp"
@@ -38,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
             android:paddingTop="20dp"
-            android:text="ALL MOODS"
+            android:text="@string/all_moods"
             android:textAlignment="center"
             android:textColor="#F5E6D3"
             android:textSize="37sp"
@@ -57,7 +59,7 @@
             android:backgroundTint="#F5E6D3"
             app:srcCompat="@drawable/setting"
             android:layout_marginTop="23dp"
-            android:contentDescription="Filter button"
+            android:contentDescription="@string/filter_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

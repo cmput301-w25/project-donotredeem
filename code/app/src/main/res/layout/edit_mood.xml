@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/edit_id"
@@ -12,7 +13,8 @@
         android:id="@+id/fragment_root_edit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#222121">
+        android:background="#222121"
+        tools:ignore="ScrollViewSize">
 
 
         <ImageButton
@@ -22,6 +24,7 @@
             android:layout_marginTop="48dp"
             android:adjustViewBounds="true"
             android:backgroundTint="#222121"
+            tools:ignore="contentDescription"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.904"
@@ -37,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Edit Mood"
+            android:text="@string/edit_mood"
             android:textColor="#F8F4F4"
             android:textSize="36sp"
             android:textStyle="bold"
@@ -53,7 +56,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Current Mood"
+            android:text="@string/current_mood"
             android:textColor="#F8F5F5"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Add Description"
+            android:text="@string/add_description"
             android:textColor="#FDFAFA"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -82,8 +85,11 @@
             android:layout_height="48dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="8dp"
+            android:autofillHints=""
             android:background="@android:drawable/editbox_background"
-            android:hint="Description"
+            android:hint="@string/description"
+            android:inputType="none"
+            android:maxLength="200"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView12"
@@ -95,7 +101,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Add Media"
+            android:text="@string/add_media"
             android:textColor="#FDFAFA"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -110,7 +116,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Add Date"
+            android:text="@string/add_date"
             android:textColor="#FDFAFA"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -125,7 +131,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Add location"
+            android:text="@string/add_location"
             android:textColor="#FDFAFA"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -140,7 +146,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Add reasoning"
+            android:text="@string/add_reasoning"
             android:textColor="#FDFAFA"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -155,7 +161,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Add social situation"
+            android:text="@string/add_social_situation"
             android:textColor="#FDFAFA"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -171,7 +177,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="92dp"
             android:fontFamily="@font/inter"
-            android:text="Upload"
+            android:text="@string/upload"
             android:textColor="#F6F3F3"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -181,6 +187,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
         <ImageView
+            tools:ignore="contentDescription"
             android:id="@+id/imageView"
             android:layout_width="171dp"
             android:layout_height="130dp"
@@ -191,6 +198,7 @@
             app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
         <ImageButton
+            tools:ignore="contentDescription"
             android:id="@+id/upload_button"
             android:layout_width="69dp"
             android:layout_height="55dp"
@@ -212,8 +220,9 @@
             android:layout_height="48dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="4dp"
+            android:autofillHints=""
             android:background="@android:drawable/editbox_background"
-            android:hint="DD/MM/YY"
+            android:hint="@string/DD_MM_YY"
             android:inputType="date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.733"
@@ -222,6 +231,7 @@
             tools:ignore="MissingConstraints" />
 
         <ImageButton
+            tools:ignore="contentDescription"
             android:id="@+id/calendarButton"
             android:layout_width="26dp"
             android:layout_height="27dp"
@@ -238,7 +248,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Use current date"
+            android:text="@string/use_current_date"
             android:textColor="#F8F4F4"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -256,8 +266,9 @@
             android:layout_height="48dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="4dp"
+            android:autofillHints=""
             android:background="@android:drawable/editbox_background"
-            android:hint="Time"
+            android:hint="@string/time"
             android:inputType="time"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -265,6 +276,7 @@
             tools:ignore="MissingConstraints" />
 
         <ImageButton
+            tools:ignore="contentDescription"
             android:id="@+id/clockButton"
             android:layout_width="26dp"
             android:layout_height="27dp"
@@ -281,7 +293,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Use current time"
+            android:text="@string/use_current_time"
             android:textColor="#F8F4F4"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -295,8 +307,9 @@
             android:layout_height="48dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="8dp"
+            android:autofillHints=""
             android:background="@android:drawable/editbox_background"
-            android:hint="Location"
+            android:hint="@string/location"
             android:inputType="textPostalAddress"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -309,7 +322,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Use current location"
+            android:text="@string/use_current_location"
             android:textColor="#F8F4F4"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -325,8 +338,10 @@
             android:layout_height="48dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="8dp"
+            android:autofillHints=""
             android:background="@android:drawable/editbox_background"
-            android:hint="Description"
+            android:hint="@string/description"
+            android:inputType="none"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView16"
@@ -338,7 +353,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/inter"
-            android:text="Add Time"
+            android:text="@string/add_time"
             android:textColor="#FDFAFA"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -349,6 +364,7 @@
             app:layout_constraintVertical_bias="0.022" />
 
         <ImageButton
+            tools:ignore="contentDescription"
             android:id="@+id/alone_social"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -365,16 +381,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Alone"
+            android:text="@string/alone"
             android:layout_marginStart="15dp"
-            app:layout_constraintEnd_toEndOf="@id/alone_social"
-            android:textAlignment="center"
             app:layout_constraintTop_toBottomOf="@id/alone_social"
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="@id/alone_social"/>
 
 
         <ImageButton
+            tools:ignore="contentDescription"
             android:id="@+id/pair_social"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -392,14 +407,13 @@
             android:layout_width="wrap_content"
             app:layout_constraintWidth_max="80dp"
             android:layout_height="wrap_content"
-            android:text="With one other person"
-            android:textAlignment="center"
-            app:layout_constraintEnd_toEndOf="@id/pair_social"
+            android:text="@string/with_one_other_person"
             app:layout_constraintTop_toBottomOf="@id/pair_social"
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="@id/pair_social"/>
 
         <ImageButton
+            tools:ignore="contentDescription"
             android:id="@+id/few_social"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -416,19 +430,17 @@
             android:layout_width="wrap_content"
             app:layout_constraintWidth_max="80dp"
             android:layout_height="wrap_content"
-            android:text="With 2-7 person"
-            app:layout_constraintEnd_toEndOf="@id/few_social"
-            android:textAlignment="center"
+            android:text="@string/with_2_7_person"
             app:layout_constraintTop_toBottomOf="@id/few_social"
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="@id/few_social"/>
 
         <ImageButton
+            tools:ignore="contentDescription"
             android:id="@+id/crowd_social"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="8dp"
             android:background="@null"
             android:scaleType="fitCenter"
             android:src="@drawable/group"
@@ -440,9 +452,7 @@
             android:layout_width="wrap_content"
             app:layout_constraintWidth_max="80dp"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@id/crowd_social"
-            android:textAlignment="center"
-            android:text="Crowd"
+            android:text="@string/crowd"
             app:layout_constraintTop_toBottomOf="@id/crowd_social"
             android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="@id/crowd_social"/>
@@ -451,14 +461,13 @@
             android:id="@+id/private_question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
+            android:layout_marginStart="120dp"
             android:layout_marginTop="60dp"
-            android:text="Is this mood private?"
+            android:text="@string/is_this_mood_private"
             android:textColor="@color/white"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toStartOf="@id/edit_private_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/alone_social" />
 
@@ -478,7 +487,7 @@
             android:layout_marginTop="40dp"
             android:backgroundTint="#3F51B5"
             android:fontFamily="@font/inter"
-            android:text="Submit"
+            android:text="@string/submit"
             android:textStyle="bold"
             app:cornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -505,6 +514,7 @@
                 app:layout_constraintVertical_bias="0.0">
 
                 <ImageButton
+                    tools:ignore="contentDescription"
                     android:id="@+id/emoji_happy"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -514,6 +524,7 @@
                     android:src="@drawable/hapi" />
 
                 <ImageButton
+                    tools:ignore="contentDescription"
                     android:id="@+id/emoji_sad"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -523,6 +534,7 @@
                     android:src="@drawable/sad" />
 
                 <ImageButton
+                    tools:ignore="contentDescription"
                     android:id="@+id/emoji_fear"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -532,6 +544,7 @@
                     android:src="@drawable/fear" />
 
                 <ImageButton
+                    tools:ignore="contentDescription"
                     android:id="@+id/emoji_angry"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -541,6 +554,7 @@
                     android:src="@drawable/angry" />
 
                 <ImageButton
+                    tools:ignore="contentDescription"
                     android:id="@+id/emoji_confused"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -550,6 +564,7 @@
                     android:src="@drawable/confused" />
 
                 <ImageButton
+                    tools:ignore="contentDescription"
                     android:id="@+id/emoji_disgusted"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -559,6 +574,7 @@
                     android:src="@drawable/disgust" />
 
                 <ImageButton
+                    tools:ignore="contentDescription"
                     android:id="@+id/emoji_shameful"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -568,6 +584,7 @@
                     android:src="@drawable/shame" />
 
                 <ImageButton
+                    tools:ignore="contentDescription"
                     android:id="@+id/emoji_surprised"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -577,6 +594,7 @@
                     android:src="@drawable/surprised" />
 
                 <ImageButton
+                    tools:ignore="contentDescription"
                     android:id="@+id/emoji_shy"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -586,6 +604,7 @@
                     android:src="@drawable/shy" />
 
                 <ImageButton
+                    tools:ignore="contentDescription"
                     android:id="@+id/emoji_tired"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
