@@ -100,4 +100,7 @@ dependencies {
 
     //moodJar Stuff
     implementation ("com.airbnb.android:lottie:6.1.0")
+
+    //line graph stuff
+    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
 }
