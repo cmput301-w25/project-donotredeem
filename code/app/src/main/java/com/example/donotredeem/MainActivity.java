@@ -46,14 +46,12 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity {
 
     public static String past_location;
-    private ImageButton addEvent, mapButton, homeButton, heartButton;
+    private ImageButton addEvent, mapButton, homeButton, heartButton, profilePage;
     FirebaseAuth auth;
     Button button;
     TextView textView;
     FirebaseUser user;
-    private FirebaseFirestore db;
-    private String username;
-    private CircleImageView profilePage;
+
     /**
      * Called when the activity is starting.
      *
@@ -68,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        db = FirebaseFirestore.getInstance();
 //        FirebaseFirestore db = FirebaseFirestore.getInstance();
 //
 //        // Set cache settings (memory or disk-based)
@@ -105,12 +102,7 @@ public class MainActivity extends AppCompatActivity {
         mapButton = findViewById(R.id.map_button);
         homeButton = findViewById(R.id.grid_button);
         heartButton = findViewById(R.id.heart_button);
-        this.profilePage = findViewById(R.id.profilepage);
-//        CircleImageView profilePage = findViewById(R.id.profilepage);
-
-        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-        username = sharedPreferences.getString("username", null);
-        loadProfilePicture(username, profilePage);
+        profilePage = findViewById(R.id.profilepage);
 
 
         addEvent.setOnClickListener(new View.OnClickListener() {
@@ -202,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         });
 
-        this.profilePage.setOnClickListener(new View.OnClickListener() {
+        profilePage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 removeAddMoodEventIfExists();
@@ -275,31 +267,6 @@ public class MainActivity extends AppCompatActivity {
 
         editor.apply(); // Commit changes
     }
-    private void loadProfilePicture(String username, CircleImageView imageView) {
-        if (username == null || username.isEmpty()) {
-            imageView.setImageResource(R.drawable.ic_account_circle);
-            return;
-        }
-        db.collection("User")
-                .document(username)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        String pfpUrl = documentSnapshot.getString("pfp");
-                        if (pfpUrl != null && !pfpUrl.isEmpty()) {
-                            Glide.with(MainActivity.this)
-                                    .load(pfpUrl)
-                                    .placeholder(R.drawable.ic_account_circle)  // Fallback image while loading
-                                    .error(R.drawable.ic_account_circle)        // Fallback if loading fails
-                                    .into(imageView);
-                        } else {
-                            imageView.setImageResource(R.drawable.ic_account_circle);  // Fallback if no image
-                        }
-                    } else {
-                        imageView.setImageResource(R.drawable.ic_account_circle);
-                    }
-                })
-                .addOnFailureListener(e -> imageView.setImageResource(R.drawable.ic_account_circle));
-    }
+
 
 }
