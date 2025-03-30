@@ -15,9 +15,9 @@ public class Users {
     private String username;
     private String password;
     private String email;
-//    private String phoneNumber;
+    private String contact;
 //    private String name;
-//    private String birthdayDate; // yyyy-mm-dd
+    private String birthdayDate; // dd-mm-yyyy
 //    private List<String> helpYouDown;
 //    private String frequency;
 //    private Boolean remember;
@@ -82,10 +82,12 @@ public class Users {
 //        this.requests = requests;
 //    }
 
-    public Users(String username, String password, String email, String bio, String profilePictureUrl) {
+    public Users(String username, String password, String email,String dob, String contact, String bio, String profilePictureUrl) {
         this.username = username;
         this.password = password;
         this.email = email;
+        this.birthdayDate = dob;
+        this.contact = contact;
         this.bio = bio;
         this.profilePictureUrl = profilePictureUrl;
     }
@@ -157,13 +159,13 @@ public class Users {
 //        this.name = name;
 //    }
 //
-//    public String getBirthdayDate() {
-//        return birthdayDate;
-//    }
-//
-//    public void setBirthdayDate(String birthdayDate) {
-//        this.birthdayDate = birthdayDate;
-//    }
+    public String getBirthdayDate() {
+        return birthdayDate;
+    }
+
+    public void setBirthdayDate(String birthdayDate) {
+        this.birthdayDate = birthdayDate;
+    }
 //
 //    public List<String> getHelpYouDown() {
 //        return helpYouDown;
@@ -247,5 +249,13 @@ public class Users {
     }
 
     public int getMoods(){return moods;}
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
 }
 

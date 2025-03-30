@@ -1,6 +1,7 @@
 package com.example.donotredeem.Fragments;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,6 +10,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +40,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.Users;
+import com.example.donotredeem.LogIn;
 import com.example.donotredeem.R;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationServices;
@@ -45,6 +49,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.auth.User;
@@ -55,8 +60,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -83,6 +90,10 @@ public class EditProfile extends Fragment {
     private StorageReference storageRef;
     private Uri imageUri;
     private ImageView profileImage;
+    private ImageButton calander;
+    private EditText date;
+    private EditText contact;
+    private Button delete;
     Users userProfile = new Users();
 
     @Override
@@ -125,12 +136,18 @@ public class EditProfile extends Fragment {
         String username = sharedPreferences.getString("username", null);
         done =view.findViewById(R.id.button2);
         editUsername = view.findViewById(R.id.username_desc);
+        editUsername.setEnabled(false);
+        editUsername.setFocusable(false);
+        editUsername.setClickable(false);
         editPassword = view.findViewById(R.id.password_desc);
         editEmail = view.findViewById(R.id.email_desc);
         bio = view.findViewById(R.id.bio_desc);
         cancel= view.findViewById(R.id.closeButton);
         profileImage = view.findViewById(R.id.profile_image);
-
+        calander = view.findViewById(R.id.editProfileCalendarButton);
+        date = view.findViewById(R.id.dob_desc);
+        contact = view.findViewById(R.id.contact_desc);
+        delete = view.findViewById(R.id.button3);
         profileImage.setOnClickListener(v -> showSourceDialog());
 
         UserProfileManager userProfileManager = new UserProfileManager();
@@ -148,6 +165,23 @@ public class EditProfile extends Fragment {
             }
         });
 
+        calander.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH); //january is 0
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+            DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), (view1, selectedYear, selectedMonth, selectedDay) -> {
+
+                String selectedDate = String.format("%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear);
+                date.setText(selectedDate);
+
+            }, year, month, day
+            );
+
+            datePickerDialog.show();
+        });
+
         done.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -155,10 +189,29 @@ public class EditProfile extends Fragment {
                     //Toast.makeText(getContext(), "Please enter name and email", Toast.LENGTH_SHORT).show();
                     Snackbar.make(getView(), "Please enter name and email", Snackbar.LENGTH_SHORT).show();
                 }
-                userProfile.setUsername(editUsername.getText().toString());
+                // Get input values
+                String contactInput = contact.getText().toString().trim();
+                String dateInput = date.getText().toString().trim();
+
+                // Validate contact number (10 digits)
+                if (contactInput.isEmpty()) {
+                    Snackbar.make(getView(), "Contact number cannot be empty", Snackbar.LENGTH_SHORT).show();
+                    return;
+                } else if (contactInput.length() != 10 || !contactInput.matches("\\d+")) {
+                    Snackbar.make(getView(), "Invalid contact number (must be 10 digits)", Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!dateInput.matches("^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/\\d{4}$")) {
+                    Snackbar.make(getView(), "Invalid date format (use dd/mm/yyyy)", Snackbar.LENGTH_SHORT).show();
+                    return;
+                }
+//                userProfile.setUsername(editUsername.getText().toString());
                 userProfile.setPassword(editPassword.getText().toString());
                 userProfile.setEmail(editEmail.getText().toString());
                 userProfile.setBio(bio.getText().toString());
+                userProfile.setBirthdayDate(date.getText().toString());
+                userProfile.setContact(contact.getText().toString());
 
                 if (imageUri != null) {
                     if (username != null) {
@@ -171,8 +224,32 @@ public class EditProfile extends Fragment {
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.popBackStack();
 
+            }
+        });
 
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                UserProfileManager manager = new UserProfileManager();
+                manager.deleteUser(username, new UserProfileManager.OnDeleteListener() {
+                    @Override
+                    public void onSuccess() {
+                        FirebaseAuth.getInstance().signOut();
 
+                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.clear();
+                        editor.apply();
+
+                        redirectToLogin();
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        // Handle error
+                        Log.e("Deletion", "Error deleting user", e);
+                    }
+                });
             }
         });
 
@@ -193,6 +270,8 @@ public class EditProfile extends Fragment {
         editPassword.setText(user.getPassword());
         editEmail.setText(user.getEmail());
         bio.setText(user.getBio());
+        date.setText(user.getBirthdayDate());
+        contact.setText(user.getContact());
 
         if (user.getProfilePictureUrl() != null && !user.getProfilePictureUrl().isEmpty()) {
             Glide.with(this)
@@ -292,6 +371,15 @@ public class EditProfile extends Fragment {
                         }))
                 .addOnFailureListener(e ->
                         Snackbar.make(getView(), "Image upload failed!", Snackbar.LENGTH_SHORT).show());
+    }
+
+    private void redirectToLogin() {
+        Intent intent = new Intent(getActivity(), LogIn.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        if (getActivity() != null) {
+            getActivity().finish();
+        }
     }
 
 }
