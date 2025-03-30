@@ -7,11 +7,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -101,6 +105,9 @@ public class LogIn extends AppCompatActivity {
         buttonLogIn = findViewById(R.id.btnLogin);
         buttonGoogleSignIn = findViewById(R.id.btnGoogle);
 
+        TextView show_pass = findViewById(R.id.show_pass);
+        ImageView pass_icon = findViewById(R.id.pass_icon);
+
         textview = findViewById(R.id.button4);
         textview.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -108,6 +115,25 @@ public class LogIn extends AppCompatActivity {
                 Intent intent = new Intent(getApplicationContext(), Register.class);
                 startActivity(intent);
                 finish();
+            }
+        });
+
+        editTextPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+        pass_icon.setImageResource(R.drawable.password_invisible);
+
+        pass_icon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Check if the password is currently visible or not
+                if (editTextPassword.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
+                    // If it's currently hidden, make it visible
+                    editTextPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                    pass_icon.setImageResource(R.drawable.password_visible);  // Show the eye icon (password visible)
+                } else {
+                    // If it's currently visible, make it hidden
+                    editTextPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                    pass_icon.setImageResource(R.drawable.password_invisible);  // Show the eye icon (password hidden)
+                }
             }
         });
 
