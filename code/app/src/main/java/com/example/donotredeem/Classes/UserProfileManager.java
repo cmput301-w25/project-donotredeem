@@ -25,7 +25,7 @@ import java.util.Map;
  */
 
 public class UserProfileManager {
-    private FirebaseFirestore db;
+    public FirebaseFirestore db;
     private FirebaseStorage storage;
 
     /**

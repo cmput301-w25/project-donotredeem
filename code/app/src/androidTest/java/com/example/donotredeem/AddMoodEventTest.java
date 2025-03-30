@@ -17,6 +17,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.mock;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.test.espresso.action.ViewActions;
@@ -24,6 +25,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.donotredeem.Classes.Users;
 
@@ -64,17 +66,22 @@ public class AddMoodEventTest {
 
     @Before
     public void seedDatabase() throws InterruptedException {
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference usersRef = db.collection("User");
         Users[] user_data = {
-                new Users("User1", "Password1", "user1@gmail.com", "This is my bio.", ""),
-                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio", "")
+                new Users("User1", "Password1", "user1@gmail.com", "This is my bio."),
+                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio")
         };
         for (Users users : user_data) {
             usersRef.document(users.getUsername()).set(users);
         }
         Thread.sleep(2000);
+
     }
+
+
+
 
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
@@ -110,8 +117,9 @@ public class AddMoodEventTest {
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
 
     }
+
     @Test
-    public void MoodNotAdded() {
+    public void MoodNotAdded() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
         onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
 
@@ -127,17 +135,18 @@ public class AddMoodEventTest {
     }
 
     @Test
-    public void MoodRequired() {
+    public void MoodRequired() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
         onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
 
         onView(withId(R.id.button)).perform(scrollTo(), click());
         onView(withText("Please select a mood!"))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
+
     }
 
     @Test
-    public void DescriptionRequired() {
+    public void DescriptionRequired() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
         onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
 
@@ -146,7 +155,6 @@ public class AddMoodEventTest {
 
         onView(withText("Provide either a description or an image!"))
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-
     }
 
 //    @Test
@@ -186,7 +194,7 @@ public class AddMoodEventTest {
 //    }
 
     @Test
-    public void DescriptionConstraints() {
+    public void DescriptionConstraints() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
         onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
 
@@ -194,7 +202,6 @@ public class AddMoodEventTest {
         onView(withId(R.id.desc)).perform(ViewActions.typeText("This description does not allow more than two hundred characters you can do anything it wont allow lol hahaha you lose ok yay bye this testing is not good okay i am just doing time pass okkkk just adding more characters lol is it working???"));
 
         onView(withId(R.id.desc)).check(matches(CustomMatchers.withTextLength(lessThanOrEqualTo(200))));
-
     }
 
     @After

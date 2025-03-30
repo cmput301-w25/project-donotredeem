@@ -265,16 +265,25 @@ public class FilterFragment extends DialogFragment {
      * @param event The mood event to check.
      * @return {@code true} if the event occurred this week, {@code false} otherwise.
      */
-    private boolean week(MoodEvent event){
+//    private boolean week(MoodEvent event){
+//        LocalDate currentDate = LocalDate.now();
+//        LocalDate eventDate = parseStringToDate(event.getDate());
+//
+//        // Get week of year using system's week definition
+//        WeekFields weekFields = WeekFields.of(Locale.getDefault());
+//
+//        return currentDate.getYear() == eventDate.getYear() &&
+//                currentDate.get(weekFields.weekOfYear()) == eventDate.get(weekFields.weekOfYear());
+//    }
+    private boolean week(MoodEvent event) {
         LocalDate currentDate = LocalDate.now();
         LocalDate eventDate = parseStringToDate(event.getDate());
 
-        // Get week of year using system's week definition
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-
-        return currentDate.getYear() == eventDate.getYear() &&
-                currentDate.get(weekFields.weekOfYear()) == eventDate.get(weekFields.weekOfYear());
+        // Check if eventDate is within the past 7 days
+        return !eventDate.isAfter(currentDate) &&
+                !eventDate.isBefore(currentDate.minusDays(6));
     }
+
 
     /**
      * Checks whether the given mood event matches the search keyword.
