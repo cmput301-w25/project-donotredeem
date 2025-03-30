@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#222121">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="ABOUT US"
+        android:textSize="70dp"
+        android:textStyle="bold"
+        android:textColor="#F5E6D3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@font/amatica_sc_bold"
+        android:id="@+id/heading_about_us"/>
+
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:id="@+id/about_back_button"
+        android:src="@drawable/close"
+        app:tint = "#F5E6D3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"/>
+
+
+    <ImageView
+        android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:src="@drawable/about_us_2"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:id="@+id/pic_2"
+        app:layout_constraintTop_toBottomOf="@id/heading_about_us"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Working on the Mood Event app for our CMPUT 301 project was an exciting and unforgettable experience. We not only learned a lot about Android development but also had a great time experimenting with different features. There were moments when we’d randomly add moods just for fun, making testing an unexpectedly entertaining part of the process. Our meetings often stretched to 12 hours, filled with debugging, brainstorming, and plenty of laughter. Despite the long hours, this project was a rewarding journey that strengthened our teamwork and problem-solving skills."
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pic_2"
+        android:layout_marginTop="8dp"
+        android:textSize="18dp"
+        android:textAlignment="center"
+        android:textColor="#F5E6D3"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingStart="23dp"
+        android:paddingEnd="23dp" />
+</androidx.constraintlayout.widget.ConstraintLayout>
