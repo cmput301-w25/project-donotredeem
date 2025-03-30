@@ -56,6 +56,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_text" />
 
+    <ImageView
+        android:layout_width="25dp"
+        android:layout_height="20dp"
+        android:src="@drawable/password_invisible"
+        app:tint="@color/white"
+        android:id="@+id/pass_icon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/show_pass"
+        app:layout_constraintTop_toBottomOf="@id/etPassword"
+        android:layout_marginTop="8sp"
+        android:layout_marginStart="30dp"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="Show Passsword"
+        android:id="@+id/show_pass"
+        app:layout_constraintStart_toEndOf="@id/pass_icon"
+        app:layout_constraintTop_toBottomOf="@id/etPassword"
+        android:layout_marginStart="7dp"
+        android:layout_marginTop="8sp"/>
+
     <TextView
         android:id="@+id/username_text"
         android:layout_width="109dp"
