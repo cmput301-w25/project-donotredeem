@@ -136,6 +136,21 @@ public class RegisterUserTest {
 
     @Test
     public void RegisterSuccessful() throws InterruptedException {
+        onView(withId(R.id.button4)).perform(click());
+
+        onView(withId(R.id.sign_up_id)).check(matches(isDisplayed()));
+        onView(withId(R.id.sign_up_name_text)).perform(ViewActions.typeText("bruh"));
+        onView(withId(R.id.sign_up_email_text)).perform(ViewActions.typeText("bruh@gmail.com"));
+        onView(withId(R.id.sign_up_phone_number_text)).perform(ViewActions.typeText("1234567890"));
+        onView(withId(R.id.sign_up_done)).perform(click());
+
+        onView(withId(R.id.sign_up_id_2)).check(matches(isDisplayed()));
+        onView(withId(R.id.sign_up_username_text)).perform(ViewActions.typeText("bruh"));
+        onView(withId(R.id.sign_up_password_text)).perform(ViewActions.typeText("password"));
+        onView(withId(R.id.sign_up_done)).perform(click());
+
+        onView(withId(R.id.sign_up_id_2)).check(matches(isDisplayed()));
+
 
     }
 
