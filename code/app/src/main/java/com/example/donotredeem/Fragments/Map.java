@@ -14,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.donotredeem.LogIn;
 import com.example.donotredeem.MainPageAdapter;
 import com.example.donotredeem.MoodEvent;
@@ -61,8 +63,12 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
     private String loggedInUsername;
     double currentlatitude;
     double currentlongitude;
+
+    ImageButton me_btn;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
+
+
     private double latitude, longitude;
     public ArrayList<MoodEvent> moodHistoryList  = new ArrayList<>();;
 
@@ -113,6 +119,7 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
         ImageButton me_btn = view.findViewById(R.id.me_icon);
         ImageButton friends_btn = view.findViewById(R.id.friends_icon);
         ImageButton distance_btn = view.findViewById(R.id.km_icon);
+
 
         fetchUserMoodEvents(loggedInUsername);
 
@@ -177,13 +184,19 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
                         Log.d("Main Page", "User found: " + userDoc.getData());
                         List<String> FollowedUsers = (List<String>) userDoc.get("following_list");
 
-
                         if (FollowedUsers != null && !FollowedUsers.isEmpty()) {
                             FetchPublicEvents(FollowedUsers,limit);
                         } else {
                             Log.d("Main Page", "No followed users.");
                             updateMapMarkers(new ArrayList<>(),"Friends");
                         }
+
+//                        if (userDoc.getString("pfp") != null) {
+//                        Glide.with(requireContext())
+//                                .load(userDoc.getString("pfp"))
+////                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                .apply(new RequestOptions().circleCrop())
+//                                .into(me_btn);}
                     } else {
                         Log.e("Main Page", "No user found with username: " + username);
                     }
