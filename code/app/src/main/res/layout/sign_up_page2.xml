@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/sign_up_id_2"
@@ -11,9 +13,11 @@
         android:id="@+id/btnBack"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:src="@drawable/ic_arrow_back"
-        android:contentDescription="back_button"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="36dp"
         android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="back_button"
+        android:src="@drawable/ic_arrow_back"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:tint="#FFFFFF" />
@@ -48,19 +52,17 @@
         android:id="@+id/sign_up_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="250dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnBack"
         app:srcCompat="@drawable/sign_up" />
 
     <TextView
         android:id="@+id/sign_up_choose_username"
         android:layout_width="156dp"
         android:layout_height="21dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="100dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginTop="76dp"
         android:text="@string/sign_up_username"
         android:textColor="#FFFFFF"
         android:textSize="15sp"
