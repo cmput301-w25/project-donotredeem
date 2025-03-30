@@ -90,6 +90,13 @@ public class Users {
         this.profilePictureUrl = profilePictureUrl;
     }
 
+    public Users(String username, String password, String email, String bio) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.bio = bio;
+    }
+
     public Users(String username, String bio, String profilePictureUrl, List<String> followerList,
                  List<String> followingList, List<String> requests, List<DocumentReference> moodRefs, int moods) {
         this.username = username;

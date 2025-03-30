@@ -276,6 +276,10 @@ public class MainActivity extends AppCompatActivity {
         editor.apply(); // Commit changes
     }
     private void loadProfilePicture(String username, CircleImageView imageView) {
+        if (username == null || username.isEmpty()) {
+            imageView.setImageResource(R.drawable.ic_account_circle);
+            return;
+        }
         db.collection("User")
                 .document(username)
                 .get()

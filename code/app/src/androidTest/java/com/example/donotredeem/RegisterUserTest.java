@@ -3,13 +3,18 @@ package com.example.donotredeem;
 import static android.content.ContentValues.TAG;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.test.espresso.action.ViewActions;
@@ -39,6 +44,10 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 
+import static androidx.test.espresso.Espresso.onData;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.is;
+
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class RegisterUserTest {
@@ -65,12 +74,19 @@ public class RegisterUserTest {
 
     @Before
     public void seedDatabase() throws InterruptedException {
+
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        SharedPreferences prefs = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        prefs.edit()
+                .putString("username", "User1")
+                .apply();
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference usersRef = db.collection("User");
 
         Users[] user_data = {
-                new Users("User1", "Password1", "user1@gmail.com", "This is my bio.", ""),
-                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio","")
+                new Users("User1", "Password1", "user1@gmail.com", "This is my bio."),
+                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio")
         };
 
         for (Users user : user_data) {
@@ -105,6 +121,17 @@ public class RegisterUserTest {
 
         Thread.sleep(2000);
 
+
+    }
+
+    @Before
+    public void clearPrefs() throws InterruptedException {
+        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+                .edit()
+                .clear()
+                .apply();
+        Thread.sleep(2000);
     }
 
 
@@ -139,19 +166,42 @@ public class RegisterUserTest {
         onView(withId(R.id.button4)).perform(click());
 
         onView(withId(R.id.sign_up_id)).check(matches(isDisplayed()));
-        onView(withId(R.id.sign_up_name_text)).perform(ViewActions.typeText("bruh"));
-        onView(withId(R.id.sign_up_email_text)).perform(ViewActions.typeText("bruh@gmail.com"));
-        onView(withId(R.id.sign_up_phone_number_text)).perform(ViewActions.typeText("1234567890"));
+        onView(withId(R.id.sign_up_name_text)).perform(ViewActions.typeText("bruh")).perform(closeSoftKeyboard());
+        onView(withId(R.id.sign_up_email_text)).perform(ViewActions.typeText("testinggggggg@gmail.com")).perform(closeSoftKeyboard());
+        onView(withId(R.id.sign_up_phone_number_text)).perform(ViewActions.typeText("1234567890")).perform(closeSoftKeyboard());
         onView(withId(R.id.sign_up_done)).perform(click());
 
         onView(withId(R.id.sign_up_id_2)).check(matches(isDisplayed()));
-        onView(withId(R.id.sign_up_username_text)).perform(ViewActions.typeText("bruh"));
-        onView(withId(R.id.sign_up_password_text)).perform(ViewActions.typeText("password"));
+        onView(withId(R.id.sign_up_username_text)).perform(ViewActions.typeText("bruh")).perform(closeSoftKeyboard());
+        onView(withId(R.id.sign_up_password_text)).perform(ViewActions.typeText("password")).perform(closeSoftKeyboard());
         onView(withId(R.id.sign_up_done)).perform(click());
 
-        onView(withId(R.id.sign_up_id_2)).check(matches(isDisplayed()));
+        onView(withId(R.id.birthday)).check(matches(isDisplayed()));
+        onView(withId(R.id.editTextDate)).perform(ViewActions.typeText("26/02/2005")).perform(closeSoftKeyboard());
+        onView(withId(R.id.next_button_bday)).perform(click());
 
+//
+        onView(withId(R.id.activities)).check(matches(isDisplayed()));
+        onView(isRoot()).perform(closeSoftKeyboard());
+        onView(withId(R.id.music_button))
+                .perform(scrollTo(), click());
+        onView(withId(R.id.art_button))
+                .perform(scrollTo(), click());
+        onView(withId(R.id.next_button_activities))
+                .perform(scrollTo(), click());
 
+        onView(withId(R.id.remindermood)).check(matches(isDisplayed()));
+        onView(withId(R.id.yes_remindermood)).perform(click());
+
+        onView(withId(R.id.mood_recurrence)).check(matches(isDisplayed()));
+        onView(withId(R.id.mood_frequency)).perform(click());
+        onData(allOf(
+                is(instanceOf(String.class)),
+                is("Daily")
+        )).perform(click());
+        onView(withId(R.id.next_button)).perform(click());
+        Thread.sleep(5000);
+        onView(withId(R.id.test4)).check(matches(isDisplayed()));
     }
 
 
