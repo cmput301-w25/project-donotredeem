@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:fontFamily="@font/jaldi_bold"
-        android:text="REQUESTS"
+        android:text="@string/requests"
         android:textColor="#FAF5F5"
         android:textSize="48sp"
         app:layout_constraintEnd_toEndOf="parent"

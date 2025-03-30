@@ -9,6 +9,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/intro_happy"
         android:layout_height="200dp"
         android:layout_width="200dp"
@@ -20,6 +21,7 @@
 
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/intro_sad"
         android:layout_height="200dp"
         android:layout_width="200dp"
@@ -30,6 +32,7 @@
         android:layout_marginTop="-200dp"/>
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/intro_confused"
         android:layout_height="200dp"
         android:layout_width="200dp"
@@ -40,6 +43,7 @@
         android:layout_marginTop="-200dp"/>
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/intro_shameful"
         android:layout_height="200dp"
         android:layout_width="200dp"
@@ -50,6 +54,7 @@
         android:layout_marginTop="-200dp"/>
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/intro_shy"
         android:layout_height="200dp"
         android:layout_width="200dp"
@@ -60,6 +65,7 @@
         android:layout_marginTop="-200dp"/>
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/intro_disgusted"
         android:layout_height="200dp"
         android:layout_width="200dp"
@@ -70,6 +76,7 @@
         android:layout_marginTop="-200dp"/>
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/intro_angry"
         android:layout_height="200dp"
         android:layout_width="200dp"
@@ -80,6 +87,7 @@
         android:layout_marginTop="-200dp"/>
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/intro_fear"
         android:layout_height="200dp"
         android:layout_width="200dp"
@@ -90,6 +98,7 @@
         android:layout_marginTop="-200dp"/>
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/intro_surprised"
         android:layout_height="200dp"
         android:layout_width="200dp"
@@ -100,6 +109,7 @@
         android:layout_marginTop="-200dp"/>
 
     <ImageView
+        tools:ignore="contentDescription"
         android:id="@+id/intro_tired"
         android:layout_height="200dp"
         android:layout_width="200dp"
@@ -116,7 +126,7 @@
         android:layout_marginTop="100dp"
         android:fontFamily="@font/jomolhari"
         app:layout_constraintTop_toTopOf="parent"
-        android:text="feelin'"
+        android:text="@string/feelin"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:textColor="#F5E6D3"

@@ -12,5 +12,5 @@
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="8dp"
         android:src="@drawable/ic_edit"
-        android:contentDescription="edit" />
+        android:contentDescription="@string/edit" />
 </FrameLayout>

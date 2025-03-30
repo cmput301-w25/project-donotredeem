@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -104,7 +105,7 @@
         android:background="@android:drawable/editbox_background"
         android:ems="10"
         android:inputType="text"
-        android:hint="Email"
+        android:hint="@string/email_small"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_password" />
@@ -114,10 +115,11 @@
         android:layout_width="311dp"
         android:layout_height="48dp"
         android:layout_marginTop="5dp"
+        android:autofillHints=""
         android:background="@android:drawable/editbox_background"
         android:ems="10"
         android:inputType="text"
-        android:hint="Phone number"
+        android:hint="@string/phone_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sign_up_phone_number" />

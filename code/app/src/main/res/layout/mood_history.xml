@@ -21,6 +21,7 @@
         >
 
         <ImageView
+            tools:ignore="contentDescription"
             android:id="@+id/cancel_history"
             android:layout_width="35dp"
             android:layout_height="35dp"
@@ -40,7 +41,7 @@
             android:layout_height="60dp"
             android:layout_marginTop="4dp"
             android:paddingTop="20dp"
-            android:text="MOOD HISTORY"
+            android:text="@string/mood_history"
             android:textAlignment="center"
             android:textColor="#F5E6D3"
             android:textSize="32sp"
@@ -57,7 +58,7 @@
             android:layout_marginTop="15dp"
             android:backgroundTint="#F5E6D3"
             android:baselineAlignBottom="true"
-            android:contentDescription="Filter button"
+            android:contentDescription="@string/filter_button"
             android:scaleType="centerInside"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

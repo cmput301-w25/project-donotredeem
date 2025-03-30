@@ -8,15 +8,14 @@
     android:id="@+id/drawer_layout"
     android:background="#222121">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rootView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        >
+        android:fitsSystemWindows="true">
 
         <ImageView
+            tools:ignore="contentDescription"
             android:id="@+id/side_panel_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -25,7 +24,7 @@
             android:src="@drawable/menu"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#F5E6D3" />
+            app:tint="#F5E6D3"/>
 
         <TextView
             android:id="@+id/profile_heading"
@@ -34,12 +33,12 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/jomolhari"
-            android:text="Profile"
+            android:text="@string/profile"
             android:textColor="#F5E6D3"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/user_icon"
@@ -51,8 +50,7 @@
             app:tint="#F5E6D3"
             app:civ_border_width="3dp"
             app:civ_border_color="#000"
-            app:srcCompat="@drawable/user" />
-
+            app:srcCompat="@drawable/user"/>
 
         <LinearLayout
             android:id="@+id/profile_details"
@@ -91,7 +89,7 @@
                         android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Follower"
+                        android:text="@string/follower"
                         android:textColor="#F5E6D3"
                         android:fontFamily="@font/jomolhari"/>
 
@@ -115,7 +113,7 @@
                         android:id="@+id/textView01"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Following"
+                        android:text="@string/following"
                         android:textColor="#F5E6D3"
                         android:fontFamily="@font/jomolhari"/>
 
@@ -139,7 +137,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/jomolhari"
-                        android:text="Moods"
+                        android:text="@string/moods"
                         android:textColor="#F5E6D3" />
 
                     <TextView
@@ -165,15 +163,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/jomolhari"
-            android:text="Recents"
+            android:text="@string/recents"
             android:textColor="#F5E6D3"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/user_icon"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
-
-            />
+            android:layout_marginTop="30dp"/>
 
         <ListView
             android:id="@+id/recent_history"
@@ -181,7 +177,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             app:layout_constraintTop_toBottomOf="@id/recent_moods"
-            tools:layout_editor_absoluteX="-39dp" />
+            tools:layout_editor_absoluteX="-39dp"/>
 
 
 <!--        <FrameLayout-->
@@ -195,8 +191,7 @@
         <FrameLayout
             android:id="@+id/profile_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="match_parent"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

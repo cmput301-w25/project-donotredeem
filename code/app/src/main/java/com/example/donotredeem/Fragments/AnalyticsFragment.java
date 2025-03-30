@@ -7,12 +7,14 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +46,8 @@ public class AnalyticsFragment extends Fragment implements CalendarAdapter.OnIte
     private RecyclerView calendarRecyclerView;
     private LineChart moodChart;
     private LocalDate selectedDate;
+
+    private ImageView back_button;
     private Map<String, Integer> dateEmojiMap = new HashMap<>();
     private Map<String, Integer> emotionCountMap = new HashMap<>();
     private List<String> emotionOrder = new ArrayList<>();
@@ -56,6 +60,12 @@ public class AnalyticsFragment extends Fragment implements CalendarAdapter.OnIte
         selectedDate = LocalDate.now();
         setupChart();
         loadMoodDataForMonth(selectedDate);
+
+        back_button = view.findViewById(R.id.analytics_back_button);
+        back_button.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.popBackStack();
+        });
         return view;
     }
 
