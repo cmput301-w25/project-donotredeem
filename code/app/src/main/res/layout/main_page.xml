@@ -409,6 +409,7 @@
         app:layout_constraintHorizontal_bias="0.957"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:tint="@color/white"
         app:srcCompat="@drawable/searchiconnobg" />
 
     <!--    <Button-->
