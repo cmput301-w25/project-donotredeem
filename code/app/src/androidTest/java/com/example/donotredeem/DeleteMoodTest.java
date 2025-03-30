@@ -87,8 +87,8 @@ public class DeleteMoodTest {
         CollectionReference usersRef = db.collection("User");
 
         Users[] user_data = {
-                new Users("User1", "Password1", "user1@gmail.com", "This is my bio.", ""),
-                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio", "")
+                new Users("User1", "Password1", "user1@gmail.com", "This is my bio."),
+                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio")
         };
 
         for (Users user : user_data) {

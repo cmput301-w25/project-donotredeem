@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#222121"
+        android:id="@+id/following_card_small"
         android:padding="12dp">
 
         <de.hdodenhof.circleimageview.CircleImageView

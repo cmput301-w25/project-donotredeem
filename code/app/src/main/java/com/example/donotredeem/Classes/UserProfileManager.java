@@ -2,6 +2,8 @@ package com.example.donotredeem.Classes;
 
 import android.util.Log;
 
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
@@ -9,6 +11,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,10 +108,14 @@ public class UserProfileManager {
         String email = document.getString("email");
         String bio = document.getString("bio");
         String pfp = document.getString("pfp");
+        String dob = document.getString("birthDate");
+        String contact = document.getString("phone");
         return new Users(
                 username,
                 password,
                 email,
+                dob,
+                contact,
                 bio,
                 pfp
         );
@@ -192,6 +199,8 @@ public class UserProfileManager {
         updates.put("username", updatedUser.getUsername());
         updates.put("password", updatedUser.getPassword());
         updates.put("email", updatedUser.getEmail());
+        updates.put("birthDate", updatedUser.getBirthdayDate());
+        updates.put("phone", updatedUser.getContact());
         updates.put("bio", updatedUser.getBio());
         updates.put("pfp", updatedUser.getProfilePictureUrl());
 
@@ -280,5 +289,55 @@ public class UserProfileManager {
             }
         }
         return 0; // Default for unknown types
+    }
+
+    public void deleteUser(String username, OnDeleteListener listener) {
+        // 1. Get user document to access moodRefs
+        db.collection("User").document(username)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!documentSnapshot.exists()) {
+                        listener.onError(new Exception("User not found"));
+                        return;
+                    }
+
+                    // 2. Get all mood references
+                    List<DocumentReference> moodRefs = (List<DocumentReference>) documentSnapshot.get("MoodRef");
+                    if (moodRefs == null || moodRefs.isEmpty()) {
+                        // No moods to delete - proceed with user deletion
+                        deleteUserDocument(username, listener);
+                        return;
+                    }
+
+                    // 3. Delete all mood documents first
+                    List<Task<Void>> deleteTasks = new ArrayList<>();
+                    for (DocumentReference moodRef : moodRefs) {
+                        deleteTasks.add(moodRef.delete());
+                    }
+
+                    // 4. Wait for all mood deletions to complete
+                    Tasks.whenAll(deleteTasks)
+                            .addOnSuccessListener(aVoid -> {
+                                // 5. Delete user document after moods are deleted
+                                deleteUserDocument(username, listener);
+                            })
+                            .addOnFailureListener(e -> {
+                                listener.onError(new Exception("Failed to delete moods", e));
+                            });
+                })
+                .addOnFailureListener(e -> listener.onError(e));
+    }
+
+    private void deleteUserDocument(String username, OnDeleteListener listener) {
+        db.collection("User").document(username)
+                .delete()
+                .addOnSuccessListener(aVoid -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onError(e));
+    }
+
+    // Add this interface to your existing listener interfaces
+    public interface OnDeleteListener {
+        void onSuccess();
+        void onError(Exception e);
     }
 }
