@@ -12,8 +12,6 @@ import android.util.Log;
 
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.donotredeem.Classes.Users;
@@ -26,11 +24,8 @@ import com.google.firebase.firestore.GeoPoint;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -39,10 +34,9 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 
-@RunWith(AndroidJUnit4.class)
-@LargeTest
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class RequestTest {
+public class FollowTest {
+    //follow a person button
+    //follow list me person
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
@@ -88,9 +82,7 @@ public class RequestTest {
         DocumentReference moodEventRef1 = db.collection("MoodEvents").document(moodEventId1);
         moodEventRef1.set(moodEvent1);
 
-
         String moodEventId2 = UUID.randomUUID().toString();
-
         GeoPoint location2 = new GeoPoint(53.5264, -113.5241);
         MoodEvent moodEvent2 = new MoodEvent(location2, "User1", true, moodEventId2, "Angry", "03/08/2025",
                 "15:00", "Library", "Alone", "Loud noise", "Annoyed by the noise", "");
@@ -104,9 +96,19 @@ public class RequestTest {
                 .addOnSuccessListener(aVoid -> Log.d(TAG, "User document updated with mood events"))
                 .addOnFailureListener(e -> Log.e(TAG, "Failed to update user document", e));
 
-        Thread.sleep(2000);
 
+        DocumentReference user2DocRef = db.collection("User").document("User2");
+        user2DocRef.update("following_list", FieldValue.arrayUnion("User1"))
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "User2 is now following User1"))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to update User2's following list", e));
+
+        userDocRef.update("follower_list", FieldValue.arrayUnion("User2"))
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "User1 gained a new follower: User2"))
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to update User1's follower list", e));
+
+        Thread.sleep(2000);
     }
+
 
 
     @After
@@ -134,67 +136,111 @@ public class RequestTest {
     }
 
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
-        onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
-        onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
+        onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User2"));
+        onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password2"));
 
         onView(withId(R.id.btnLogin)).perform(click());
         Thread.sleep(5000);
         onView(withId(R.id.skip_button)).perform(click());
         onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
-        Thread.sleep(5000);
-
-    }
-    @Test
-    public void RequestingFromUser1() throws InterruptedException {
-        ManualLoginCauseIDKMocking();
-        SearchingUser();
-        onView(withId(R.id.button6)).check(matches(withText("Follow")));
-        onView(withId(R.id.button6)).perform(click());
-        onView(withId(R.id.button6)).check(matches(withText("Requested")));
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        DocumentReference user2DocRef = db.collection("User").document("User2");
-
-        user2DocRef.update("requests", FieldValue.arrayUnion("User1"))
-                .addOnSuccessListener(aVoid -> Log.d("Test", "User1 request successfully stored"))
-                .addOnFailureListener(e -> Log.e("Test", "Failed to update requisition", e));
-
         Thread.sleep(2000);
 
-        log_in_log_out_transitions();
-        onView(withId(R.id.heart_button)).perform(click());
+    }
+
+    @Test
+    public void User2FollowingUser1FragmentCheck() throws InterruptedException {
+        ManualLoginCauseIDKMocking();
+        onView(withId(R.id.profilepage)).perform(click());
+        Thread.sleep(5000);
+        onView(withId(R.id.textView02)).perform(click());
+        Thread.sleep(5000);
+        onView(withId(R.id.follower_card)).check(matches(isDisplayed()));
+        onView(withId(R.id.following_card_small)).check(matches(isDisplayed()));
         Thread.sleep(1000);
-        onView(withId(R.id.request_card)).check(matches(isDisplayed()));
+        onView(withId(R.id.follower)).check(matches(withText("User1")));
+        LogoutFromUser();
+    }
+
+    @Test
+    public void User2FollowingUser1SearchButtonCheck() throws InterruptedException {
+        ManualLoginCauseIDKMocking();
+        SearchingUser();
+        onView(withId(R.id.search_bar)).perform(ViewActions.typeText("User1"));
+        Thread.sleep(1000);
+        onView(withId(R.id.card_user)).perform(click());
+
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.textView2)).check(matches(withText("User1")));
+        Thread.sleep(1000);
+        onView(withId(R.id.button6)).check(matches(withText("Following")));
+        LogoutFromUser();
 
     }
 
-
-    public void log_in_log_out_transitions() throws InterruptedException {
-        LogoutFromUser1();
-        Thread.sleep(3000);
-        LogInToUser2();
-        Thread.sleep(3000);
-
-        onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
+    @Test
+    public void User1FollowedByUser2FragmentCheck() throws InterruptedException {
+        LogInUser1();
+        onView(withId(R.id.profilepage)).perform(click());
+        Thread.sleep(5000);
+        onView(withId(R.id.textView5)).perform(click());
+        Thread.sleep(5000);
+        onView(withId(R.id.follower_card)).check(matches(isDisplayed()));
+        onView(withId(R.id.following_card_small)).check(matches(isDisplayed()));
         Thread.sleep(1000);
+        onView(withId(R.id.follower)).check(matches(withText("User2")));
+        LogoutFromUser();
 
     }
 
-
-    public void SearchingUser() throws InterruptedException {
-        onView(withId(R.id.imageView4)).perform(click());
-        Thread.sleep(1000);
-        onView(withId(R.id.search)).check(matches(isDisplayed()));
-        onView(withId(R.id.search_bar)).perform(click());
+    @Test
+    public void User1FollowedByUser2SearchButtonCheck() throws InterruptedException {
+        LogInUser1();
+        SearchingUser();
         onView(withId(R.id.search_bar)).perform(ViewActions.typeText("User2"));
         Thread.sleep(1000);
         onView(withId(R.id.card_user)).perform(click());
 
         onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+
+        Thread.sleep(1000);
         onView(withId(R.id.textView2)).check(matches(withText("User2")));
+        Thread.sleep(1000);
+        onView(withId(R.id.button6)).check(matches(withText("Follow")));
+        LogoutFromUser();
 
     }
-    public void LogoutFromUser1() throws InterruptedException {
+
+    @Test
+    public void FollowerCount() throws InterruptedException {
+        LogInUser1();
+        onView(withId(R.id.profilepage)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.textView5)).check(matches(withText("1")));
+        Thread.sleep(1000);
+        LogoutFromUser();
+
+    }
+    @Test
+    public void FollowingCount() throws InterruptedException {
+        ManualLoginCauseIDKMocking();
+        onView(withId(R.id.profilepage)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.textView02)).check(matches(withText("1")));
+        Thread.sleep(1000);
+        LogoutFromUser();
+
+    }
+
+    public void SearchingUser() throws InterruptedException {
+
+        onView(withId(R.id.imageView4)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.search)).check(matches(isDisplayed()));
+        onView(withId(R.id.search_bar)).perform(click());
+
+    }
+
+    public void LogoutFromUser() throws InterruptedException {
 
         onView(withId(R.id.profilepage)).perform(click());
         Thread.sleep(1000);
@@ -207,15 +253,17 @@ public class RequestTest {
         onView(withId(R.id.Sign_out)).perform(click());
     }
 
-
-    public void LogInToUser2() throws InterruptedException {
-        onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User2"));
-        onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password2"));
+    public void LogInUser1() throws InterruptedException {
+        onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
+        onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
 
         onView(withId(R.id.btnLogin)).perform(click());
         Thread.sleep(5000);
         onView(withId(R.id.skip_button)).perform(click());
         onView(withId(R.id.main_activity)).check(matches(isDisplayed()));
-        Thread.sleep(5000);
+        Thread.sleep(2000);
+
     }
+
+
 }

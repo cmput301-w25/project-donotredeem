@@ -157,42 +157,6 @@ public class AddMoodEventTest {
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
     }
 
-//    @Test
-//    public void DateRequired() {
-//        onView(withId(R.id.add_button)).perform(click());
-//        onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
-//
-//        onView(withId(R.id.emoji_happy)).perform(click());
-//        onView(withId(R.id.desc)).perform(click());
-//        onView(withId(R.id.desc)).perform(ViewActions.typeText("I hate testing"));
-//
-//        onView(withId(R.id.button)).perform(scrollTo(), click());
-//
-//                onView(withText("Please select a date!"))
-//                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-//
-//    }
-//
-//    @Test
-//    public void TimeRequired() {
-//        onView(withId(R.id.add_button)).perform(click());
-//        onView(withId(R.id.add_mood)).check(matches(isDisplayed()));
-//
-//        onView(withId(R.id.emoji_happy)).perform(click());
-//        onView(withId(R.id.desc)).perform(click());
-//        onView(withId(R.id.desc)).perform(ViewActions.typeText("I hate testing"));
-//
-//        onView(withId(R.id.button)).perform(scrollTo(), click());
-//        onView(withId(R.id.dateButton)).perform(click());
-//
-//        onView(withId(R.id.button)).perform(scrollTo(), click());
-//
-//        onView(withText("Please select a time!"))
-//                .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
-//
-//
-//    }
-
     @Test
     public void DescriptionConstraints() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
