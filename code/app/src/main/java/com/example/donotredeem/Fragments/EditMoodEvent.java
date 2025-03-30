@@ -330,21 +330,6 @@ public class EditMoodEvent extends Fragment {
 
         }
 
-        description.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String input = s.toString().trim();
-                int wordCount = input.isEmpty() ? 0 : input.split("\\s+").length;
-                int charCount = input.length();
-                if (wordCount > 3 && charCount > 20) {
-                    description.setError("Max 3 words or less than 20 characters");
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable s) { }
-        });
 
         mediaUpload.setOnClickListener(v -> showSourceDialog());
 
