@@ -194,7 +194,7 @@ public class All_following_moods extends Fragment implements FilterFragment.Filt
 
                 moodsFetched[0]++;
 
-                if (moodsFetched[0] == moodRefs.size()) { // All moods for this user are fetched
+                if (moodsFetched[0] == moodRefs.size()) {
                     tempList.addAll(userMoodEvents);
                     fetchedCount[0]++;
 

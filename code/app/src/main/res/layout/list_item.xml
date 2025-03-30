@@ -13,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:background="#3E3D3D"
+        android:id="@+id/card_user"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="16dp">

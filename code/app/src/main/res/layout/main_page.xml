@@ -103,247 +103,247 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3">
 
-        <LinearLayout
-            android:id="@+id/linearLayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView11"
-            app:layout_constraintVertical_bias="0.0">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/linearLayout"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:padding="8dp"-->
+<!--            app:layout_constraintBottom_toBottomOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/textView11"-->
+<!--            app:layout_constraintVertical_bias="0.0">-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:orientation="vertical">-->
 
-                <ImageButton
-                    android:id="@+id/emoji_happy"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/hapi" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/emoji_happy"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:background="@null"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/hapi" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Happy"
-                    android:textColor="#F4F2F2"
-                    android:textSize="12sp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Happy"-->
+<!--                    android:textColor="#F4F2F2"-->
+<!--                    android:textSize="12sp" />-->
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:orientation="vertical">-->
 
-                <ImageButton
-                    android:id="@+id/emoji_sad"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/sad" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/emoji_sad"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:background="@null"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/sad" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sad"
-                    android:textColor="#F4F2F2"
-                    android:textSize="12sp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Sad"-->
+<!--                    android:textColor="#F4F2F2"-->
+<!--                    android:textSize="12sp" />-->
+<!--            </LinearLayout>-->
 
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:orientation="vertical">-->
 
-                <ImageButton
-                    android:id="@+id/emoji_fear"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/fear" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/emoji_fear"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:background="@null"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/fear" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Fear"
-                    android:textColor="#F4F2F2"
-                    android:textSize="12sp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Fear"-->
+<!--                    android:textColor="#F4F2F2"-->
+<!--                    android:textSize="12sp" />-->
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:orientation="vertical">-->
 
-                <ImageButton
-                    android:id="@+id/emoji_angry"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/angry" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/emoji_angry"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:background="@null"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/angry" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Angry"
-                    android:textColor="#F4F2F2"
-                    android:textSize="12sp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Angry"-->
+<!--                    android:textColor="#F4F2F2"-->
+<!--                    android:textSize="12sp" />-->
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:orientation="vertical">-->
 
-                <ImageButton
-                    android:id="@+id/emoji_confused"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/confused" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/emoji_confused"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:background="@null"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/confused" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Confused"
-                    android:textColor="#F4F2F2"
-                    android:textSize="12sp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Confused"-->
+<!--                    android:textColor="#F4F2F2"-->
+<!--                    android:textSize="12sp" />-->
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:orientation="vertical">-->
 
-                <ImageButton
-                    android:id="@+id/emoji_disgusted"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/disgust" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/emoji_disgusted"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:background="@null"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/disgust" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Disgusted"
-                    android:textColor="#F4F2F2"
-                    android:textSize="12sp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Disgusted"-->
+<!--                    android:textColor="#F4F2F2"-->
+<!--                    android:textSize="12sp" />-->
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:orientation="vertical">-->
 
-                <ImageButton
-                    android:id="@+id/emoji_shameful"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/shame" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/emoji_shameful"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:background="@null"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/shame" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Shameful"
-                    android:textColor="#F4F2F2"
-                    android:textSize="12sp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Shameful"-->
+<!--                    android:textColor="#F4F2F2"-->
+<!--                    android:textSize="12sp" />-->
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:orientation="vertical">-->
 
-                <ImageButton
-                    android:id="@+id/emoji_surprised"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/surprised" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/emoji_surprised"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:background="@null"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/surprised" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Surprised"
-                    android:textColor="#F4F2F2"
-                    android:textSize="12sp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Surprised"-->
+<!--                    android:textColor="#F4F2F2"-->
+<!--                    android:textSize="12sp" />-->
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:orientation="vertical">-->
 
-                <ImageButton
-                    android:id="@+id/emoji_shy"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/shy" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/emoji_shy"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:background="@null"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/shy" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Shy"
-                    android:textColor="#F4F2F2"
-                    android:textSize="12sp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Shy"-->
+<!--                    android:textColor="#F4F2F2"-->
+<!--                    android:textSize="12sp" />-->
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center_horizontal"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginStart="8dp"-->
+<!--                android:gravity="center_horizontal"-->
+<!--                android:orientation="vertical">-->
 
-                <ImageButton
-                    android:id="@+id/emoji_tired"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@null"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/tired" />
+<!--                <ImageButton-->
+<!--                    android:id="@+id/emoji_tired"-->
+<!--                    android:layout_width="50dp"-->
+<!--                    android:layout_height="50dp"-->
+<!--                    android:background="@null"-->
+<!--                    android:scaleType="fitCenter"-->
+<!--                    android:src="@drawable/tired" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Tired"
-                    android:textColor="#F4F2F2"
-                    android:textSize="12sp" />
-            </LinearLayout>
-        </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Tired"-->
+<!--                    android:textColor="#F4F2F2"-->
+<!--                    android:textSize="12sp" />-->
+<!--            </LinearLayout>-->
+<!--        </LinearLayout>-->
     </HorizontalScrollView>
 
     <TextView
@@ -352,7 +352,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
         android:fontFamily="@font/inter"
-        android:text="Current Mood"
+        android:text="Feelin'"
         android:textColor="#FAF8F8"
         android:textSize="34sp"
         android:textStyle="bold"
@@ -361,11 +361,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/advanced_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="176dp"
+        android:fontFamily="@font/inter"
+        android:text="Advance filter options"
+        android:textColor="#FAF8F8"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="20dp"
+        app:layout_goneMarginTop="5sp"/>
+
     <ListView
         android:id="@+id/main_listView"
         android:layout_width="match_parent"
         android:layout_height="641dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="110dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -373,30 +388,37 @@
 
     </ListView>
 
-    <Button
-        android:id="@+id/temp_sign_out"
+    <TextView
+        android:id="@+id/view_less_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="808dp"
-        android:text="Signout"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        android:text="View less moods"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.337"
-        app:layout_constraintStart_toEndOf="@+id/textView3"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toEndOf="@id/view_more_button"
+        app:layout_constraintTop_toBottomOf="@id/main_listView"
+        android:visibility="gone"/>
+
 
     <TextView
         android:id="@+id/view_more_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:clickable="true"
-        android:text="View More Moods"
+        android:text="View more moods"
         android:textColor="@color/white"
         android:textSize="20dp"
         android:textStyle="italic"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/view_less_button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/main_listView" />
 
