@@ -211,7 +211,6 @@ public class EditMoodEvent extends Fragment {
                 Status status = Autocomplete.getStatusFromIntent(result.getData());
                 Log.e("Autocomplete", "Error: " + status.getStatusMessage());
 
-
             }
 
         });
@@ -269,6 +268,9 @@ public class EditMoodEvent extends Fragment {
             String explainPicture = args.getString("explainPicture");
             Boolean privacy = args.getBoolean("privacy");
             double[] location = args.getDoubleArray("locationpts");
+            if (location != null && location.length == 2) {
+                selectedGeoPoint = new GeoPoint(location[0], location[1]);
+            }
 
             // For this example, assume selectedMoodName comes from emotionalState
             selectedMoodName = emotionalState;
@@ -391,6 +393,7 @@ public class EditMoodEvent extends Fragment {
                 location_button.setOnClickListener(v -> {
                 if (isSelected_loc[0]) {
                     locationEdit.setText("");
+                    selectedGeoPoint = null;
                     location_button.setChecked(false);
                 } else {
                     checkLocationPermission();

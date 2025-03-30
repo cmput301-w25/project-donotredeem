@@ -75,12 +75,6 @@ public class RegisterUserTest {
     @Before
     public void seedDatabase() throws InterruptedException {
 
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        SharedPreferences prefs = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-        prefs.edit()
-                .putString("username", "User1")
-                .apply();
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference usersRef = db.collection("User");
 
@@ -124,16 +118,6 @@ public class RegisterUserTest {
 
     }
 
-    @Before
-    public void clearPrefs() throws InterruptedException {
-        Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-        context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
-                .edit()
-                .clear()
-                .apply();
-        Thread.sleep(2000);
-    }
-
 
     @After
     public void tearDown() {
@@ -167,12 +151,12 @@ public class RegisterUserTest {
 
         onView(withId(R.id.sign_up_id)).check(matches(isDisplayed()));
         onView(withId(R.id.sign_up_name_text)).perform(ViewActions.typeText("bruh")).perform(closeSoftKeyboard());
-        onView(withId(R.id.sign_up_email_text)).perform(ViewActions.typeText("testinggggggg@gmail.com")).perform(closeSoftKeyboard());
+        onView(withId(R.id.sign_up_email_text)).perform(ViewActions.typeText("tissue@gmail.com")).perform(closeSoftKeyboard());
         onView(withId(R.id.sign_up_phone_number_text)).perform(ViewActions.typeText("1234567890")).perform(closeSoftKeyboard());
         onView(withId(R.id.sign_up_done)).perform(click());
 
         onView(withId(R.id.sign_up_id_2)).check(matches(isDisplayed()));
-        onView(withId(R.id.sign_up_username_text)).perform(ViewActions.typeText("bruh")).perform(closeSoftKeyboard());
+        onView(withId(R.id.sign_up_username_text)).perform(ViewActions.typeText("bruh123456789")).perform(closeSoftKeyboard());
         onView(withId(R.id.sign_up_password_text)).perform(ViewActions.typeText("password")).perform(closeSoftKeyboard());
         onView(withId(R.id.sign_up_done)).perform(click());
 

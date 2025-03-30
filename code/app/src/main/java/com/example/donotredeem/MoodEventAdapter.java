@@ -336,6 +336,11 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         args.putString("explainText", moodEvent.getExplainText());
         args.putString("explainPicture", moodEvent.getExplainPicture());
         args.putBoolean("privacy",moodEvent.getPrivacy());
+        if (moodEvent.getLocation() != null) {
+            args.putDoubleArray("locationpts", new double[]{
+                    moodEvent.getLocation().getLatitude(),
+                    moodEvent.getLocation().getLongitude()
+            });}
 
         editFragment.setArguments(args);
 

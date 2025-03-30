@@ -94,7 +94,7 @@ public class FilterMoodTest {
         String moodEventId2 = UUID.randomUUID().toString();
 
         GeoPoint location2 = new GeoPoint(53.5264, -113.5241);
-        MoodEvent moodEvent2 = new MoodEvent(location2, "User1", true, moodEventId2, "Angry", "29/03/2025",
+        MoodEvent moodEvent2 = new MoodEvent(location2, "User1", true, moodEventId2, "Angry", "30/03/2025",
                 "15:00", "Library", "Alone", "Loud noise", "Annoyed by the noise", "");
 
         DocumentReference moodEventRef2 = db.collection("MoodEvents").document(moodEventId2);
@@ -210,6 +210,7 @@ public class FilterMoodTest {
         onView(withId(R.id.profilepage)).check(matches(isDisplayed()));
         onView(withId(R.id.side_panel_button)).perform(click());
         Thread.sleep(1000);
+
         onView(withId(R.id.nav_history)).perform(click());
         onView(withId(R.id.mood_id)).check(matches(isDisplayed()));
         Thread.sleep(1000);
