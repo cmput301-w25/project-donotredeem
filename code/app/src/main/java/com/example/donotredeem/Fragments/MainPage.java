@@ -65,12 +65,6 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
 
     @Override
     public void filterMood(ArrayList<MoodEvent> filteredList) {
-//        displayedMoodList.clear();
-//        displayedMoodList.addAll(filteredList);
-//        Display(filteredList);
-//        main_page_adapter = new MainPageAdapter(getContext(), filteredList);
-//        Main_list.setAdapter(main_page_adapter);
-//        main_page_adapter.notifyDataSetChanged();
 
         displayedMoodList.clear();
         displayedMoodList.addAll(filteredList);
@@ -148,7 +142,8 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
 //            }
             loadCount += 5;
             displayedMoodList.clear();
-            fullMoodList.addAll(originalMoodList);
+//            fullMoodList.addAll(originalMoodList);
+            Log.d("fuck u", "fullMoodList:"+ fullMoodList.toString());
             end = Math.min(loadCount, fullMoodList.size());
             displayedMoodList.addAll(fullMoodList.subList(0, end));
             updateDisplayedMoods();
@@ -159,12 +154,13 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
             if (loadCount > 5) {
                 loadCount -= 5;
                 displayedMoodList.clear();
-                fullMoodList.addAll(originalMoodList);
+//                fullMoodList.addAll(originalMoodList);
                 end = Math.min(loadCount, fullMoodList.size());
                 displayedMoodList.addAll(fullMoodList.subList(0, end));
                 updateDisplayedMoods();
             }
         });
+
         displayedMoodList.clear();
         fullMoodList.addAll(originalMoodList);
         end = Math.min(loadCount, fullMoodList.size());
@@ -313,6 +309,7 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
                 moodsFetched[0]++;
 
                 if (moodsFetched[0] == moodRefs.size()) {
+                    tempList.clear();
                     tempList.addAll(userMoodEvents);
                     fetchedCount[0]++;
 
@@ -323,7 +320,6 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
             });
         }
     }
-    
 
 
     /**
@@ -361,11 +357,6 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
         Context context = getContext();
         if (context == null) return; // no null pointer crash
 
-        if(originalMoodList.isEmpty()){
-            originalMoodList.addAll(moodHistoryList);
-        }
-
-
         ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
         sortedList.sort((event1, event2) -> {
             try {
@@ -383,15 +374,27 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
                 return 0; // If any error occurs, return 0 (no change)
             }
         });
+
+        if (originalMoodList.isEmpty()){
+            originalMoodList.addAll(sortedList);
+            Log.d("fuck fuck u", "Display: original list from shuru " + originalMoodList.toString());
+        }
+
+
         Log.d("my tag", "sorted list: " + sortedList.toString());
         fullMoodList.clear();
         Log.d("my tag", "full mood list: " + fullMoodList.toString());
         fullMoodList.addAll(sortedList);
+        Log.d("fuck fuck u", "Display: original list from shuru " + fullMoodList.toString());
 
         displayedMoodList.clear();
-        fullMoodList.addAll(originalMoodList);
+//        fullMoodList.addAll(originalMoodList);
+        Log.d("fuck fuck u", "Display: full list from shuru " + fullMoodList.toString());
+
         end = Math.min(loadCount, fullMoodList.size());
         displayedMoodList.addAll(fullMoodList.subList(0, end));
+        Log.d("fuck fuck u", "Display: display list from shuru " + displayedMoodList.toString());
+
         updateDisplayedMoods();
     }
 
