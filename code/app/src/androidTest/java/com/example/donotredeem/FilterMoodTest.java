@@ -3,14 +3,15 @@ package com.example.donotredeem;
 import static android.content.ContentValues.TAG;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.Press.FINGER;
-import static androidx.test.espresso.action.Tap.SINGLE;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
+
+import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.not;
 
 import android.util.Log;
 
@@ -21,7 +22,6 @@ import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.donotredeem.Classes.Users;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -84,7 +84,7 @@ public class FilterMoodTest {
 
         String moodEventId1 = UUID.randomUUID().toString();
         GeoPoint location1 = new GeoPoint(53.5461, -113.4938);
-        MoodEvent moodEvent1 = new MoodEvent(location1, "User1", true, moodEventId1, "Happy", "03/08/2025",
+        MoodEvent moodEvent1 = new MoodEvent(location1, "User1", true, moodEventId1, "Happy", "03/02/2025",
                 "14:30", "University Campus", "Alone", "Saw a cute rabbit", "Hello description", "");
 
         DocumentReference moodEventRef1 = db.collection("MoodEvents").document(moodEventId1);
@@ -94,7 +94,7 @@ public class FilterMoodTest {
         String moodEventId2 = UUID.randomUUID().toString();
 
         GeoPoint location2 = new GeoPoint(53.5264, -113.5241);
-        MoodEvent moodEvent2 = new MoodEvent(location2, "User1", true, moodEventId2, "Angry", "03/08/2025",
+        MoodEvent moodEvent2 = new MoodEvent(location2, "User1", true, moodEventId2, "Angry", "29/03/2025",
                 "15:00", "Library", "Alone", "Loud noise", "Annoyed by the noise", "");
 
         DocumentReference moodEventRef2 = db.collection("MoodEvents").document(moodEventId2);
@@ -153,7 +153,7 @@ public class FilterMoodTest {
 
 
     @Test
-    public void FilterTest() throws InterruptedException {
+    public void FilterTestEmojiOnly() throws InterruptedException {
         onView(withId(R.id.profilepage)).perform(click());
 
         Thread.sleep(1000);
@@ -171,23 +171,170 @@ public class FilterMoodTest {
         onView(withId(R.id.filter_icon)).perform(ViewActions.click());
         Thread.sleep(1000);
 
-        onView(withId(R.id.filter_icon)).check((view, noViewFoundException) -> {
-            if (noViewFoundException != null) {
-                throw noViewFoundException; // View is missing
-            }
 
-            Log.d("EspressoTest", "Filter Icon Clickable: " + view.isClickable());
-        });
+        onView(withId(R.id.filter_emoji_happy)).check(matches(isDisplayed()));
+        onView(withId(R.id.filter_emoji_happy)).perform(ViewActions.click());
+        Thread.sleep(1000);
 
-//        onView(withId(R.id.filter_card)).check(matches(isDisplayed()));
-//        onView(withId(R.id.filter_emoji_happy)).perform(click());
-//        Thread.sleep(1000);
-//        onView(withId(R.id.done_filter_button)).perform(click());
-//        Thread.sleep(2000);
-//        onView(allOf(withId(R.id.Emotional_State), withText("Happy")))
-//                .check(matches(isDisplayed()));
-//        onView(withText("Angry")).check(doesNotExist());
-//        Thread.sleep(2000);
+
+        onView(withId(R.id.done_filter_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.done_filter_button)).perform(ViewActions.click());
+        Thread.sleep(1000);
+
+        onView(allOf(withId(R.id.Emotional_State), withText("Happy")))
+                .check(matches(isDisplayed()));
+        Thread.sleep(2000);
+
+        onView(withId(R.id.profilepage)).perform(click());
+
+        Thread.sleep(1000);
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+        onView(withId(R.id.profilepage)).check(matches(isDisplayed()));
+        onView(withId(R.id.side_panel_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.Sign_out)).perform(click());
+
+
+
+    }
+
+    @Test
+    public void FilterTestLastWeekOnly() throws InterruptedException {
+        onView(withId(R.id.profilepage)).perform(click());
+
+        Thread.sleep(1000);
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+
+        onView(withId(R.id.profilepage)).check(matches(isDisplayed()));
+        onView(withId(R.id.side_panel_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.nav_history)).perform(click());
+        onView(withId(R.id.mood_id)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+        onView(withId(R.id.filter_icon)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.filter_icon)).perform(ViewActions.click());
+        Thread.sleep(1000);
+
+
+        onView(withId(R.id.week_filter_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.week_filter_button)).perform(ViewActions.click());
+        Thread.sleep(1000);
+
+
+        onView(withId(R.id.done_filter_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.done_filter_button)).perform(ViewActions.click());
+        Thread.sleep(1000);
+
+        onView(allOf(withId(R.id.Emotional_State), withText("Angry")))
+                .check(matches(isDisplayed()));
+        Thread.sleep(2000);
+
+        onView(withId(R.id.profilepage)).perform(click());
+
+        Thread.sleep(1000);
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+        onView(withId(R.id.profilepage)).check(matches(isDisplayed()));
+        onView(withId(R.id.side_panel_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.Sign_out)).perform(click());
+
+    }
+
+    @Test
+    public void FilterTestWordSearchOnly() throws InterruptedException {
+        onView(withId(R.id.profilepage)).perform(click());
+
+        Thread.sleep(1000);
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+
+        onView(withId(R.id.profilepage)).check(matches(isDisplayed()));
+        onView(withId(R.id.side_panel_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.nav_history)).perform(click());
+        onView(withId(R.id.mood_id)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+        onView(withId(R.id.filter_icon)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.filter_icon)).perform(ViewActions.click());
+        Thread.sleep(1000);
+
+        onView(withId(R.id.desc)).check(matches(isDisplayed()));
+        onView(withId(R.id.desc)).perform(ViewActions.typeText("Hello"));
+        Thread.sleep(1000);
+
+        onView(withId(R.id.done_filter_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.done_filter_button)).perform(ViewActions.click());
+        Thread.sleep(1000);
+
+        onView(allOf(withId(R.id.Emotional_State), withText("Happy")))
+                .check(matches(isDisplayed()));
+        Thread.sleep(2000);
+
+        onView(withId(R.id.profilepage)).perform(click());
+
+        Thread.sleep(1000);
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+        onView(withId(R.id.profilepage)).check(matches(isDisplayed()));
+        onView(withId(R.id.side_panel_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.Sign_out)).perform(click());
+
+    }
+
+    @Test
+    public void FilterTestMultipleNoDisplay() throws InterruptedException {
+        onView(withId(R.id.profilepage)).perform(click());
+
+        Thread.sleep(1000);
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+
+        onView(withId(R.id.profilepage)).check(matches(isDisplayed()));
+        onView(withId(R.id.side_panel_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.nav_history)).perform(click());
+        onView(withId(R.id.mood_id)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+        onView(withId(R.id.filter_icon)).check(matches(isDisplayed()));
+
+        onView(withId(R.id.filter_icon)).perform(ViewActions.click());
+        Thread.sleep(1000);
+
+        onView(withId(R.id.week_filter_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.week_filter_button)).perform(ViewActions.click());
+        Thread.sleep(1000);
+
+        onView(withId(R.id.desc)).check(matches(isDisplayed()));
+        onView(withId(R.id.desc)).perform(ViewActions.typeText("Hello"));
+        Thread.sleep(1000);
+
+        onView(withId(R.id.done_filter_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.done_filter_button)).perform(ViewActions.click());
+        Thread.sleep(3000);
+
+
+        onView(allOf(withId(R.id.Emotional_State), withText("Happy")))
+                .check(doesNotExist());
+        onView(allOf(withId(R.id.Emotional_State), withText("Angry")))
+                .check(doesNotExist());
+        Thread.sleep(2000);
+
+        onView(withId(R.id.profilepage)).perform(click());
+
+        Thread.sleep(1000);
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        Thread.sleep(1000);
+        onView(withId(R.id.profilepage)).check(matches(isDisplayed()));
+        onView(withId(R.id.side_panel_button)).perform(click());
+        Thread.sleep(1000);
+        onView(withId(R.id.Sign_out)).perform(click());
+
     }
 
 
