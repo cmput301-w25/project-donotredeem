@@ -152,12 +152,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.donotredeem.Fragments.SearchedUser;
@@ -171,11 +173,19 @@ public class QRCodeFragment extends Fragment {
     private ActivityResultLauncher<String> requestPermissionLauncher;
     private SharedPreferences sharedPreferences;
     private String currentUsername;
+    ImageView back_button;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_qr_code, container, false);
+        View view =  inflater.inflate(R.layout.fragment_qr_code, container, false);
+        back_button = view.findViewById(R.id.qr_back);
+
+        back_button.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentManager.popBackStack();
+        });
+        return view;
     }
 
     @Override

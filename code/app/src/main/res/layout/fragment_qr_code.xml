@@ -9,17 +9,6 @@
     android:background="#222121">
 
     <!-- Close Button ('X') in the top-right corner -->
-    <ImageView
-        android:id="@+id/closeButton"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:padding="8dp"
-        android:src="@drawable/ic_close"
-        android:background="?android:attr/selectableItemBackground"
-        android:scaleType="centerInside"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_margin="16dp"/>
 
     <!-- QR Code ImageView centered -->
 
@@ -33,7 +22,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/closeButton" />
+        app:layout_constraintTop_toBottomOf="@+id/qr_back" />
 
     <Button
         android:id="@+id/scanButton"
@@ -49,11 +38,11 @@
         app:layout_constraintTop_toBottomOf="@id/qrCodeImage" />
 
     <ImageView
-        android:id="@+id/imageView10"
+        android:id="@+id/qr_back"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="40dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_arrow_back"
