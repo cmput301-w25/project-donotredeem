@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.donotredeem.Adapters.RequestAdapter;
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -24,7 +25,6 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Copy;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;

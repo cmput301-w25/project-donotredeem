@@ -15,8 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
-import com.example.donotredeem.MoodEvent;
-import com.example.donotredeem.MoodType;
+import com.example.donotredeem.Classes.MoodEvent;
+import com.example.donotredeem.Enumertions.MoodTypeEnum;
 import com.example.donotredeem.R;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -228,9 +228,9 @@ public class FilterFragment extends DialogFragment {
     private void highlightRestoredEmojis(View view) {
         for (int id : emojiButtonIds) {
             ImageButton emojiButton = view.findViewById(id);
-            MoodType moodType = getMoodForButtonId(id);
+            MoodTypeEnum moodTypeEnum = getMoodForButtonId(id);
 
-            if (moodType != null && selectedEmojiNames.contains(moodType.getMood())) {
+            if (moodTypeEnum != null && selectedEmojiNames.contains(moodTypeEnum.getMood())) {
                 emojiButton.setBackgroundResource(R.drawable.highlight_background);
                 emojiButton.setElevation(8);
             }
@@ -330,7 +330,7 @@ public class FilterFragment extends DialogFragment {
      */
     private void highlightSelectedEmoji(ImageButton selected) {
         int buttonId = selected.getId();
-        MoodType selectedMood = getMoodForButtonId(buttonId);
+        MoodTypeEnum selectedMood = getMoodForButtonId(buttonId);
 
         if (selectedMood == null) return;
 
@@ -354,11 +354,11 @@ public class FilterFragment extends DialogFragment {
      * @param buttonId Clicked view resource ID
      * @return Corresponding MoodType or null
      */
-    public MoodType getMoodForButtonId(int buttonId) {
+    public MoodTypeEnum getMoodForButtonId(int buttonId) {
 
         for (int i = 0; i < emojiButtonIds.length; i++) {
             if (emojiButtonIds[i] == buttonId) {
-                return MoodType.values()[i];
+                return MoodTypeEnum.values()[i];
             }
         }
         return null;

@@ -18,8 +18,9 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.donotredeem.Adapters.CalendarAdapter;
 import com.example.donotredeem.EmojiAxisRenderer;
-import com.example.donotredeem.MoodEvent;
+import com.example.donotredeem.Classes.MoodEvent;
 import com.example.donotredeem.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;

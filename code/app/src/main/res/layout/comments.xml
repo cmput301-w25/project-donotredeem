@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="#222121"
     android:padding="8dp"
-    tools:context=".CommentsFragment">
+    tools:context=".Fragments.CommentsFragment">
 
     <!-- Comment Input Section -->
     <androidx.constraintlayout.widget.ConstraintLayout

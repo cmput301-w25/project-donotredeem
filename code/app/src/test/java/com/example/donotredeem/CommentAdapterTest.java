@@ -11,6 +11,7 @@ import java.util.Date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import com.example.donotredeem.Classes.Comment;
 import com.google.firebase.Timestamp;
 
 /**

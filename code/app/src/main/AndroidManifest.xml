@@ -39,18 +39,18 @@
         </provider>
 
         <activity
-            android:name=".MoodSelectionActivity"
+            android:name=".Activities.MoodSelectionActivity"
             android:exported="true"> <!-- Changed from false -->
         </activity>
         <activity
-            android:name=".Register"
+            android:name=".Activities.RegisterActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".LogIn"
+            android:name=".Activities.LogInActivity"
             android:exported="true">
 <!--            <intent-filter>-->
 <!--                <action android:name="android.intent.action.MAIN" />-->
@@ -62,7 +62,7 @@
         </activity>
 
         <activity
-            android:name=".Fragments.IntroPage"
+            android:name=".Fragments.IntroPageFragment"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -74,7 +74,7 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:exported="true">
         </activity>
         <meta-data

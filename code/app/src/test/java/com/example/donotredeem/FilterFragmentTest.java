@@ -2,9 +2,9 @@ package com.example.donotredeem;
 
 import static org.junit.Assert.*;
 
+import com.example.donotredeem.Enumertions.MoodTypeEnum;
 import com.example.donotredeem.Fragments.FilterFragment;
-import com.example.donotredeem.MoodEvent;
-import com.example.donotredeem.MoodType;
+import com.example.donotredeem.Classes.MoodEvent;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.time.LocalDate;
-import java.util.regex.Pattern;
 
 /**
  * Unit tests for the {@link FilterFragment} class's filtering and mood mapping functionality.
@@ -119,8 +118,8 @@ public class FilterFragmentTest {
         field.setAccessible(true);
         field.set(fragment, testIds);
 
-        assertEquals(MoodType.Happy, fragment.getMoodForButtonId(1001));
-        assertEquals(MoodType.Sad, fragment.getMoodForButtonId(1002));
+        assertEquals(MoodTypeEnum.Happy, fragment.getMoodForButtonId(1001));
+        assertEquals(MoodTypeEnum.Sad, fragment.getMoodForButtonId(1002));
         assertNull(fragment.getMoodForButtonId(9999));
     }
 }

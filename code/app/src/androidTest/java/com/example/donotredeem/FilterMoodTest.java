@@ -20,6 +20,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.example.donotredeem.Activities.MainActivity;
+import com.example.donotredeem.Classes.MoodEvent;
 import com.example.donotredeem.Classes.User;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;

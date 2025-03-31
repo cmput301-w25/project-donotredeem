@@ -17,6 +17,8 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.example.donotredeem.Activities.MainActivity;
+import com.example.donotredeem.Classes.MoodEvent;
 import com.example.donotredeem.Classes.User;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;

@@ -14,7 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.Classes.User;
 import com.example.donotredeem.R;
-import com.example.donotredeem.RequestAdapter;
+import com.example.donotredeem.Adapters.RequestAdapter;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;

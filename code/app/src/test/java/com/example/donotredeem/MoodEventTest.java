@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
         import org.junit.Before;
 import org.junit.Test;
 
-import com.example.donotredeem.MoodEvent;
+import com.example.donotredeem.Classes.MoodEvent;
 import com.google.firebase.firestore.GeoPoint;
 
 /**

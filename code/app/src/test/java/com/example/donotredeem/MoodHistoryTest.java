@@ -2,7 +2,7 @@ package com.example.donotredeem;
 
 import static org.junit.Assert.*;
 
-import com.example.donotredeem.Fragments.moodhistory;
+import com.example.donotredeem.Fragments.MoodHistoryFragment;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 /**
- * Unit tests for date/time parsing functionality in the {@link moodhistory} fragment.
+ * Unit tests for date/time parsing functionality in the {@link MoodHistoryFragment} fragment.
  * Verifies correct conversion of string representations to {@link LocalDate} and {@link LocalTime} objects.
  *
  * <p>Test scenarios include:
@@ -26,14 +26,14 @@ import java.time.LocalTime;
 @RunWith(JUnit4.class)
 public class MoodHistoryTest {
 
-    private moodhistory fragment;
+    private MoodHistoryFragment fragment;
 
     /**
-     * Initializes a fresh {@link moodhistory} instance before each test method execution.
+     * Initializes a fresh {@link MoodHistoryFragment} instance before each test method execution.
      */
     @Before
     public void setUp() {
-        fragment = new moodhistory();
+        fragment = new MoodHistoryFragment();
     }
 
     /**

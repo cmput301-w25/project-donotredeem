@@ -9,6 +9,9 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+import com.example.donotredeem.Adapters.MoodEventAdapter;
+import com.example.donotredeem.Classes.MoodEvent;
+
 /**
  * Unit tests for the {@link MoodEventAdapter} focusing on data management and adapter operations
  * without Android UI components. Verifies proper handling of mood event data and list operations.

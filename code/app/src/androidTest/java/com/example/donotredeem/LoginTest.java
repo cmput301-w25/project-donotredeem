@@ -18,6 +18,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
+import com.example.donotredeem.Activities.LogInActivity;
 import com.example.donotredeem.Classes.User;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -52,7 +53,7 @@ public class LoginTest {
      * Launches the LogIn activity before each test.
      */
     @Rule
-    public ActivityScenarioRule<LogIn> scenario = new ActivityScenarioRule<>(LogIn.class);
+    public ActivityScenarioRule<LogInActivity> scenario = new ActivityScenarioRule<>(LogInActivity.class);
 
     /**
      * Sets up Firebase Firestore emulator for testing.
