@@ -10,8 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -34,36 +30,24 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.donotredeem.Classes.User;
 import com.example.donotredeem.Classes.UserProfileManager;
-import com.example.donotredeem.Classes.Users;
 import com.example.donotredeem.LogIn;
 import com.example.donotredeem.R;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
-import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
 import java.util.UUID;
 
 /**
@@ -94,7 +78,7 @@ public class EditProfile extends Fragment {
     private EditText date;
     private EditText contact;
     private Button delete;
-    Users userProfile = new Users();
+    User userProfile = new User();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -153,7 +137,7 @@ public class EditProfile extends Fragment {
         UserProfileManager userProfileManager = new UserProfileManager();
         userProfileManager.getUserProfile(username, new UserProfileManager.OnUserProfileFetchListener() {
             @Override
-            public boolean onUserProfileFetched(Users user) {
+            public boolean onUserProfileFetched(User user) {
                 setDetails(user);
                 userProfile = user;
                 return false;
@@ -265,7 +249,7 @@ public class EditProfile extends Fragment {
      *
      * @param user The user object containing profile details.
      */
-    public void setDetails(Users user){
+    public void setDetails(User user){
         editUsername.setText(user.getUsername());
         editPassword.setText(user.getPassword());
         editEmail.setText(user.getEmail());
@@ -354,7 +338,7 @@ public class EditProfile extends Fragment {
 
         return image;
     }
-    private void uploadImageAndSaveMood(Uri imageUri, Users u,  UserProfileManager up) {
+    private void uploadImageAndSaveMood(Uri imageUri, User u, UserProfileManager up) {
         String username = u.getUsername();
 
         String imageFileName = UUID.randomUUID().toString() + ".jpg";

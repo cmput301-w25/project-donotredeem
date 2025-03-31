@@ -10,8 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -21,16 +19,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
-import com.example.donotredeem.Classes.NetworkUtils;
-import com.example.donotredeem.Classes.UserProfileManager;
-import com.example.donotredeem.Classes.Users;
+import com.example.donotredeem.Classes.User;
 
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -39,8 +33,6 @@ import com.example.donotredeem.LogIn;
 import com.example.donotredeem.MainActivity;
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodEventAdapter;
-import com.example.donotredeem.MoodJarFragment;
-import com.example.donotredeem.QRCodeFragment;
 import com.example.donotredeem.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -399,7 +391,7 @@ public class ProfilePage extends Fragment {
                 List<DocumentReference> moodRefs = (List<DocumentReference>)
                         documentSnapshot.get("MoodRef");
 
-                Users user = new Users(
+                User user = new User(
                         documentSnapshot.getId(),
                         documentSnapshot.getString("bio"),
                         documentSnapshot.getString("pfp"),

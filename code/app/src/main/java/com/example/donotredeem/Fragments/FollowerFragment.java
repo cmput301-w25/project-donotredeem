@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.donotredeem.Classes.UserProfileManager;
-import com.example.donotredeem.Classes.Users;
+import com.example.donotredeem.Classes.User;
 import com.example.donotredeem.FollowerAdapter;
 import com.example.donotredeem.R;
 
@@ -73,7 +73,7 @@ public class FollowerFragment extends Fragment {
     private void loadRequests(String username) {
         userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
             @Override
-            public boolean onUserProfileFetched(Users user) {
+            public boolean onUserProfileFetched(User user) {
                 follower_list = user.getFollowerList();
 
                 if (follower_list != null && !follower_list.isEmpty()) {

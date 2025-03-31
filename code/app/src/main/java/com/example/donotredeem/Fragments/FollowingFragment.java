@@ -2,8 +2,6 @@ package com.example.donotredeem.Fragments;
 
 import static android.text.style.TtsSpan.ARG_USERNAME;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,8 +15,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.donotredeem.Classes.User;
 import com.example.donotredeem.Classes.UserProfileManager;
-import com.example.donotredeem.Classes.Users;
 import com.example.donotredeem.FollowerAdapter;
 import com.example.donotredeem.R;
 
@@ -75,7 +73,7 @@ public class FollowingFragment extends Fragment {
     private void loadRequests(String username) {
         userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
             @Override
-            public boolean onUserProfileFetched(Users user) {
+            public boolean onUserProfileFetched(User user) {
                 following_list = user.getFollowingList();
 
                 if (following_list != null && !following_list.isEmpty()) {

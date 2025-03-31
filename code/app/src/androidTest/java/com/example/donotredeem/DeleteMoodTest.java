@@ -4,14 +4,11 @@ import static android.content.ContentValues.TAG;
 
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.Press.FINGER;
-import static androidx.test.espresso.action.Tap.SINGLE;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static androidx.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -20,10 +17,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.anything;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
-import static org.junit.runners.MethodSorters.DEFAULT;
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.ListView;
 
@@ -35,8 +29,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.example.donotredeem.Classes.Users;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.donotredeem.Classes.User;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -86,12 +79,12 @@ public class DeleteMoodTest {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference usersRef = db.collection("User");
 
-        Users[] user_data = {
-                new Users("User1", "Password1", "user1@gmail.com", "This is my bio."),
-                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio")
+        User[] user_data = {
+                new User("User1", "Password1", "user1@gmail.com", "This is my bio."),
+                new User("User2", "Password2", "user2@gmail.com", "This is not my bio")
         };
 
-        for (Users user : user_data) {
+        for (User user : user_data) {
             usersRef.document(user.getUsername()).set(user);
         }
 

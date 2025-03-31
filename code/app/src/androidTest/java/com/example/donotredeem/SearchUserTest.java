@@ -14,7 +14,7 @@ import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import com.example.donotredeem.Classes.Users;
+import com.example.donotredeem.Classes.User;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
@@ -61,12 +61,12 @@ public class SearchUserTest {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference usersRef = db.collection("User");
 
-        Users[] user_data = {
-                new Users("User1", "Password1", "user1@gmail.com", "This is my bio."),
-                new Users("User2", "Password2", "user2@gmail.com", "This is not my bio")
+        User[] user_data = {
+                new User("User1", "Password1", "user1@gmail.com", "This is my bio."),
+                new User("User2", "Password2", "user2@gmail.com", "This is not my bio")
         };
 
-        for (Users user : user_data) {
+        for (User user : user_data) {
             usersRef.document(user.getUsername()).set(user);
         }
 

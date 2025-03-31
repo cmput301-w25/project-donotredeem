@@ -21,11 +21,10 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.donotredeem.Classes.User;
 import com.example.donotredeem.Classes.UserProfileManager;
-import com.example.donotredeem.Classes.Users;
 import com.example.donotredeem.MainPageAdapter;
 import com.example.donotredeem.MoodEvent;
-import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.R;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -165,7 +164,7 @@ public class SearchedUser extends Fragment {
                 // First check current follow status
                 userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
                     @Override
-                    public boolean onUserProfileFetched(Users targetUser) {
+                    public boolean onUserProfileFetched(User targetUser) {
                         if (targetUser != null) {
                             Log.d("MyTag", "heloooooooooooo.");
                             // Check if logged-in user is already following
@@ -361,7 +360,7 @@ private void fetchUserData(String username) {
             List<DocumentReference> moodRefs = (List<DocumentReference>)
                     documentSnapshot.get("MoodRef");
 
-            Users user = new Users(
+            User user = new User(
                     documentSnapshot.getId(),
                     documentSnapshot.getString("bio"),
                     documentSnapshot.getString("pfp"),
@@ -689,7 +688,7 @@ private void fetchUserData(String username) {
 
         userProfileManager.getUserProfileWithFollowers(targetUsername, new UserProfileManager.OnUserProfileFetchListener() {
             @Override
-            public boolean onUserProfileFetched(Users targetUser) {
+            public boolean onUserProfileFetched(User targetUser) {
                 if (targetUser != null && targetUser.getFollowerList() != null) {
                     boolean isFollowing = targetUser.getFollowerList().contains(loggedInUsername);
                     callback.onFollowCheck(isFollowing); // Return true/false via callback

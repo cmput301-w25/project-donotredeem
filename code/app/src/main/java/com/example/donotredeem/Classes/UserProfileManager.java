@@ -8,7 +8,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.auth.User;
 import com.google.firebase.storage.FirebaseStorage;
 
 import java.util.ArrayList;
@@ -17,36 +16,38 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * UserProfileManager
- *
- *      The <code>UserProfileManager</code> class provides methods for managing user profiles including adding, updating,
- *      deleting, and fetching user profiles in Firebase Firestore. It also provides methods for uploading, updating, and deleting
- *      user profile pictures in Firebase Storage.
- *
- * @author adityagupta
- * @see User
+ * Manages user profile operations including Firestore interactions for follow requests,
+ * profile updates, and user data retrieval.
  */
-
 public class UserProfileManager {
+    // Firestore database instance
     public FirebaseFirestore db;
+    // Firebase Storage instance for profile pictures
     public FirebaseStorage storage;
 
     /**
-     * Empty constructor for UserProfileManager
+     * Constructs a UserProfileManager with default Firestore and Storage instances.
      */
     public UserProfileManager(){
         // Initialize Firestore instance
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
     }
-    // Add to UserProfileManager class
 
+    /**
+     * Constructs a UserProfileManager with a custom Firestore instance (for testing).
+     * @param db Custom Firestore instance
+     */
     public UserProfileManager(FirebaseFirestore db) {
         this.db = db;
     }
 
-
-    // Add to UserProfileManager class
+    /**
+     * Accepts a follow request and updates both users' relationship data.
+     * @param currentUser The username of the user accepting the request
+     * @param requesterUsername The username of the user who sent the request
+     * @param listener Callback to handle operation success/failure
+     */
     public void acceptFollowRequest(String currentUser, String requesterUsername, OnUpdateListener listener) {
         // 1. Add requester to current user's followers
         db.collection("User").document(currentUser)
@@ -68,6 +69,12 @@ public class UserProfileManager {
                 .addOnFailureListener(e -> listener.onError(e));
     }
 
+    /**
+     * Declines a follow request from another user.
+     * @param currentUser The username of the user declining the request
+     * @param requesterUsername The username of the requester
+     * @param listener Callback to handle operation success/failure
+     */
     public void declineFollowRequest(String currentUser, String requesterUsername, OnUpdateListener listener) {
         db.collection("User").document(currentUser)
                 .update("requests", FieldValue.arrayRemove(requesterUsername))
@@ -101,11 +108,12 @@ public class UserProfileManager {
     }
 
     /**
-     * Creates a <code>Users</code> object from a Firestore document snapshot.
-     * @param document Firestore document snapshot containing user data.
-     * @return a new Users object populated with the data from the document.
+     * Creates a Users object from a Firestore document snapshot.
+     *
+     * @param document Firestore document snapshot containing user data
+     * @return Users object populated with Firestore data
      */
-    private Users createUserProfileFromDocument(DocumentSnapshot document) {
+    private User createUserProfileFromDocument(DocumentSnapshot document) {
         String username = document.getId();
         String password = document.getString("password");
         String email = document.getString("email");
@@ -113,7 +121,7 @@ public class UserProfileManager {
         String pfp = document.getString("pfp");
         String dob = document.getString("birthDate");
         String contact = document.getString("phone");
-        return new Users(
+        return new User(
                 username,
                 password,
                 email,
@@ -124,6 +132,12 @@ public class UserProfileManager {
         );
     }
 
+    /**
+     * Retrieves a user profile from Firestore.
+     *
+     * @param username Username of the user to fetch
+     * @param callback Callback to handle success or failure
+     */
     public void getUserProfile(String username, OnUserProfileFetchListener callback) {
         assert db != null;
         db.collection("User").document(username)
@@ -132,7 +146,7 @@ public class UserProfileManager {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-                            Users user = createUserProfileFromDocument(document);
+                            User user = createUserProfileFromDocument(document);
                             callback.onUserProfileFetched(user);
                         } else {
                             callback.onUserProfileFetched(null);
@@ -144,29 +158,11 @@ public class UserProfileManager {
     }
 
     /**
-     * Adds a user to the following list of another user.
-     */
-    public void addToFollowingList(String username, String targetUsername, OnUpdateListener listener) {
-        DocumentReference userRef = db.collection("User").document(username);
-        userRef.update("following_list", FieldValue.arrayUnion(targetUsername),
-                        "following", FieldValue.increment(1))
-                .addOnSuccessListener(aVoid -> listener.onSuccess())
-                .addOnFailureListener(listener::onError);
-    }
-
-    /**
-     * Adds a user to the followers list of another user.
-     */
-    public void addToFollowersList(String username, String targetUsername, OnUpdateListener listener) {
-        DocumentReference userRef = db.collection("User").document(username);
-        userRef.update("follower_list", FieldValue.arrayUnion(targetUsername),
-                        "followers", FieldValue.increment(1))
-                .addOnSuccessListener(aVoid -> listener.onSuccess())
-                .addOnFailureListener(listener::onError);
-    }
-
-    /**
      * Removes a user from the following list of another user.
+     *
+     * @param username       The username performing the action
+     * @param targetUsername The username being unfollowed
+     * @param listener       Callback to handle success or failure
      */
     public void removeFromFollowingList(String username, String targetUsername, OnUpdateListener listener) {
         DocumentReference userRef = db.collection("User").document(username);
@@ -178,6 +174,10 @@ public class UserProfileManager {
 
     /**
      * Removes a user from the followers list of another user.
+     *
+     * @param username       The username performing the action
+     * @param targetUsername The username being unfollowed
+     * @param listener       Callback to handle success or failure
      */
     public void removeFromFollowersList(String username, String targetUsername, OnUpdateListener listener) {
         DocumentReference userRef = db.collection("User").document(username);
@@ -194,7 +194,7 @@ public class UserProfileManager {
      * @param updatedUser the Users object to add to Firestore.
      * @param username the unique ID for the user.
      */
-    public void updateUser(Users updatedUser, String username) {
+    public void updateUser(User updatedUser, String username) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         // Creating a map of only the fields that need to be updated
@@ -218,19 +218,24 @@ public class UserProfileManager {
      * Interface for handling the result of fetching a user profile.
      */
     public interface OnUserProfileFetchListener {
-        boolean onUserProfileFetched(Users user);
+        boolean onUserProfileFetched(User user);
         void onUserProfileFetchError(Exception e);
     }
 
-
+    /**
+     * Interface for handling update operations.
+     */
     public interface OnUpdateListener{
         void onSuccess();
         void onError(Exception e);
     }
 
-
-
-
+    /**
+     * Retrieves a user profile along with their followers, following list, requests, and mood references.
+     *
+     * @param username The username of the user whose profile is being fetched.
+     * @param callback Callback to handle the result (success or failure).
+     */
     public void getUserProfileWithFollowers(String username, OnUserProfileFetchListener callback) {
         db.collection("User").document(username)
                 .get()
@@ -238,13 +243,6 @@ public class UserProfileManager {
                     if (task.isSuccessful()) {
                         DocumentSnapshot document = task.getResult();
                         if (document.exists()) {
-//                            // Get followers (handle both Long and String)
-//                            Object followersObj = document.get("followers");
-//                            int followerCount = parseFieldToInt(followersObj);
-
-//                            // Get following (handle both Long and String)
-//                            Object followingObj = document.get("following");
-//                            int followingCount = parseFieldToInt(followingObj);
 
                             // Extract other fields
                             String bio = document.getString("bio");
@@ -257,7 +255,7 @@ public class UserProfileManager {
                                     document.getLong("moods").intValue() : 0;
 
                             // Create Users object
-                            Users user = new Users(
+                            User user = new User(
                                     username,
                                     bio,
                                     pfp,
@@ -279,21 +277,13 @@ public class UserProfileManager {
                 });
     }
 
-    // Helper method to parse Long or String to int
-    private int parseFieldToInt(Object value) {
-        if (value instanceof Long) {
-            return ((Long) value).intValue(); // Handle Firestore numbers
-        } else if (value instanceof String) {
-            try {
-                return Integer.parseInt((String) value); // Parse strings
-            } catch (NumberFormatException e) {
-                Log.e("ParseError", "Invalid number format: " + value);
-                return 0;
-            }
-        }
-        return 0; // Default for unknown types
-    }
 
+    /**
+     * Deletes a user profile along with all associated mood references.
+     *
+     * @param username The username of the user to be deleted.
+     * @param listener Callback to handle success or failure.
+     */
     public void deleteUser(String username, OnDeleteListener listener) {
         // 1. Get user document to access moodRefs
         db.collection("User").document(username)
@@ -331,6 +321,12 @@ public class UserProfileManager {
                 .addOnFailureListener(e -> listener.onError(e));
     }
 
+    /**
+     * Deletes a user document from Firestore.
+     *
+     * @param username The username of the user to delete.
+     * @param listener Callback to handle success or failure.
+     */
     private void deleteUserDocument(String username, OnDeleteListener listener) {
         db.collection("User").document(username)
                 .delete()
@@ -338,7 +334,9 @@ public class UserProfileManager {
                 .addOnFailureListener(e -> listener.onError(e));
     }
 
-    // Add this interface to your existing listener interfaces
+    /**
+     * Interface for handling delete operations.
+     */
     public interface OnDeleteListener {
         void onSuccess();
         void onError(Exception e);

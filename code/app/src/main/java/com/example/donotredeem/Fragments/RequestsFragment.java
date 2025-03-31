@@ -8,12 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
 import com.example.donotredeem.Classes.UserProfileManager;
-import com.example.donotredeem.Classes.Users;
+import com.example.donotredeem.Classes.User;
 import com.example.donotredeem.R;
 import com.example.donotredeem.RequestAdapter;
 import com.google.firebase.firestore.DocumentReference;
@@ -86,7 +85,7 @@ public class RequestsFragment extends Fragment {
                 List<DocumentReference> moodRefs = (List<DocumentReference>)
                         documentSnapshot.get("MoodRef");
 
-                Users user = new Users(
+                User user = new User(
                         documentSnapshot.getId(),
                         documentSnapshot.getString("bio"),
                         documentSnapshot.getString("pfp"),
