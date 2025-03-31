@@ -225,7 +225,6 @@
             android:paddingStart="20dp">
 
         </com.github.mikephil.charting.charts.LineChart>
-        <!-- Add space for images -->
 
     </LinearLayout>
 

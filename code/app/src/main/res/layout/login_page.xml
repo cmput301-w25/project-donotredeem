@@ -124,63 +124,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
-<!--    <Button-->
-<!--        android:id="@+id/forgot_password"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="36dp"-->
-<!--        android:backgroundTint="#222121"-->
-<!--        android:text="@string/forgot_password"-->
-<!--        app:cornerRadius="5dp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.062"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/btnLogin" />-->
-
-<!--    <TextView-->
-<!--        android:id="@+id/Or"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="28dp"-->
-<!--        android:text="@string/or"-->
-<!--        android:textColor="#FFFFFF"-->
-<!--        android:textSize="24sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintHorizontal_bias="0.501"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/forgot_password" />-->
-
-<!--    <Button-->
-<!--        android:id="@+id/btnGoogle"-->
-<!--        android:layout_width="340dp"-->
-<!--        android:layout_height="60dp"-->
-<!--        android:layout_marginHorizontal="30dp"-->
-<!--        android:layout_marginTop="24dp"-->
-<!--        android:background="@null"-->
-<!--        android:backgroundTint="#FFFFFF"-->
-<!--        android:drawableStart="@drawable/ic_google"-->
-<!--        android:text="@string/continue_with_google"-->
-<!--        android:textColor="#000000"-->
-<!--        app:iconPadding="10dp"-->
-<!--        app:iconTint="#332727"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/btnFacebook" />-->
-
-<!--    <Button-->
-<!--        android:id="@+id/btnFacebook"-->
-<!--        android:layout_width="340dp"-->
-<!--        android:layout_height="60dp"-->
-<!--        android:layout_marginHorizontal="30dp"-->
-<!--        android:layout_marginTop="16dp"-->
-<!--        android:backgroundTint="#FFFFFF"-->
-<!--        android:drawableStart="@drawable/ic_facebook"-->
-<!--        android:text="@string/continue_with_facebook"-->
-<!--        android:textColor="#000000"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/Or" />-->
-
     <Button
         android:id="@+id/button4"
         android:layout_width="wrap_content"

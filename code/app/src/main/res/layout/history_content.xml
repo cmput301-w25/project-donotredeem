@@ -214,50 +214,6 @@
                                 android:textSize="14sp" />
                         </LinearLayout>
 
-                        <!--                        <LinearLayout-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:orientation="horizontal">-->
-
-                        <!--                            <TextView-->
-                        <!--                                android:id="@+id/Mood_Location"-->
-                        <!--                                android:layout_width="wrap_content"-->
-                        <!--                                android:layout_height="wrap_content"-->
-                        <!--                                android:text="Location: "-->
-                        <!--                                android:textSize="14sp"-->
-                        <!--                                android:textStyle="bold" />-->
-
-                        <!--                            <TextView-->
-                        <!--                                android:id="@+id/Specific_Location"-->
-                        <!--                                android:layout_width="wrap_content"-->
-                        <!--                                android:layout_height="wrap_content"-->
-                        <!--                                android:text="Lister Centre"-->
-                        <!--                                android:textSize="14sp"/>-->
-                        <!--                        </LinearLayout>-->
-
-
-                        <!--                        <LinearLayout-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:orientation="horizontal" >-->
-
-                        <!--                            <TextView-->
-                        <!--                                android:id="@+id/Mood_Trigger"-->
-                        <!--                                android:layout_width="wrap_content"-->
-                        <!--                                android:layout_height="wrap_content"-->
-                        <!--                                android:text="Trigger: "-->
-                        <!--                                android:textSize="14sp"-->
-                        <!--                                android:textStyle="bold" />-->
-
-                        <!--                            <TextView-->
-                        <!--                                android:id="@+id/Specific_Trigger"-->
-                        <!--                                android:layout_width="wrap_content"-->
-                        <!--                                android:layout_height="wrap_content"-->
-                        <!--                                android:text="A bad grade"-->
-                        <!--                                android:textSize="14sp"/>-->
-                        <!--                        </LinearLayout>-->
-
-
                     </LinearLayout>
 
                     <ImageView

@@ -22,7 +22,7 @@
             android:contentDescription="@string/Emptydec"
             android:id="@+id/closeButton"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="43dp"
             android:layout_marginTop="48dp"
             android:adjustViewBounds="true"
             android:backgroundTint="#222121"
@@ -82,7 +82,7 @@
         <EditText
             android:id="@+id/desc"
             android:layout_width="0dp"
-            android:layout_height="69dp"
+            android:layout_height="48dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="8dp"
             android:autofillHints=""
@@ -214,8 +214,8 @@
 
         <EditText
             android:id="@+id/date"
-            android:layout_width="353dp"
-            android:layout_height="69dp"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="4dp"
             android:autofillHints=""
@@ -231,8 +231,8 @@
         <ImageButton
             android:contentDescription="@string/Emptydec"
             android:id="@+id/calendarButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="26dp"
+            android:layout_height="27dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -260,7 +260,7 @@
         <EditText
             android:id="@+id/Time"
             android:layout_width="0dp"
-            android:layout_height="69dp"
+            android:layout_height="48dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="4dp"
             android:autofillHints=""
@@ -275,8 +275,8 @@
         <ImageButton
             android:contentDescription="@string/Emptydec"
             android:id="@+id/clockButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="26dp"
+            android:layout_height="27dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -301,7 +301,7 @@
         <EditText
             android:id="@+id/loc"
             android:layout_width="0dp"
-            android:layout_height="69dp"
+            android:layout_height="48dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="8dp"
             android:autofillHints=""
@@ -335,7 +335,7 @@
         <EditText
             android:id="@+id/reasoning"
             android:layout_width="0dp"
-            android:layout_height="69dp"
+            android:layout_height="48dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="8dp"
             android:autofillHints=""
