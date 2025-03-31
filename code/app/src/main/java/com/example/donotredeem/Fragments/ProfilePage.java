@@ -196,7 +196,7 @@ public class ProfilePage extends Fragment {
             );
 
             SidePanel sidePanelFragment = new SidePanel();
-            transaction.replace(R.id.profile_container, sidePanelFragment, "SidePanel");
+            transaction.add(R.id.profile_container, sidePanelFragment, "SidePanel");
             transaction.addToBackStack(null);
             transaction.commit();
         });

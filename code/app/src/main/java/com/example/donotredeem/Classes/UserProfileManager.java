@@ -29,7 +29,7 @@ import java.util.Map;
 
 public class UserProfileManager {
     public FirebaseFirestore db;
-    private FirebaseStorage storage;
+    public FirebaseStorage storage;
 
     /**
      * Empty constructor for UserProfileManager
@@ -41,6 +41,9 @@ public class UserProfileManager {
     }
     // Add to UserProfileManager class
 
+    public UserProfileManager(FirebaseFirestore db) {
+        this.db = db;
+    }
 
 
     // Add to UserProfileManager class
