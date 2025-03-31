@@ -135,44 +135,47 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="12dp"
-                    android:layout_marginTop="30dp"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        tools:ignore="contentDescription"
-                        android:id="@+id/timelineImage"
-                        android:layout_width="80dp"
-                        android:layout_marginTop="3dp"
-                        android:layout_height="80dp"
-                        android:layout_marginEnd="7dp"
-                        android:src="@drawable/cat" />
+                    android:layout_marginTop="30dp">
 
 
                     <!--In the java code, change the visibility when a mood event has a picture.-->
 
+                    <ImageView
+                        android:id="@+id/timelineImage"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginStart="4dp"
+                        android:src="@drawable/cat"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:ignore="contentDescription"
+                        tools:layout_editor_absoluteY="4dp" />
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_weight="1"
                         android:orientation="vertical"
-                        android:layout_weight="1">
+                        app:layout_constraintStart_toEndOf="@+id/timelineImage"
+                        tools:layout_editor_absoluteY="3dp">
 
                         <TextView
+                            android:id="@+id/Additional_details"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/Additional_details"
                             android:maxLength="20"
                             android:text="@string/desc_hist_cont"
-                            android:visibility="gone"
-                            android:textSize="14sp"/>
+                            android:textSize="14sp"
+                            android:visibility="gone" />
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/Mood_Date"
@@ -187,13 +190,13 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/_12_09_2013"
-                                android:textSize="14sp"/>
+                                android:textSize="14sp" />
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal" >
+                            android:orientation="horizontal">
 
                             <TextView
                                 android:id="@+id/Mood_Time"
@@ -208,59 +211,69 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="@string/time_hist_content"
-                                android:textSize="14sp"/>
+                                android:textSize="14sp" />
                         </LinearLayout>
 
-<!--                        <LinearLayout-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:orientation="horizontal">-->
+                        <!--                        <LinearLayout-->
+                        <!--                            android:layout_width="wrap_content"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:orientation="horizontal">-->
 
-<!--                            <TextView-->
-<!--                                android:id="@+id/Mood_Location"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:text="Location: "-->
-<!--                                android:textSize="14sp"-->
-<!--                                android:textStyle="bold" />-->
+                        <!--                            <TextView-->
+                        <!--                                android:id="@+id/Mood_Location"-->
+                        <!--                                android:layout_width="wrap_content"-->
+                        <!--                                android:layout_height="wrap_content"-->
+                        <!--                                android:text="Location: "-->
+                        <!--                                android:textSize="14sp"-->
+                        <!--                                android:textStyle="bold" />-->
 
-<!--                            <TextView-->
-<!--                                android:id="@+id/Specific_Location"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:text="Lister Centre"-->
-<!--                                android:textSize="14sp"/>-->
-<!--                        </LinearLayout>-->
+                        <!--                            <TextView-->
+                        <!--                                android:id="@+id/Specific_Location"-->
+                        <!--                                android:layout_width="wrap_content"-->
+                        <!--                                android:layout_height="wrap_content"-->
+                        <!--                                android:text="Lister Centre"-->
+                        <!--                                android:textSize="14sp"/>-->
+                        <!--                        </LinearLayout>-->
 
 
-<!--                        <LinearLayout-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:orientation="horizontal" >-->
+                        <!--                        <LinearLayout-->
+                        <!--                            android:layout_width="wrap_content"-->
+                        <!--                            android:layout_height="wrap_content"-->
+                        <!--                            android:orientation="horizontal" >-->
 
-<!--                            <TextView-->
-<!--                                android:id="@+id/Mood_Trigger"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:text="Trigger: "-->
-<!--                                android:textSize="14sp"-->
-<!--                                android:textStyle="bold" />-->
+                        <!--                            <TextView-->
+                        <!--                                android:id="@+id/Mood_Trigger"-->
+                        <!--                                android:layout_width="wrap_content"-->
+                        <!--                                android:layout_height="wrap_content"-->
+                        <!--                                android:text="Trigger: "-->
+                        <!--                                android:textSize="14sp"-->
+                        <!--                                android:textStyle="bold" />-->
 
-<!--                            <TextView-->
-<!--                                android:id="@+id/Specific_Trigger"-->
-<!--                                android:layout_width="wrap_content"-->
-<!--                                android:layout_height="wrap_content"-->
-<!--                                android:text="A bad grade"-->
-<!--                                android:textSize="14sp"/>-->
-<!--                        </LinearLayout>-->
-
+                        <!--                            <TextView-->
+                        <!--                                android:id="@+id/Specific_Trigger"-->
+                        <!--                                android:layout_width="wrap_content"-->
+                        <!--                                android:layout_height="wrap_content"-->
+                        <!--                                android:text="A bad grade"-->
+                        <!--                                android:textSize="14sp"/>-->
+                        <!--                        </LinearLayout>-->
 
 
                     </LinearLayout>
 
-                </LinearLayout>
+                    <ImageView
+                        android:id="@+id/imageView10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.978"
+                        app:layout_constraintStart_toEndOf="@+id/timelineImage"
+                        app:srcCompat="@drawable/ic_comment" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.cardview.widget.CardView>
+
         </FrameLayout>
 
 
