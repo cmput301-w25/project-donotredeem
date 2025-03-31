@@ -1,22 +1,16 @@
 package com.example.donotredeem.Fragments;
 
-import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
-
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.Manifest;
-import android.graphics.Bitmap;
 import android.location.Address;
 import android.location.Geocoder;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -29,17 +23,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.Spinner;
-import android.widget.Toast;
-import android.widget.ToggleButton;
+
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -50,8 +40,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+
 
 import com.example.donotredeem.Classes.NetworkUtils;
 import com.example.donotredeem.MoodEvent;
@@ -65,12 +54,9 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.OnFailureListener;
+
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
@@ -83,44 +69,47 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.firestore.FieldValue;
 
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
- * A Fragment that allows users to add a mood event, including selecting an emoji mood, social setting,
- * location, and uploading an image. The event details are saved to Firebase Firestore and Firebase Storage.
+ * A Fragment that allows users to add a mood event with various details including mood type, social setting,
+ * location, date/time, and image upload. Manages data synchronization with Firebase Firestore and Storage.
  */
 public class AddMoodEvent extends Fragment {
-
+    // UI Components
     private ImageView image;
     private EditText location;
     private GeoPoint selectedGeoPoint;
 
+    // Selection State
     private String selectedMoodName = null;
     private String selectedSocial = null;
 
+    // Permission Request Codes
     private static final int CAMERA_REQUEST = 100;
     private static final int GALLERY_REQUEST = 200;
     private static final int LOCATION_REQUEST = 300;
+
+    // UI State
     private ImageButton selectedEmoji = null;
     private ImageButton selectedSocialButton = null;
 
+    // Activity Result Handlers
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Intent> placeAutocompleteLauncher;
+
+    // Location Services
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
 
@@ -131,6 +120,9 @@ public class AddMoodEvent extends Fragment {
     private Uri imageUri;
     private View fragmentRoot;
 
+    /**
+     * Required empty public constructor for fragment instantiation
+     */
     public AddMoodEvent() {
         // Required empty public constructor
     }
@@ -145,15 +137,16 @@ public class AddMoodEvent extends Fragment {
     int[] socialButtonIds = {R.id.alone_social, R.id.pair_social, R.id.few_social, R.id.crowd_social};
 
     /**
-     * Initializes the fragment, sets up Firebase, and prepares image handling via camera and gallery.
-     * @param savedInstanceState Saved instance state bundle.
+     * Initializes fragment components and Firebase services. Sets up activity result handlers
+     * for camera, gallery, and location selection.
+     *
+     * @param savedInstanceState If non-null, fragment is being re-constructed from previous state
      */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (NetworkUtils.isNetworkAvailable(requireContext())) {
-//            Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
-//        }
+
+        // Initialize location services only if network is available
         Context context = getContext();
         if (context != null && NetworkUtils.isNetworkAvailable(context)) {
             Places.initialize(context, "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
@@ -167,9 +160,11 @@ public class AddMoodEvent extends Fragment {
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference().child("mood_images");
 
+        // Set up location client using fused provider
         // https://developer.android.com/develop/sensors-and-location/location/retrieve-current
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
+        // Configure camera result handler
         //the code below is taken from https://developer.android.com/media/camera/camera-deprecated/photobasics
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
@@ -180,11 +175,11 @@ public class AddMoodEvent extends Fragment {
                     imageUri = null;
                     return;
                 }
-
                 image.setImageURI(imageUri);
             }
         });
 
+        // Configure gallery result handler
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
                 imageUri = result.getData().getData();
@@ -198,68 +193,61 @@ public class AddMoodEvent extends Fragment {
                 } catch (IOException e) {
                     Log.e("GalleryError", "Error checking image size", e);
                 }
-
                 image.setImageURI(imageUri);
             }
         });
 
+        // Configure location autocomplete handler
         placeAutocompleteLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
 
                 Place place = Autocomplete.getPlaceFromIntent(result.getData());
 
                 if (place.getLatLng() != null) {
-
                     double latitude = place.getLatLng().latitude;
                     double longitude = place.getLatLng().longitude;
-
                     selectedGeoPoint = new GeoPoint(latitude, longitude);
-
                     location.setText(place.getName());
-
                     Log.d("Location", "Name: " + place.getName() + ", Lat: " + latitude + ", Lng: " + longitude);
                 }
-
             } else if (result.getResultCode() == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(result.getData());
                 Log.e("Autocomplete", "Error: " + status.getStatusMessage());
-
-
             }
-
         });
-
-
     }
 
     /**
-     * Creates a temporary image file to store captured images.
-     * @return The created image file.
-     * @throws IOException If file creation fails.
+     * Creates temporary image file for camera captures with timestamped filename
+     *
+     * @return Newly created image file in app-specific storage
+     * @throws IOException If file creation fails due to storage issues
      */
     private File createImageFile() throws IOException {
-
+        // Generate unique filename using timestamp
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
 
+        // Store in app-specific pictures directory
         File storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
+        // Generate content URI for FileProvider
         Log.d("ImageFile", "Image file created: " + image.getAbsolutePath());
-
         imageUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider", image);
         Log.d("ImageUri", "Image URI: " + imageUri.toString());
-
         return image;
     }
 
 
     /**
-     * Inflates the fragment's layout and sets up the user interface elements for mood event creation.
-     * @param inflater The LayoutInflater to inflate the fragment's view.
-     * @param container The parent view that the fragment's UI will be attached to.
-     * @param savedInstanceState Saved instance state bundle.
-     * @return The inflated view.
+     * Creates the fragment's view hierarchy and initializes UI components.
+     * Sets up click listeners and input validation for all form fields.
+     *
+     * @param inflater           LayoutInflater to inflate views
+     * @param container          Parent view group for attachment
+     * @param savedInstanceState Previous saved state
+     * @return Inflated view hierarchy
      */
     @Nullable
     @Override
@@ -284,29 +272,6 @@ public class AddMoodEvent extends Fragment {
             }
         }
 
-//        description.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                String input = s.toString().trim();
-//                int charCount = input.length();
-//
-//                if (charCount == 200) {
-//                    description.setError("Description should be equal to or less than 200 characters");
-//                }
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//
-//            }
-//        });
-
-
         EditText addTrigger = view.findViewById(R.id.reasoning);
         Button submit = view.findViewById(R.id.button);
 
@@ -318,23 +283,16 @@ public class AddMoodEvent extends Fragment {
 
         media_upload.setOnClickListener(v -> {
             showSourceDialog();
-
         });
 
         location = view.findViewById(R.id.loc);
 
-
-//        if (NetworkUtils.isNetworkAvailable(requireContext()))
         Context context = getContext();
         if (context != null && NetworkUtils.isNetworkAvailable(context)) {
             location.setOnClickListener(v -> {
                 location.requestFocus();
 
                 List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
-                //            Intent intent = new Autocomplete.IntentBuilder(
-                //                    AutocompleteActivityMode.OVERLAY, fields)
-                //                    .setTypeFilter(TypeFilter.ADDRESS) // Focuses on addresses (street names included)
-                //                    .build(requireActivity());
 
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(requireActivity());
                 placeAutocompleteLauncher.launch(intent);
@@ -348,7 +306,6 @@ public class AddMoodEvent extends Fragment {
 
         RadioButton location_button = view.findViewById(R.id.radioButton);
 
-//        if (NetworkUtils.isNetworkAvailable(requireContext()))
             if (context != null && NetworkUtils.isNetworkAvailable(context)) {
             final boolean[] isSelected_loc = {false};
 
@@ -368,26 +325,6 @@ public class AddMoodEvent extends Fragment {
                 Snackbar.make(getView(), "Can't add location, you are offline.", Snackbar.LENGTH_SHORT).show();
             });
         }
-
-//        location.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence s, int start, int before, int count) {
-////                if (s.length() > 0 && location_button.isChecked()) {
-////                    location_button.setChecked(false);
-////                    isSelected_loc[0] = false;
-////                }
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable s) {
-//            }
-//        });
-
 
         EditText date = view.findViewById(R.id.date);
         RadioButton date_button = view.findViewById(R.id.dateButton);
@@ -435,9 +372,7 @@ public class AddMoodEvent extends Fragment {
         });
         date.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -448,9 +383,7 @@ public class AddMoodEvent extends Fragment {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) { }
         });
 
 
@@ -529,9 +462,6 @@ public class AddMoodEvent extends Fragment {
             emojiButton.setOnClickListener(v -> highlightSelectedEmoji((ImageButton) v));
         }
 
-
-        //View fragmentRoot = view.findViewById(R.id.fragment_root);
-
         submit.setOnClickListener(v -> {
             String descText = description.getText().toString();
             String triggerText = addTrigger.getText().toString();
@@ -576,7 +506,6 @@ public class AddMoodEvent extends Fragment {
                 saveMoodToFirestore(privacy, descText, triggerText, dateText, locationText, null, selectedMoodName, selectedSocial, timeText);
             }
 
-//            if (!NetworkUtils.isNetworkAvailable(requireContext()))
             if (context != null && !NetworkUtils.isNetworkAvailable(context)) {
                 if (fragmentRoot != null) {
                     Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
@@ -601,27 +530,6 @@ public class AddMoodEvent extends Fragment {
                 }
             }
 
-//            Snackbar.make(getView(), "Mood event not saved!", Snackbar.LENGTH_LONG).show();
-
-//            if (fragmentRoot != null) {
-//                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-//                fragmentRoot.startAnimation(slideOut);
-//
-//                slideOut.setAnimationListener(new Animation.AnimationListener() {
-//                    @Override
-//                    public void onAnimationStart(Animation animation) {}
-//
-//                    @Override
-//                    public void onAnimationEnd(Animation animation) {
-//                        requireActivity().getSupportFragmentManager().popBackStack(); //go back to whatever it was bruh
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animation animation) {}
-//                });
-//            } else {
-//                //requireActivity().getSupportFragmentManager().popBackStack();
-//            }
         });
 
         ImageButton close = view.findViewById(R.id.closeButton);
@@ -711,8 +619,6 @@ public class AddMoodEvent extends Fragment {
 
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
-
-            //Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
             Snackbar.make(getView(), "Camera permission denied", Snackbar.LENGTH_SHORT).show();
 
         }
@@ -725,17 +631,11 @@ public class AddMoodEvent extends Fragment {
      */
     private void checkGalleryPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
-
             Intent galleryOpenIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             galleryLauncher.launch(galleryOpenIntent);
-
         } else {
-
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, GALLERY_REQUEST);
-
-            //Toast.makeText(requireContext(), "Gallery permission denied", Toast.LENGTH_SHORT).show();
             Snackbar.make(getView(), "Gallery permission denied", Snackbar.LENGTH_SHORT).show();
-
         }
     }
 
@@ -793,16 +693,17 @@ public class AddMoodEvent extends Fragment {
     }
 
     /**
-     * Uploads an image to Firebase Storage and saves mood event data to Firestore.
+     * Uploads image to Firebase Storage and persists mood data to Firestore
      *
-     * @param desc         Description of the mood event.
-     * @param trigger      Trigger for the mood event.
-     * @param date         Date of the mood event.
-     * @param locationText Location of the mood event.
-     * @param imageUri     URI of the image.
-     * @param mood         The mood associated with the event.
-     * @param social       Social situation associated with the event.
-     * @param time         Time of the mood event.
+     * @param privacy Visibility setting for the mood event
+     * @param desc User-provided description text
+     * @param trigger Mood trigger information
+     * @param date Event date in string format
+     * @param locationText Human-readable location string
+     * @param imageUri Storage URI for uploaded image
+     * @param mood Selected mood type identifier
+     * @param social Selected social situation label
+     * @param time Event time in string format
      */
     private void uploadImageAndSaveMood(Boolean privacy, String desc, String trigger,
                                         String date, String locationText, Uri imageUri,
@@ -824,48 +725,18 @@ public class AddMoodEvent extends Fragment {
 
 
     /**
-     * Saves the mood event data to Firestore.
+     * Persists mood event data to Firestore with optional image reference
      *
-     * @param desc         Description of the mood event.
-     * @param trigger      Trigger for the mood event.
-     * @param date         Date of the mood event.
-     * @param locationText Location of the mood event.
-     * @param imageUrl     URL of the uploaded image (can be null).
-     * @param mood         The mood associated with the event.
-     * @param social       Social situation associated with the event.
-     * @param time         Time of the mood event.
+     * @param privacy Event visibility flag
+     * @param desc Textual description of mood
+     * @param trigger Trigger context for mood
+     * @param date Formatted date string
+     * @param locationText Location description
+     * @param imageUrl Firebase Storage URL (nullable)
+     * @param mood Mood type identifier
+     * @param social Social context label
+     * @param time Formatted time string
      */
-//        private void saveMoodToFirestore(String desc, String trigger,
-//                                         String date, String locationText, String imageUrl,
-//                                         String mood, String social, String time) {
-//            // Generate a unique moodEventId
-//            String moodEventId = UUID.randomUUID().toString();
-//            DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
-//
-//            MoodEvent moodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
-//            moodEventRef.set(moodEvent)
-//                    .addOnSuccessListener(aVoid -> {
-//                        //Toast.makeText(getContext(), "Mood Event Saved!", Toast.LENGTH_SHORT).show();
-//                        //Snackbar.make(requireView(), "Mood Event Saved!", Snackbar.LENGTH_LONG).show();
-//
-//                        // Retrieve the logged-in username from SharedPreferences
-//                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-//                        String loggedInUsername = sharedPreferences.getString("username", null);
-//
-//                        if (loggedInUsername != null) {
-//                            DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
-//                            // Store the moodEventRef (DocumentReference) instead of a String
-//                            userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
-//                                    .addOnSuccessListener(aVoid1 -> Log.d(TAG, "User document updated with mood event reference"))
-//                                    .addOnFailureListener(e -> Log.e(TAG, "Failed to update user document", e));
-//                        } else {
-//                            Log.e(TAG, "Logged-in username not found in SharedPreferences");
-//                        }
-//                    })
-//                    .addOnFailureListener(e ->
-//                            //Toast.makeText(getContext(), "Error saving data!", Toast.LENGTH_SHORT).show());
-//                            Snackbar.make(getView(), "Error saving data!", Snackbar.LENGTH_SHORT).show());
-//        }
     private void saveMoodToFirestore(Boolean privacy, String desc, String trigger,
                                      String date, String locationText, String imageUrl,
                                      String mood, String social, String time) {
@@ -903,9 +774,6 @@ public class AddMoodEvent extends Fragment {
                 });
 
         if (isAdded() && getActivity() != null) {
-//                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-//                String loggedInUsername = sharedPreferences.getString("username", null);
-
 
             if (loggedInUsername != null) {
                 DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
@@ -927,7 +795,10 @@ public class AddMoodEvent extends Fragment {
     }
 
     /**
-     * Increments the counter and checks if all tasks have finished.
+     * Tracks completion of async operations and triggers fragment closure
+     *
+     * @param completedTasks Counter array for completed operations
+     * @param totalTasks Required number of successful operations
      */
     private void incrementAndCheck(int[] completedTasks, int totalTasks) {
         completedTasks[0]++;
@@ -938,34 +809,8 @@ public class AddMoodEvent extends Fragment {
     }
 
     /**
-     * Runs an exit animation and then pops the fragment from the back stack.
+     * Executes fragment exit animation and removes from back stack
      */
-//    private void popFragment() {
-//        if (isAdded() && getActivity() != null) {
-//            requireActivity().runOnUiThread(() -> {
-//                if (fragmentRoot != null) {
-//                    Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-//                    fragmentRoot.startAnimation(slideOut);
-//                    slideOut.setAnimationListener(new Animation.AnimationListener() {
-//                        @Override
-//                        public void onAnimationStart(Animation animation) {}
-//
-//                        @Override
-//                        public void onAnimationEnd(Animation animation) {
-//                            if (isAdded() && getActivity() != null) {
-//                                requireActivity().getSupportFragmentManager().popBackStack();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onAnimationRepeat(Animation animation) {}
-//                    });
-//                } else {
-//                    requireActivity().getSupportFragmentManager().popBackStack();
-//                }
-//            });
-//        }
-//    }
     private void popFragment() {
         if (isAdded() && getActivity() != null) {
             requireActivity().runOnUiThread(() -> {
@@ -1095,6 +940,13 @@ public class AddMoodEvent extends Fragment {
         }
         return null;
     }
+
+    /**
+     * Maps mood names to corresponding button resource IDs
+     *
+     * @param moodName Lowercase mood type identifier
+     * @return Corresponding button resource ID or -1 if invalid
+     */
     private int getButtonIdForMood(String moodName) {
         switch (moodName.toLowerCase()) {
             case "happy": return R.id.emoji_happy;

@@ -25,13 +25,11 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -41,13 +39,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+
 
 import com.bumptech.glide.Glide;
 import com.example.donotredeem.Classes.NetworkUtils;
 import com.example.donotredeem.MoodEvent;
-import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
 import com.example.donotredeem.SocialSituation;
@@ -58,8 +54,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
@@ -67,27 +62,21 @@ import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.UUID;
 
 /**
  * A Fragment that allows users to edit an existing mood event. This fragment provides functionality to modify mood details, including description, location, date, time, and trigger.
@@ -162,8 +151,6 @@ public class EditMoodEvent extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (NetworkUtils.isNetworkAvailable(requireContext())) {
-//            Places.initialize(requireContext(), "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
         Context context = getContext();
         if (context != null && NetworkUtils.isNetworkAvailable(context)) {
             Places.initialize(context, "AIzaSyBYd9sEWv1sNFl7S8pwKjTmYhEGOTgtZVc");
@@ -349,38 +336,14 @@ public class EditMoodEvent extends Fragment {
 
         }
 
-
         mediaUpload.setOnClickListener(v -> showSourceDialog());
 
-        // Location handling
-//        locationButton.setOnClickListener(v -> {
-//            if (locationButton.isChecked()) {
-//                checkLocationPermission();
-//            } else {
-//                locationEdit.setText("");
-//            }
-//        });
-//
-//        locationEdit.addTextChangedListener(new TextWatcher() {
-//            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-//            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-//                if (s.length() > 0 && locationButton.isChecked()) {
-//                    locationButton.setChecked(false);
-//                }
-//            }
-//            @Override public void afterTextChanged(Editable s) { }
-//        });
-//        if (NetworkUtils.isNetworkAvailable(requireContext()))
         Context context = getContext();
          if (context != null && NetworkUtils.isNetworkAvailable(context)) {
             locationEdit.setOnClickListener(v -> {
                 locationEdit.requestFocus();
 
                 List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG);
-                //            Intent intent = new Autocomplete.IntentBuilder(
-                //                    AutocompleteActivityMode.OVERLAY, fields)
-                //                    .setTypeFilter(TypeFilter.ADDRESS) // Focuses on addresses (street names included)
-                //                    .build(requireActivity());
 
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields).build(requireActivity());
                 placeAutocompleteLauncher.launch(intent);
@@ -392,7 +355,6 @@ public class EditMoodEvent extends Fragment {
         }
         RadioButton location_button = view.findViewById(R.id.radioButton);
         final boolean[] isSelected_loc = {false};
-//        if (NetworkUtils.isNetworkAvailable(requireContext())) {
             if (context != null && NetworkUtils.isNetworkAvailable(context)) {
                 location_button.setOnClickListener(v -> {
                 if (isSelected_loc[0]) {
@@ -557,32 +519,10 @@ public class EditMoodEvent extends Fragment {
                 }
 
             }
-
-//            if (fragmentRoot != null) {
-//                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
-//                fragmentRoot.startAnimation(slideOut);
-//
-//                slideOut.setAnimationListener(new Animation.AnimationListener() {
-//                    @Override
-//                    public void onAnimationStart(Animation animation) {}
-//
-//                    @Override
-//                    public void onAnimationEnd(Animation animation) {
-//                        requireActivity().getSupportFragmentManager().popBackStack(); //go back to whatever it was bruh
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animation animation) {}
-//                });
-//            } else {
-//                requireActivity().getSupportFragmentManager().popBackStack();
-//            }
-
         });
 
 
         closeButton.setOnClickListener(v -> {
-            //View fragmentRoot = view.findViewById(R.id.fragment_root_edit);
 
             if (fragmentRoot != null) {
                 Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
@@ -660,7 +600,6 @@ public class EditMoodEvent extends Fragment {
             }
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
-            //Toast.makeText(requireContext(), "Camera permission denied", Toast.LENGTH_SHORT).show();
             Snackbar.make(getView(), "Camera permission denied", Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -676,7 +615,6 @@ public class EditMoodEvent extends Fragment {
             galleryLauncher.launch(galleryOpenIntent);
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, GALLERY_REQUEST);
-            //Toast.makeText(requireContext(), "Gallery permission denied", Toast.LENGTH_SHORT).show();
             Snackbar.make(getView(), "Gallery permission denied", Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -713,7 +651,6 @@ public class EditMoodEvent extends Fragment {
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
         } else {
             ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
-            //Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
             Snackbar.make(getView(), "Location permission denied", Snackbar.LENGTH_SHORT).show();
         }
     }
@@ -807,24 +744,6 @@ public class EditMoodEvent extends Fragment {
      * @param social The social situation of the event.
      * @param time The time of the event.
      */
-//    private void updateMoodEventInFirestore(String desc, String trigger,
-//                                            String date, String locationText, String imageUrl,
-//                                            String mood, String social, String time) {
-//        if (moodEventId == null) {
-//            Log.e(TAG, "MoodEventId is null, cannot update");
-//            return;
-//        }
-//        DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
-//        MoodEvent updatedMoodEvent = new MoodEvent(moodEventId, mood, date, time, locationText, social, trigger, desc, imageUrl);
-//        moodEventRef.set(updatedMoodEvent)
-//                .addOnSuccessListener(aVoid -> {
-//                    //Toast.makeText(getContext(), "Mood Event Updated!", Toast.LENGTH_SHORT).show();
-//                    Snackbar.make(getView(), "Mood Event Updated!", Snackbar.LENGTH_SHORT).show();
-//                })
-//                .addOnFailureListener(e ->
-//                        //Toast.makeText(getContext(), "Error updating data!", Toast.LENGTH_SHORT).show());
-//                        Snackbar.make(getView(), "Error updating data!", Snackbar.LENGTH_SHORT).show());
-//    }
     private void updateMoodEventInFirestore(Boolean privacy, String desc, String trigger,
                                             String date, String locationText, String imageUrl,
                                             String mood, String social, String time) {
@@ -845,10 +764,6 @@ public class EditMoodEvent extends Fragment {
 
         moodEventRef.set(updatedMoodEvent)
                 .addOnSuccessListener(aVoid -> {
-//                    Log.d(TAG, "Mood event updated!");
-////                    Snackbar.make(requireView(), "Mood Event Updated!", Snackbar.LENGTH_LONG).show();
-//                    Snackbar.make(getView(), "Mood event updated!", Snackbar.LENGTH_SHORT).show();
-//                    incrementAndCheck(completedTasks, totalTasks);
                     if (isAdded() && getActivity() != null) {
                         // Use activity's root view
                         View rootView = getActivity().findViewById(android.R.id.content);
@@ -857,48 +772,28 @@ public class EditMoodEvent extends Fragment {
                     }
                 })
                 .addOnFailureListener(e -> {
-//                    Log.e(TAG, "Error updating mood event", e);
-//                    showError("Error updating data!");
-//                    return;
                     if (isAdded() && getActivity() != null) {
                         View rootView = getActivity().findViewById(android.R.id.content);
                         Snackbar.make(rootView, "Error updating data!", Snackbar.LENGTH_SHORT).show();
                     }
                 });
 
-//        if (isAdded() && getActivity() != null) {
-//            SharedPreferences sharedPreferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-//            String loggedInUsername = sharedPreferences.getString("username", null);
-//
-//            if (loggedInUsername != null) {
-//                DocumentReference userDocRef = db.collection("User").document(loggedInUsername);
-//                userDocRef.update("MoodRef", FieldValue.arrayUnion(moodEventRef))
-//                        .addOnSuccessListener(aVoid -> {
-//                            Log.d(TAG, "User document updated with mood event reference");
-//                            incrementAndCheck(completedTasks, totalTasks);
-//                        })
-//                        .addOnFailureListener(e -> {
-//                            Log.e(TAG, "Failed to update user document", e);
-//                            showError("Error updating user document!");
-//                        });
-//            } else {
-//                Log.e(TAG, "Logged-in username not found in SharedPreferences");
-//                showError("User not found!");
-//            }
-//        }
     }
-
+    /**
+     * Tracks completion of async operations and triggers UI cleanup
+     */
     private void incrementAndCheck(int[] completedTasks, int totalTasks) {
         completedTasks[0]++;
         if (completedTasks[0] == totalTasks) {
             popFragment();
         }
     }
-
+    /**
+     * Executes exit animation and fragment removal
+     */
     private void popFragment() {
         if (isAdded() && getActivity() != null) {
             requireActivity().runOnUiThread(() -> {
-//                if (fragmentRoot != null) {
                 if (fragmentRoot != null && fragmentRoot.getParent() != null) {
                     Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.slide_out_bottom);
                     fragmentRoot.startAnimation(slideOut);
@@ -908,7 +803,6 @@ public class EditMoodEvent extends Fragment {
 
                         @Override
                         public void onAnimationEnd(Animation animation) {
-//                            if (isAdded() && getActivity() != null) {
                             if (isAdded()) {
                                 requireActivity().getSupportFragmentManager().popBackStack();
                             }
@@ -924,6 +818,9 @@ public class EditMoodEvent extends Fragment {
         }
     }
 
+    /**
+     * Provides visual feedback for operation errors
+     */
     private void showError(String message) {
         if (isAdded() && getView() != null) {
             Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();

@@ -21,18 +21,36 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * Adapter for displaying and managing follow requests in a list view.
+ * Supports accepting and declining requests with Firebase integration.
+ */
 public class RequestAdapter extends ArrayAdapter<String> {
     private final Context context;
     private final List<String> requests;
     private final UserProfileManager userProfileManager = new UserProfileManager();
     private FirebaseFirestore db;
 
+    /**
+     * Constructor for initializing the adapter.
+     *
+     * @param context  The context of the parent activity.
+     * @param requests List of usernames sending follow requests.
+     */
     public RequestAdapter(Context context, List<String> requests) {
         super(context, R.layout.item_request, requests);
         this.context = context;
         this.requests = requests;
     }
 
+    /**
+     * Provides the view for each request item in the ListView.
+     *
+     * @param position    The position of the item in the list.
+     * @param convertView The recycled view to populate.
+     * @param parent      The parent view group.
+     * @return The populated item view.
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -59,6 +77,12 @@ public class RequestAdapter extends ArrayAdapter<String> {
         return convertView;
     }
 
+    /**
+     * Handles accepting a follow request.
+     *
+     * @param requesterUsername The username of the requester.
+     * @param position          The position of the request in the list.
+     */
     private void handleAccept(String requesterUsername, int position) {
         // Get current user
         SharedPreferences prefs = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
@@ -79,6 +103,12 @@ public class RequestAdapter extends ArrayAdapter<String> {
         });
     }
 
+    /**
+     * Handles declining a follow request.
+     *
+     * @param requesterUsername The username of the requester.
+     * @param position          The position of the request in the list.
+     */
     private void handleDecline(String requesterUsername, int position) {
         SharedPreferences prefs = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         String currentUser = prefs.getString("username", "");
@@ -97,6 +127,12 @@ public class RequestAdapter extends ArrayAdapter<String> {
         });
     }
 
+    /**
+     * Loads the profile picture from Firebase Firestore into the ImageView.
+     *
+     * @param username  The username of the requester.
+     * @param imageView The ImageView to display the profile picture.
+     */
     private void loadProfilePicture(String username, CircleImageView imageView) {
         db.collection("User")
                 .document(username)

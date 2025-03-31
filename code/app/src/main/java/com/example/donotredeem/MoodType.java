@@ -1,4 +1,5 @@
 package com.example.donotredeem;
+
 /**
  * Enum representing different mood types along with their associated drawable image resource IDs.
  *

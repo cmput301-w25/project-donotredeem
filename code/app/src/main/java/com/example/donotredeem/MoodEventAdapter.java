@@ -55,6 +55,7 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         this.Events = Events != null ? Events : new ArrayList<>();
 //        this.Events = Events;
     }
+
     private static Context getFallbackContext() {
         // Provide a fallback context if needed
         return MyApplication.getInstance();

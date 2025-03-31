@@ -1,12 +1,10 @@
 package com.example.donotredeem;
 
 import android.animation.Animator;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -38,7 +36,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,8 +56,7 @@ public class MoodJarFragment extends Fragment {
     private SharedPreferences sharedPreferences;
     private String currentUsername;
     private int noteCount = 0;
-//    private long targetDateMillis = new GregorianCalendar(2025, Calendar.MARCH, 27, 9, 58, 30).getTimeInMillis();
-    private long targetDateMillis = System.currentTimeMillis() + 6000;
+    private long targetDateMillis = new GregorianCalendar(2026, Calendar.JANUARY, 1, 0, 0, 0).getTimeInMillis();
 
     private boolean celebrationTriggered = false;
     private Handler countdownHandler = new Handler();
@@ -119,24 +115,6 @@ public class MoodJarFragment extends Fragment {
         builder.show();
     }
 
-//    private void saveNoteToFirestore(String note) {
-//        if (currentUsername == null) return;
-//
-//        Map<String, Object> noteData = new HashMap<>();
-//        noteData.put("text", note);
-//        noteData.put("timestamp", FieldValue.serverTimestamp());
-//
-//        db.collection("User")
-//                .document(currentUsername)
-//                .collection("moodNote")
-//                .add(noteData)
-//                .addOnSuccessListener(documentReference -> {
-//                    noteCount++;
-//                    updateJarImage();
-//                    showToast("Note added!");
-//                })
-//                .addOnFailureListener(e -> showToast("Error saving note"));
-//    }
     private void saveNoteToFirestore(String note) {
         if (currentUsername == null) return;
 
@@ -165,31 +143,7 @@ public class MoodJarFragment extends Fragment {
                 .addOnSuccessListener(aVoid -> Log.d("MoodJar", "Note reference added to moodJar"))
                 .addOnFailureListener(e -> Log.e("MoodJar", "Error adding note reference to moodJar", e));
     }
-//    private void addNoteReferenceToMoodJar(DocumentReference noteRef) {
-//        db.collection("User")
-//                .document(currentUsername)
-//                .update("moodJar", FieldValue.arrayUnion(noteRef))
-//                .addOnSuccessListener(aVoid -> {
-//                    noteCount++;
-//                    updateJarImage();
-//                    Log.d("MoodJar", "Note reference added to moodJar");
-//                })
-//                .addOnFailureListener(e -> Log.e("MoodJar", "Error adding note reference", e));
-//    }
 
-
-//    private void loadNotes() {
-//        if (currentUsername == null) return;
-//
-//        db.collection("User")
-//                .document(currentUsername)
-//                .collection("moodNote")
-//                .get()
-//                .addOnSuccessListener(queryDocumentSnapshots -> {
-//                    noteCount = queryDocumentSnapshots.size();
-//                    updateJarImage();
-//                });
-//    }
     private void loadNotes() {
         if (currentUsername == null) return;
 
@@ -257,21 +211,6 @@ public class MoodJarFragment extends Fragment {
         countdownText.setText(countdown);
     }
 
-//    private void showCelebration() {
-//        if (!celebrationTriggered && isAdded() && isVisible()) {
-//            celebrationTriggered = true;
-//            if (fireworksAnimation != null) {
-//                fireworksAnimation.setVisibility(View.VISIBLE);
-//                fireworksAnimation.playAnimation();
-//            }
-//            if (unlockButton != null) {
-//                unlockButton.setVisibility(View.VISIBLE);
-//            }
-//            if (countdownText != null) {
-//                countdownText.setText("Ready to unlock!");
-//            }
-//        }
-//    }
 private void showCelebration() {
     if (!celebrationTriggered && isVisible() && getContext() != null) {
         celebrationTriggered = true;
@@ -322,11 +261,6 @@ private void showCelebration() {
         });
     }
 
-//    private void unlockJarContents() {
-//
-//        showToast("Jar unlocked!");
-//
-//    }
 
     private void showToast(String message) {
         if (getContext() != null) {
@@ -365,26 +299,6 @@ private void showCelebration() {
         countdownHandler.removeCallbacks(countdownRunnable);
     }
 
-//    private void unlockJarContents() {
-//        if (currentUsername == null) return;
-//
-//        db.collection("User")
-//                .document(currentUsername)
-//                .collection("moodJar")
-//                .get()
-//                .addOnSuccessListener(queryDocumentSnapshots -> {
-//                    List<DocumentSnapshot> items = new ArrayList<>();
-//                    for (QueryDocumentSnapshot document : queryDocumentSnapshots) {
-//                        items.add(document);
-//                    }
-//                    if (!items.isEmpty()) {
-//                        showMoodJarItemsDialog(items);
-//                    } else {
-//                        showToast("Mood Jar is empty!");
-//                    }
-//                })
-//                .addOnFailureListener(e -> showToast("Error loading items"));
-//    }
     private void unlockJarContents() {
         if (currentUsername == null) return;
 
@@ -447,44 +361,6 @@ private void showCelebration() {
         }
     }
 
-//    @SuppressLint("RestrictedApi")
-//    private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
-//        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-//        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_layout, null);
-////        builder.setView(dialogView,
-////                (int) getResources().getDimension(R.dimen.dialog_margin_horizontal),
-////                (int) getResources().getDimension(R.dimen.dialog_margin_top),
-////                (int) getResources().getDimension(R.dimen.dialog_margin_horizontal),
-////                (int) getResources().getDimension(R.dimen.dialog_margin_bottom)
-////        );
-//        DisplayMetrics displayMetrics = new DisplayMetrics();
-//        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-//        int dialogHeight = (int) (displayMetrics.heightPixels * 0.9);
-//
-//        builder.setView(dialogView);
-//
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//
-//        // Set dialog dimensions
-//        Window window = dialog.getWindow();
-//        if (window != null) {
-//            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, dialogHeight);
-//            window.setGravity(Gravity.CENTER);
-//        }
-//
-//
-//        ViewPager2 viewPager = dialogView.findViewById(R.id.view_pager);
-//        Button closeButton = dialogView.findViewById(R.id.closeButton);
-//
-//        MoodJarPagerAdapter adapter = new MoodJarPagerAdapter(items);
-//        viewPager.setAdapter(adapter);
-//
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//
-//        closeButton.setOnClickListener(v -> dialog.dismiss());
-//    }
 private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
     AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
     View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_layout, null);
@@ -634,35 +510,6 @@ private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
                 iconView.setVisibility(View.GONE);
             }
         }
-
-//    private void bindMoodViewHolder(MoodViewHolder holder, DocumentSnapshot document) {
-//        MoodEvent moodEvent = document.toObject(MoodEvent.class);
-//        if (moodEvent != null) {
-//            // Mandatory fields
-//            holder.emotionalState.setText(moodEvent.getEmotionalState() != null ?
-//                    moodEvent.getEmotionalState() : "No mood");
-//
-//            // Optional fields with null checks
-//            holder.date.setText(moodEvent.getDate() != null ?
-//                    moodEvent.getDate() : "No date");
-//
-//            holder.time.setText(moodEvent.getTime() != null ?
-//                    moodEvent.getTime() : "No time");
-//
-//            // Handle optional description
-//            TextView description = holder.itemView.findViewById(R.id.View_Additional_details);
-//            description.setText(moodEvent.getExplainText() != null ?
-//                    moodEvent.getExplainText() : "No description");
-//
-//            Glide.with(requireContext())
-//                    .load(moodEvent.getExplainPicture())
-//                    .placeholder(R.drawable.default_image) // Add fallback
-//                    .error(R.drawable.error_image) // Add error state
-//                    .into(holder.timelineImage);
-//        }
-//
-//    }
-
 
         private void bindNoteViewHolder(NoteViewHolder holder, DocumentSnapshot document) {
             // Add null safety checks

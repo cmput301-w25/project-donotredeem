@@ -65,7 +65,6 @@ public enum SocialSituation {
                 return R.drawable.few_people;
             case "With a Crowd":
                 return R.drawable.group;
-            // Add more cases here
             default:
                 return -1;  // Return -1 for invalid or unrecognized situations
         }
