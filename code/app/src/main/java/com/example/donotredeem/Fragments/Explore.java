@@ -107,7 +107,7 @@ public class Explore extends Fragment {
         });
     }
 
-    private void filterList(String query) {
+    public void filterList(String query) {
         List<String> filtered = new ArrayList<>();
         if (query.isEmpty()) {
 //            filtered.addAll(displaylist);

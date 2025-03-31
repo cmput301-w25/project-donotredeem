@@ -363,7 +363,7 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
      * @param dateString The date string in "dd/MM/yyyy" format
      * @return The parsed {@link LocalDate}, or {@link LocalDate#MIN} on error
      */
-    private LocalDate parseStringToDate(String dateString) {
+    public LocalDate parseStringToDate(String dateString) {
         try {
             // Use pattern matching for "DD-MM-YYYY" format
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -380,7 +380,7 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
      * @param timeString The date string in 'HH:mm[:ss]' format
      * @return The parsed {@link LocalTime}, or {@link LocalTime#MIN} on error
      */
-    private LocalTime parseStringToTime(String timeString) {
+    public LocalTime parseStringToTime(String timeString) {
         try {
             // Handle both with and without seconds
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm[:ss]");

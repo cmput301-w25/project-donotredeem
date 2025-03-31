@@ -339,13 +339,12 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
         return sortedList;
     }
 
-    private LocalDate parseStringToDate(String dateString) {
+    public LocalDate parseStringToDate(String dateString) {
         try {
             // Use pattern matching for "DD-MM-YYYY" format
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             return LocalDate.parse(dateString, formatter);
         } catch (Exception e) {
-            Log.e("MoodHistory", "Invalid date format: " + dateString, e);
             return LocalDate.MIN;
         }
     }
@@ -356,13 +355,12 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
      * @param timeString The date string in 'HH:mm[:ss]' format
      * @return The parsed {@link LocalTime}, or {@link LocalTime#MIN} on error
      */
-    private LocalTime parseStringToTime(String timeString) {
+    public LocalTime parseStringToTime(String timeString) {
         try {
             // Handle both with and without seconds
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm[:ss]");
             return LocalTime.parse(timeString, formatter);
         } catch (Exception e) {
-            Log.e("MoodHistory", "Invalid time format: " + timeString, e);
             return LocalTime.MIN;
         }
     }

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.donotredeem.Classes.User;
 import com.example.donotredeem.Classes.UserProfileManager;
 import com.example.donotredeem.FollowerAdapter;
+import com.example.donotredeem.FollowingAdapter;
 import com.example.donotredeem.R;
 
 import java.util.List;

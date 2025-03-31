@@ -430,7 +430,7 @@ private void fetchUserData(String username) {
     /**
      * Sorts the mood events list by date and time in reverse chronological order.
      */
-    private void sortMoodEvents() {
+    public void sortMoodEvents() {
         moodHistoryList.sort((event1, event2) -> {
             try {
                 LocalDate date1 = parseStringToDate(event1.getDate());
@@ -490,13 +490,12 @@ private void fetchUserData(String username) {
      * @param dateString The date string to be parsed
      * @return The LocalDate representation of the string, or LocalDate.MIN if parsing fails
      */
-    private LocalDate parseStringToDate(String dateString) {
+    public LocalDate parseStringToDate(String dateString) {
         try {
             // Use pattern matching for "DD-MM-YYYY" format
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             return LocalDate.parse(dateString, formatter);
         } catch (Exception e) {
-            Log.e("Profile Page", "Invalid date format: " + dateString, e);
             return LocalDate.MIN;
         }
     }
@@ -507,13 +506,12 @@ private void fetchUserData(String username) {
      * @param timeString The time string to be parsed
      * @return The LocalTime representation of the string, or LocalTime.MIN if parsing fails
      */
-    private LocalTime parseStringToTime(String timeString) {
+    public LocalTime parseStringToTime(String timeString) {
         try {
             // Handle both with and without seconds
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm[:ss]");
             return LocalTime.parse(timeString, formatter);
         } catch (Exception e) {
-            Log.e("Profile Page", "Invalid time format: " + timeString, e);
             return LocalTime.MIN;
         }
     }

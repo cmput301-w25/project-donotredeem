@@ -248,7 +248,7 @@ public class FilterFragment extends DialogFragment {
      * @param event The mood event to check.
      * @return {@code true} if the event occurred this month, {@code false} otherwise.
      */
-    private boolean month(MoodEvent event){
+    public boolean month(MoodEvent event){
         LocalDate currentDate = LocalDate.now();
 
         // Get event date from MoodEvent (assuming you have a getDate() method)
@@ -275,7 +275,7 @@ public class FilterFragment extends DialogFragment {
 //        return currentDate.getYear() == eventDate.getYear() &&
 //                currentDate.get(weekFields.weekOfYear()) == eventDate.get(weekFields.weekOfYear());
 //    }
-    private boolean week(MoodEvent event) {
+    public boolean week(MoodEvent event) {
         LocalDate currentDate = LocalDate.now();
         LocalDate eventDate = parseStringToDate(event.getDate());
 
@@ -292,7 +292,7 @@ public class FilterFragment extends DialogFragment {
      * @param keyword The search keyword.
      * @return {@code true} if the event matches the keyword, {@code false} otherwise.
      */
-    private boolean matchesSearch(MoodEvent event, String keyword) {
+    public boolean matchesSearch(MoodEvent event, String keyword) {
         if (keyword.isEmpty()) {
             return false; // Avoid matching empty keyword
         }
@@ -313,7 +313,7 @@ public class FilterFragment extends DialogFragment {
      * @param pattern The regex pattern.
      * @return {@code true} if the text contains the keyword, {@code false} otherwise.
      */
-    private boolean matchesWholeWord(String text, String pattern) {
+    public boolean matchesWholeWord(String text, String pattern) {
         if (text == null) {
             return false;
         }
@@ -352,7 +352,7 @@ public class FilterFragment extends DialogFragment {
      * @param buttonId The ID of the selected emoji button.
      * @return The corresponding {@link MoodType}, or {@code null} if not found.
      */
-    private MoodType getMoodForButtonId(int buttonId) {
+    public MoodType getMoodForButtonId(int buttonId) {
 
         for (int i = 0; i < emojiButtonIds.length; i++) {
             if (emojiButtonIds[i] == buttonId) {
@@ -369,12 +369,11 @@ public class FilterFragment extends DialogFragment {
      * @param dateString The date string in "dd/MM/yyyy" format.
      * @return The parsed {@code LocalDate}, or the current date if parsing fails.
      */
-    private LocalDate parseStringToDate(String dateString) {
+    public LocalDate parseStringToDate(String dateString) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy"); // Adjust format based on your date format
             return LocalDate.parse(dateString, formatter);
         } catch (Exception e) {
-            Log.e("MoodHistory", "Invalid date format", e);
             return LocalDate.now(); // Default to current date if parsing fails
         }
     }

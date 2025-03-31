@@ -886,7 +886,7 @@ public class AddMoodEvent extends Fragment {
      * @param buttonId The ID of the selected button.
      * @return The corresponding MoodType.
      */
-    private MoodType getMoodForButtonId(int buttonId) {
+    public MoodType getMoodForButtonId(int buttonId) {
 
         for (int i = 0; i < emojiButtonIds.length; i++) {
             if (emojiButtonIds[i] == buttonId) {
@@ -932,7 +932,7 @@ public class AddMoodEvent extends Fragment {
      * @param buttonId The ID of the selected button.
      * @return The corresponding SocialSituation.
      */
-    private SocialSituation getSocialSituationForButtonId(int buttonId) {
+    public SocialSituation getSocialSituationForButtonId(int buttonId) {
         for (int i = 0; i < socialButtonIds.length; i++) {
             if (socialButtonIds[i] == buttonId) {
                 return SocialSituation.values()[i];
@@ -947,7 +947,7 @@ public class AddMoodEvent extends Fragment {
      * @param moodName Lowercase mood type identifier
      * @return Corresponding button resource ID or -1 if invalid
      */
-    private int getButtonIdForMood(String moodName) {
+    public int getButtonIdForMood(String moodName) {
         switch (moodName.toLowerCase()) {
             case "happy": return R.id.emoji_happy;
             case "sad": return R.id.emoji_sad;
