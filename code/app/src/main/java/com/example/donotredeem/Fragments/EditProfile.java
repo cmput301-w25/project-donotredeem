@@ -218,29 +218,39 @@ public class EditProfile extends Fragment {
 
             }
         });
-
+        
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserProfileManager manager = new UserProfileManager();
-                manager.deleteUser(username, new UserProfileManager.OnDeleteListener() {
-                    @Override
-                    public void onSuccess() {
-                        FirebaseAuth.getInstance().signOut();
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Confirm Deletion")
+                        .setMessage("Are you sure you want to delete your account? This action cannot be undone.")
+                        .setPositiveButton("Delete", (dialog, which) -> {
+                            // User confirmed deletion
+                            UserProfileManager manager = new UserProfileManager();
+                            manager.deleteUser(username, new UserProfileManager.OnDeleteListener() {
+                                @Override
+                                public void onSuccess() {
+                                    FirebaseAuth.getInstance().signOut();
 
-                        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.clear();
-                        editor.apply();
+                                    SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.clear();
+                                    editor.apply();
 
-                        redirectToLogin();
-                    }
-                    @Override
-                    public void onError(Exception e) {
-                        // Handle error
-                        Log.e("Deletion", "Error deleting user", e);
-                    }
-                });
+                                    redirectToLogin();
+                                }
+
+                                @Override
+                                public void onError(Exception e) {
+                                    Log.e("Deletion", "Error deleting user", e);
+                                    Snackbar.make(getView(), "Deletion failed: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
+                                }
+                            });
+                        })
+                        .setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss())
+                        .create()
+                        .show();
             }
         });
 
