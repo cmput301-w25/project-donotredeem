@@ -201,6 +201,10 @@ public class moodhistory extends Fragment implements FilterFragment.FilterMoodLi
         }
     }
 
+    /**
+     * Checks network availability status.
+     * @return true if device has active network connection, false otherwise
+     */
     private boolean isNetworkAvailable() {
         Context context = getContext();
         return context != null && NetworkUtils.isNetworkAvailable(context);

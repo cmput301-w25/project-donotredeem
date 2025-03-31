@@ -34,8 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The {@code MainPage} class represents the main screen of the app after login.
- * It displays the logged-in user's name and provides a sign-out option.
+ * Fragment displaying a feed of followed users' public mood events with filtering
+ * and pagination capabilities. Handles real-time updates from Firestore and
+ * maintains multiple list states for UI interactions.
  */
 public class MainPage extends Fragment implements FilterFragment.FilterMoodListener, Serializable {
 
@@ -50,7 +51,10 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
     private TextView viewMoreBtn, viewLessBtn, filterBtn;
     private ImageView searchBtn;
 
-
+    /**
+     * Applies mood filters from FilterFragment and updates UI state
+     * @param filteredList Filtered mood events to display
+     */
     @Override
     public void filterMood(ArrayList<MoodEvent> filteredList) {
 
@@ -71,12 +75,16 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
     }
 
     /**
-     * Called to instantiate the fragment's view.
+     * Initializes fragment view and core functionality:
+     * - Sets up ListView and adapters
+     * - Configures button click handlers
+     * - Loads user authentication state
+     * - Initiates mood event loading process
      *
-     * @param inflater  The LayoutInflater used to inflate the layout.
-     * @param container The parent view that this fragment's UI should be attached to.
-     * @param savedInstanceState If non-null, the fragment is being re-constructed from a previous state.
-     * @return The root view of the fragment.
+     * @param inflater Layout inflater service
+     * @param container Parent view container
+     * @param savedInstanceState Persisted state bundle
+     * @return Configured view hierarchy
      */
     @Nullable
     @Override
@@ -161,14 +169,15 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
             filterFragment.setTargetFragment(MainPage.this, 0);
             filterFragment.show(getParentFragmentManager(), "filter");
 
-
         });
-
 
         return view;
     }
 
-
+    /**
+     * Fetches followed users list from Firestore
+     * @param username Current user's identifier
+     */
     private void FetchFollowingUsers(String username) {
         if (username == null) {
             Log.e("Main Page", "No username found in SharedPreferences");
@@ -193,6 +202,11 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
                     }
                 });
     }
+
+    /**
+     * Retrieves public mood events from followed users
+     * @param FollowedUsers List of usernames to fetch events from
+     */
     private void FetchPublicEvents(List<String> FollowedUsers) {
         if (!isAdded()) return; // Stop if fragment is not attached
 
@@ -211,7 +225,6 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
                         if (querySnapshot != null && !querySnapshot.isEmpty()) {
                             DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
                             List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
-                            Log.d("My tag","what bakchodi is this "+moodRefsList.toString() );
 
                             if (moodRefsList != null && !moodRefsList.isEmpty()) {
                                 FetchMoods(moodRefsList, tempList, FollowedUsers.size(), fetchedCount);
@@ -226,7 +239,13 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
         }
     }
 
-
+    /**
+     * Processes mood references into MoodEvent objects
+     * @param moodRefs Firestore document references
+     * @param tempList Temporary event storage
+     * @param totalUsers Total followed users count
+     * @param fetchedCount Completion tracker
+     */
     private void FetchMoods(List<DocumentReference> moodRefs, ArrayList<MoodEvent> tempList, int totalUsers, int[] fetchedCount) {
         ArrayList<MoodEvent> userMoodEvents = new ArrayList<>();
         final int[] moodsFetched = {0}; // Moods of this user
@@ -268,6 +287,13 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
         }
     }
 
+    /**
+     * Updates UI with processed mood events:
+     * - Sorts events chronologically
+     * - Maintains original/filtered states
+     * - Manages list pagination
+     * @param moodHistoryList Raw list of mood events
+     */
     private void Display(ArrayList<MoodEvent> moodHistoryList) {
         if (!isAdded()) return;
 
@@ -300,14 +326,15 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
 
         displayedMoodList.clear();
         displayedMoodList.addAll(originalMoodList.subList(0, Math.min(3, originalMoodList.size())));
-//        Log.d("fuck fuck u", "Display: display list from shuru " + displayedMoodList.toString());
-
-//
 
         updateDisplayedMoods();
     }
 
-
+    /**
+     * Converts date string to LocalDate object
+     * @param dateString Date in "dd/MM/yyyy" format
+     * @return Parsed date or MIN on error
+     */
     public LocalDate parseStringToDate(String dateString) {
         try {
             // Use pattern matching for "DD-MM-YYYY" format
@@ -319,10 +346,9 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
     }
 
     /**
-     * Parses a date string into a {@link LocalDate}.
-     *
-     * @param timeString The date string in 'HH:mm[:ss]' format
-     * @return The parsed {@link LocalTime}, or {@link LocalTime#MIN} on error
+     * Converts time string to LocalTime object
+     * @param timeString Time in "HH:mm[:ss]" format
+     * @return Parsed time or MIN on error
      */
     public LocalTime parseStringToTime(String timeString) {
         try {
@@ -335,7 +361,8 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
     }
 
     /**
-     * Redirects the user to the login screen and clears the activity stack.
+     * Handles authentication failure by clearing credentials
+     * and redirecting to login screen
      */
     private void redirectToLogin() {
         Intent intent = new Intent(getActivity(), LogIn.class);
@@ -346,26 +373,35 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
         }
     }
 
+    /**
+     * Synchronizes UI with current mood event display state:
+     * - Updates list adapter
+     * - Toggles pagination controls
+     */
     private void updateDisplayedMoods() {
 
-//        if (main_page_adapter == null) {
         main_page_adapter = new MainPageAdapter(getContext(), displayedMoodList);
         Main_list.setAdapter(main_page_adapter);
-//        } else {
-//            main_page_adapter.notifyDataSetChanged();
-//        }
 
         viewMoreBtn.setVisibility(displayedMoodList.size() == 3 ? View.VISIBLE : View.GONE);
         viewLessBtn.setVisibility(displayedMoodList.size() > 3 ? View.VISIBLE : View.GONE);
     }
 
-
+    /**
+     * Fragment lifecycle callback that cleans up filter preferences when the view is destroyed.
+     * Ensures stale filters don't persist between fragment instances by:
+     * - Clearing SharedPreferences filter values
+     * - Resetting keyword, time, and emoji filters
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         clearSavedFilters();
     }
 
+    /**
+     * Clears persisted filter preferences on fragment destruction
+     */
     private void clearSavedFilters() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

@@ -13,12 +13,34 @@ import static org.junit.Assert.assertNotNull;
 
 import com.google.firebase.Timestamp;
 
+/**
+ * Unit tests for list operations relevant to a {@code CommentAdapter} implementation.
+ * This class verifies core functionality of comment list management without Android framework dependencies,
+ * focusing on CRUD operations and list modification scenarios.
+ *
+ * <p>Key test areas include:
+ * <ul>
+ *     <li>List initialization and basic integrity checks</li>
+ *     <li>Item addition/removal operations and size validation</li>
+ *     <li>Data consistency after modifications</li>
+ *     <li>Boundary cases for list manipulation</li>
+ * </ul>
+ */
 @RunWith(JUnit4.class)
 public class CommentAdapterTest {
 
     // Test data
     private ArrayList<Comment> commentList;
 
+    /**
+     * Initializes test data before each test method execution.
+     * Creates three comments with:
+     * <ul>
+     *     <li>Different authors (user1-user3)</li>
+     *     <li>Sequential comment texts</li>
+     *     <li>Timestamps spanning different time intervals (1 hour, 2 hours, and 24 hours before test execution)</li>
+     * </ul>
+     */
     @Before
     public void setUp() {
         // Initialize test data without Android dependencies
@@ -31,6 +53,17 @@ public class CommentAdapterTest {
         commentList.add(new Comment("user3", "This is comment 3", new Timestamp(new Date(System.currentTimeMillis() - 86400000))));
     }
 
+    /**
+     * Tests fundamental list operations and data validation.
+     * Verifies:
+     * <ul>
+     *     <li>Initial list non-null state and correct size (3 items)</li>
+     *     <li>Proper item retrieval and field validation for first comment</li>
+     *     <li>List size changes after adding new comments</li>
+     *     <li>Item removal and subsequent order adjustment</li>
+     *     <li>Complete list clearance functionality</li>
+     * </ul>
+     */
     @Test
     public void testListOperations() {
         // Test the list operations that would affect the adapter's behavior
@@ -58,6 +91,16 @@ public class CommentAdapterTest {
         assertEquals("After clearing, list should be empty", 0, commentList.size());
     }
 
+    /**
+     * Tests dynamic list size changes through modifications.
+     * Validates:
+     * <ul>
+     *     <li>Initial size confirmation (3 items)</li>
+     *     <li>Size increment after adding multiple items</li>
+     *     <li>Size decrement after removing items</li>
+     *     <li>Consistent size reporting through modifications</li>
+     * </ul>
+     */
     @Test
     public void testListModification() {
         // Test how modifications to the list would affect getItemCount()

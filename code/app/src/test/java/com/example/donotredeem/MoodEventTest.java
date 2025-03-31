@@ -7,6 +7,19 @@ import org.junit.Test;
 import com.example.donotredeem.MoodEvent;
 import com.google.firebase.firestore.GeoPoint;
 
+/**
+ * Unit tests for the {@link MoodEvent} class, verifying constructor behaviors, field validation,
+ * and property accessors/mutators. Covers both normal usage and edge cases.
+ *
+ * <p>Key test areas include:
+ * <ul>
+ *     <li>Constructor variations (required fields vs. all fields)</li>
+ *     <li>Field validation constraints (non-empty emotional state)</li>
+ *     <li>Null handling and default values</li>
+ *     <li>Setter method functionality</li>
+ *     <li>Special constructor with mood event ID</li>
+ * </ul>
+ */
 public class MoodEventTest {
 
     private MoodEvent moodEvent;
@@ -22,6 +35,13 @@ public class MoodEventTest {
     private static final String TEST_PICTURE = "image_uri_string";
     private static final String TEST_MOOD_ID = "mood123";
 
+    /**
+     * Initializes test environment before each test:
+     * <ul>
+     *     <li>Creates test GeoPoint location</li>
+     *     <li>Instantiates MoodEvent with all fields populated</li>
+     * </ul>
+     */
     @Before
     public void setUp() {
         testLocation = new GeoPoint(53.5461, -113.4938);
@@ -32,6 +52,15 @@ public class MoodEventTest {
         );
     }
 
+    /**
+     * Tests constructor with only required fields.
+     * Verifies:
+     * <ul>
+     *     <li>Core fields are properly set (emotional state, date/time, place)</li>
+     *     <li>Optional fields remain null when not provided</li>
+     *     <li>Location and privacy settings are correctly stored</li>
+     * </ul>
+     */
     @Test
     public void testConstructorWithRequiredFields() {
         MoodEvent basicMoodEvent = new MoodEvent(
@@ -53,6 +82,15 @@ public class MoodEventTest {
         assertNull(basicMoodEvent.getExplainPicture());
     }
 
+    /**
+     * Tests full-argument constructor with all fields populated.
+     * Verifies correct storage of:
+     * <ul>
+     *     <li>Emotional state, situation, and trigger</li>
+     *     <li>Explanation text and picture URI</li>
+     *     <li>Privacy setting and username</li>
+     * </ul>
+     */
     @Test
     public void testConstructorWithAllFields() {
         assertEquals(TEST_EMOTIONAL_STATE, moodEvent.getEmotionalState());
@@ -68,6 +106,14 @@ public class MoodEventTest {
         assertEquals(testLocation, moodEvent.getLocation());
     }
 
+    /**
+     * Tests constructor with explicit mood event ID parameter.
+     * Verifies:
+     * <ul>
+     *     <li>Mood event ID is properly stored</li>
+     *     <li>Other fields maintain correct values</li>
+     * </ul>
+     */
     @Test
     public void testConstructorWithMoodEventId() {
         MoodEvent moodEventWithId = new MoodEvent(
@@ -80,18 +126,30 @@ public class MoodEventTest {
         assertEquals(TEST_EMOTIONAL_STATE, moodEventWithId.getEmotionalState());
     }
 
+    /**
+     * Tests null emotional state constraint.
+     * Verifies constructor throws {@link IllegalArgumentException}.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorWithNullEmotionalState() {
         new MoodEvent(testLocation, TEST_USERNAME, true, null, TEST_DATE, TEST_TIME, TEST_PLACE,
                 TEST_SITUATION, TEST_TRIGGER, TEST_TEXT, TEST_PICTURE);
     }
 
+    /**
+     * Tests empty emotional state constraint.
+     * Verifies constructor throws {@link IllegalArgumentException} for whitespace-only input.
+     */
     @Test(expected = IllegalArgumentException.class)
     public void testConstructorWithEmptyEmotionalState() {
         new MoodEvent(testLocation, TEST_USERNAME, true, "  ", TEST_DATE, TEST_TIME, TEST_PLACE,
                 TEST_SITUATION, TEST_TRIGGER, TEST_TEXT, TEST_PICTURE);
     }
 
+    /**
+     * Tests null place parameter handling.
+     * Verifies empty string is stored instead of null.
+     */
     @Test
     public void testConstructorWithNullPlace() {
         MoodEvent moodEventNullPlace = new MoodEvent(
@@ -103,12 +161,25 @@ public class MoodEventTest {
         assertEquals("", moodEventNullPlace.getPlace());
     }
 
+    /**
+     * Tests default constructor availability.
+     * Verifies no-argument constructor creates non-null instance.
+     */
     @Test
     public void testDefaultConstructor() {
         MoodEvent defaultMoodEvent = new MoodEvent();
         assertNotNull(defaultMoodEvent);
     }
 
+    /**
+     * Comprehensive test of all setter methods.
+     * Verifies:
+     * <ul>
+     *     <li>All property types can be modified (strings, booleans, GeoPoints)</li>
+     *     <li>Mood event ID can be set post-construction</li>
+     *     <li>Field values persist after modification</li>
+     * </ul>
+     */
     @Test
     public void testSetters() {
         MoodEvent testMoodEvent = new MoodEvent();

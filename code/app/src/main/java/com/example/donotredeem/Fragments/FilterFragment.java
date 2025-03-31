@@ -24,6 +24,22 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
+/**
+ * Dialog fragment for applying advanced filters to mood event listings.
+ * Supports multi-criteria filtering including:
+ * - Emoji-based mood type selection
+ * - Time range filters (week/month/all)
+ * - Keyword search across multiple fields
+ * - Persistent filter settings across sessions
+ *
+ * <p>Key Features:
+ * <ul>
+ * <li>Visual emoji toggle system with highlight states</li>
+ * <li>Compound filter logic with AND/OR combinations</li>
+ * <li>SharedPreferences-based filter persistence</li>
+ * <li>Regex-powered whole-word keyword matching</li>
+ * </ul>
+ */
 public class FilterFragment extends DialogFragment {
     private Button donebtn;
     private ImageButton close;
@@ -44,13 +60,12 @@ public class FilterFragment extends DialogFragment {
     };
 
     /**
-     * Interface for filtering mood events based on user input.
+     * Callback interface for delivering filtered results
      */
     public interface FilterMoodListener {
         /**
-         * Called when the filtering operation is complete.
-         *
-         * @param filteredList The list of mood events that match the filter criteria.
+         * Receives filtered results when done button clicked
+         * @param filteredList Events matching all active filters
          */
         void filterMood(ArrayList<MoodEvent> filteredList);
     }
@@ -165,6 +180,13 @@ public class FilterFragment extends DialogFragment {
         return view;
     }
 
+    /**
+     * Restores saved filter states from SharedPreferences:
+     * - Last used keyword
+     * - Active time filter
+     * - Selected emoji states
+     * @param view Root view of fragment
+     */
     private void loadSavedFilters(View view) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
 
@@ -175,17 +197,6 @@ public class FilterFragment extends DialogFragment {
         // Restore keyword
         Keyword.setText(savedKeyword);
 
-        // Restore time filter selection
-        //        if (savedTimeFilter != null) {
-        //            btn = savedTimeFilter;
-        //            if (btn.equals("month")) {
-        //                pastmonth.performClick();
-        //            } else if (btn.equals("week")) {
-        //                pastweek.performClick();
-        //            } else if (btn.equals("all")) {
-        //                all.performClick();
-        //            }
-        //        }
         if ("month".equals(savedTimeFilter)) {
             btn = "month";
             pastmonth.setBackgroundResource(R.drawable.highlight_background);
@@ -206,6 +217,21 @@ public class FilterFragment extends DialogFragment {
             highlightRestoredEmojis(view);
         }
     }
+
+    /**
+     * Restores visual state of emoji buttons from persisted selections.
+     *
+     * <p>During filter restoration this:
+     * <ul>
+     * <li>Iterates through all emoji UI elements</li>
+     * <li>Matches buttons to saved mood selections</li>
+     * <li>Applies highlight styling to previously selected emojis</li>
+     * <li>Maintains visual consistency with elevation changes</li>
+     * </ul>
+     *
+     * @param view Root view containing emoji buttons to be validated
+     *
+     */
     private void highlightRestoredEmojis(View view) {
         for (int id : emojiButtonIds) {
             ImageButton emojiButton = view.findViewById(id);
@@ -218,6 +244,15 @@ public class FilterFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Persists current filter configuration:
+     * - Keyword in lowercase
+     * - Time filter selection
+     * - CSV of selected emoji names
+     * @param keyword Search phrase
+     * @param timeFilter Active time range
+     * @param emojiSet Selected mood types
+     */
     private void saveFilters(String keyword, String timeFilter, HashSet<String> emojiSet) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -232,10 +267,9 @@ public class FilterFragment extends DialogFragment {
     }
 
     /**
-     * Determines if the given mood event occurred in the current month.
-     *
-     * @param event The mood event to check.
-     * @return {@code true} if the event occurred this month, {@code false} otherwise.
+     * Date range validation for current month
+     * @param event Event to check
+     * @return True if event occurred in current calendar month
      */
     public boolean month(MoodEvent event){
         LocalDate currentDate = LocalDate.now();
@@ -249,10 +283,9 @@ public class FilterFragment extends DialogFragment {
     }
 
     /**
-     * Determines if the given mood event occurred in the current week.
-     *
-     * @param event The mood event to check.
-     * @return {@code true} if the event occurred this week, {@code false} otherwise.
+     * Date range validation for rolling 7-day window
+     * @param event Event to check
+     * @return True if within last 6 days including today
      */
     public boolean week(MoodEvent event) {
         LocalDate currentDate = LocalDate.now();
@@ -265,11 +298,10 @@ public class FilterFragment extends DialogFragment {
 
 
     /**
-     * Checks whether the given mood event matches the search keyword.
-     *
-     * @param event   The mood event to check.
-     * @param keyword The search keyword.
-     * @return {@code true} if the event matches the keyword, {@code false} otherwise.
+     * Regex-based whole-word search across multiple event fields
+     * @param event MoodEvent to evaluate
+     * @param keyword Search phrase (lowercase)
+     * @return True if any field contains exact word match
      */
     public boolean matchesSearch(MoodEvent event, String keyword) {
         if (keyword.isEmpty()) {
@@ -300,9 +332,8 @@ public class FilterFragment extends DialogFragment {
     }
 
     /**
-     * Highlights the selected emoji button and adds or removes it from the selected set.
-     *
-     * @param selected The selected emoji button.
+     * Toggles emoji button visual state and selection tracking
+     * @param selected Button receiving click interaction
      */
     private void highlightSelectedEmoji(ImageButton selected) {
         int buttonId = selected.getId();
@@ -326,10 +357,9 @@ public class FilterFragment extends DialogFragment {
     }
 
     /**
-     * Retrieves the mood type corresponding to the given button ID.
-     *
-     * @param buttonId The ID of the selected emoji button.
-     * @return The corresponding {@link MoodType}, or {@code null} if not found.
+     * Maps view IDs to MoodType enum values
+     * @param buttonId Clicked view resource ID
+     * @return Corresponding MoodType or null
      */
     public MoodType getMoodForButtonId(int buttonId) {
 

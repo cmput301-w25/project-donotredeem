@@ -22,6 +22,18 @@ import com.example.donotredeem.R;
 
 import java.util.List;
 
+/**
+ * Fragment displaying a user's follower list with dismissal functionality.
+ * Handles asynchronous loading of social connections through a dedicated profile manager.
+ *
+ * <p>Key features:
+ * <ul>
+ * <li>Displays scrollable list of follower usernames</li>
+ * <li>Implements safe fragment dismissal mechanics</li>
+ * <li>Handles data loading states and errors</li>
+ * <li>Maintains separation between UI and data layer</li>
+ * </ul>
+ */
 public class FollowerFragment extends Fragment {
     private RecyclerView followersListView;
     private List<String> follower_list;
@@ -30,6 +42,11 @@ public class FollowerFragment extends Fragment {
     private String username;
     private ImageView closeButton;  // Declare the close button
 
+    /**
+     * Factory method for fragment instantiation
+     * @param username User identifier to load followers for
+     * @return Pre-configured fragment instance
+     */
     public static FollowerFragment newInstance(String username) {
         FollowerFragment fragment = new FollowerFragment();
         Bundle args = new Bundle();
@@ -38,6 +55,10 @@ public class FollowerFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Initializes fragment with username argument
+     * @param savedInstanceState Persisted state bundle
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +67,18 @@ public class FollowerFragment extends Fragment {
         }
     }
 
+    /**
+     * Configures fragment UI components and data flow:
+     * - Inflates follower list layout
+     * - Initializes RecyclerView and adapter
+     * - Sets up click listeners for dismissal
+     * - Triggers follower data loading
+     *
+     * @param inflater Layout inflation service
+     * @param container Parent view container
+     * @param savedInstanceState Persisted state bundle
+     * @return Configured view hierarchy
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -66,8 +99,18 @@ public class FollowerFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Loads follower relationships through UserProfileManager
+     * @param username Target user identifier
+     */
     private void loadRequests(String username) {
         userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
+
+            /**
+             * Handles successful follower data loading
+             * @param user Complete user profile with followers
+             * @return Always returns false indicating no custom handling
+             */
             @Override
             public boolean onUserProfileFetched(User user) {
                 follower_list = user.getFollowerList();
@@ -84,12 +127,20 @@ public class FollowerFragment extends Fragment {
                 return false;
             }
 
+            /**
+             * Manages profile load failures
+             * @param e Exception containing error details
+             */
             @Override
             public void onUserProfileFetchError(Exception e) {
                 Toast.makeText(requireContext(), "Error loading followers", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    /**
+     * Cleans up fragment resources and removes from navigation stack
+     */
     private void dismissFragment() {
         if (getParentFragmentManager() != null) {
             getParentFragmentManager().popBackStack();

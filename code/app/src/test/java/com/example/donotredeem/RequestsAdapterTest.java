@@ -24,6 +24,7 @@ import com.google.firebase.storage.FirebaseStorage;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.jupiter.params.shadow.com.univocity.parsers.annotations.Copy;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -39,6 +40,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+
+/**
+ * Unit tests for the {@link RequestAdapter} class focusing on follow request handling.
+ * Verifies interaction with Firebase services and proper callback handling through mocked dependencies.
+ *
+ * <p>Key test scenarios include:
+ * <ul>
+ *     <li>Accepting follow requests through UserProfileManager integration</li>
+ *     <li>Declining follow requests with proper Firebase updates</li>
+ *     <li>Mocked Firebase environment configuration</li>
+ * </ul>
+ *
+ * <p>Uses extensive Mockito mocking to isolate adapter functionality from Android/Firebase dependencies.
+ */
 
 @RunWith(MockitoJUnitRunner.class)
 public class RequestsAdapterTest {
@@ -91,6 +107,18 @@ public class RequestsAdapterTest {
     private RequestAdapter requestAdapter;
     private List<String> testRequests;
 
+    /**
+     * Configures test environment before each test:
+     * <ul>
+     *     <li>Initializes mocked Firebase instances (Firestore, Storage, App)</li>
+     *     <li>Sets up test follow request list with "testUser1" and "testUser2"</li>
+     *     <li>Configures SharedPreferences mock for current user context</li>
+     *     <li>Creates custom RequestAdapter with overridden view methods</li>
+     *     <li>Injects mocked dependencies via reflection</li>
+     * </ul>
+     *
+     * @throws Exception if reflection-based dependency injection fails
+     */
     @Before
     public void setUp() throws Exception {
         try (MockedStatic<FirebaseApp> firebaseAppMockedStatic = Mockito.mockStatic(FirebaseApp.class);
@@ -131,6 +159,12 @@ public class RequestsAdapterTest {
         }
     }
 
+    /**
+     * Injects mocked dependencies into private adapter fields via reflection.
+     * Required for testing classes with non-public dependency fields.
+     *
+     * @throws Exception if field access/modification fails
+     */
     private void injectMockDependencies() throws Exception {
         Field userProfileManagerField = RequestAdapter.class.getDeclaredField("userProfileManager");
         userProfileManagerField.setAccessible(true);
@@ -141,6 +175,17 @@ public class RequestsAdapterTest {
         dbField.set(requestAdapter, mockFirestore);
     }
 
+    /**
+     * Tests successful follow request acceptance workflow.
+     * Verifies:
+     * <ul>
+     *     <li>UserProfileManager.acceptFollowRequest() is called with correct parameters</li>
+     *     <li>Success callback triggers appropriate adapter updates</li>
+     *     <li>Firebase Firestore interactions occur as expected</li>
+     * </ul>
+     *
+     * @throws Exception if reflection-based method access fails
+     */
     @Test
     public void testHandleAccept() throws Exception {
         doAnswer((Answer<Void>) invocation -> {
@@ -167,6 +212,17 @@ public class RequestsAdapterTest {
         );
     }
 
+    /**
+     * Tests follow request decline functionality.
+     * Verifies:
+     * <ul>
+     *     <li>UserProfileManager.declineFollowRequest() is invoked with proper arguments</li>
+     *     <li>Success callback updates adapter state correctly</li>
+     *     <li>Firebase document updates are executed appropriately</li>
+     * </ul>
+     *
+     * @throws Exception if reflection-based method access fails
+     */
     @Test
     public void testHandleDecline() throws Exception {
         doAnswer((Answer<Void>) invocation -> {

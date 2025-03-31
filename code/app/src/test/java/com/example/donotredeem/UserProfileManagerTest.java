@@ -24,6 +24,20 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+/**
+ * Unit tests for the {@link UserProfileManager} class, verifying Firestore interactions
+ * for user profile management operations. Tests focus on successful execution paths
+ * and proper document updates in Firebase Firestore.
+ *
+ * <p>Key test scenarios include:
+ * <ul>
+ *     <li>Follow request acceptance/declination workflows</li>
+ *     <li>User profile data retrieval (existing/non-existent users)</li>
+ *     <li>Follower/following list management operations</li>
+ * </ul>
+ *
+ * <p>Uses Mockito to mock Firebase Firestore components for isolated testing.
+ */
 public class UserProfileManagerTest {
 
     private UserProfileManager userProfileManager;
@@ -55,6 +69,14 @@ public class UserProfileManagerTest {
     @Mock
     private UserProfileManager.OnUserProfileFetchListener mockFetchListener;
 
+    /**
+     * Initializes test environment before each test:
+     * <ul>
+     *     <li>Creates Mockito mocks for Firebase services</li>
+     *     <li>Configures Firestore collection/document reference mocking</li>
+     *     <li>Initializes UserProfileManager with mocked dependencies</li>
+     * </ul>
+     */
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -67,6 +89,14 @@ public class UserProfileManagerTest {
         userProfileManager.storage = mockStorage;
     }
 
+    /**
+     * Tests successful follow request acceptance.
+     * Verifies:
+     * <ul>
+     *     <li>Current user's follower_list and requests fields are updated</li>
+     *     <li>Firestore document update operations are executed</li>
+     * </ul>
+     */
     @Test
     public void testAcceptFollowRequest_Success() {
         // Arrange
@@ -94,6 +124,14 @@ public class UserProfileManagerTest {
         );
     }
 
+    /**
+     * Tests successful follow request declination.
+     * Verifies:
+     * <ul>
+     *     <li>Both current user's requests and requester's requested fields are updated</li>
+     *     <li>Separate document references are used for current user and requester</li>
+     * </ul>
+     */
     @Test
     public void testDeclineFollowRequest_Success() {
         // Arrange
@@ -124,6 +162,15 @@ public class UserProfileManagerTest {
         verify(mockRequesterDocRef).update(eq("requested"), any());
     }
 
+    /**
+     * Tests successful retrieval of existing user profile.
+     * Verifies:
+     * <ul>
+     *     <li>Firestore document snapshot is converted to User object</li>
+     *     <li>All profile fields are properly mapped (username, email, bio, etc.)</li>
+     *     <li>onUserProfileFetched callback is triggered with User object</li>
+     * </ul>
+     */
     @Test
     public void testGetUserProfile_Success() {
         // Arrange
@@ -154,6 +201,14 @@ public class UserProfileManagerTest {
         verify(mockFetchListener).onUserProfileFetched(any(User.class));
     }
 
+    /**
+     * Tests handling of non-existent user profiles.
+     * Verifies:
+     * <ul>
+     *     <li>onUserProfileFetched callback is triggered with null</li>
+     *     <li>Non-existent document snapshot is properly handled</li>
+     * </ul>
+     */
     @Test
     public void testGetUserProfile_DocumentDoesNotExist() {
         // Arrange
@@ -177,9 +232,14 @@ public class UserProfileManagerTest {
         verify(mockFetchListener).onUserProfileFetched(null);
     }
 
-
-
-
+    /**
+     * Tests removal from following list.
+     * Verifies:
+     * <ul>
+     *     <li>following_list and following count are updated</li>
+     *     <li>Firestore arrayRemove operation is executed</li>
+     * </ul>
+     */
     @Test
     public void testRemoveFromFollowingList_Success() {
         // Arrange
@@ -204,6 +264,14 @@ public class UserProfileManagerTest {
         );
     }
 
+    /**
+     * Tests removal from followers list.
+     * Verifies:
+     * <ul>
+     *     <li>follower_list and followers count are updated</li>
+     *     <li>Firestore arrayRemove operation is executed</li>
+     * </ul>
+     */
     @Test
     public void testRemoveFromFollowersList_Success() {
         // Arrange

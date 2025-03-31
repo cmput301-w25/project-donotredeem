@@ -22,6 +22,10 @@ import com.example.donotredeem.R;
 
 import java.util.List;
 
+/**
+ * Fragment displaying a user's following list with interactive dismissal capabilities.
+ * Handles both UI presentation and data loading through a dedicated UserProfileManager.
+ */
 public class FollowingFragment extends Fragment {
     private RecyclerView followingListView;
     private List<String> following_list;
@@ -30,6 +34,11 @@ public class FollowingFragment extends Fragment {
     private String username;
     private ImageView closeButton;  // Declare the close button
 
+    /**
+     * Factory method for creating fragment instances with username argument
+     * @param username User identifier to load following list for
+     * @return Configured fragment instance
+     */
     public static FollowingFragment newInstance(String username) {
         FollowingFragment fragment = new FollowingFragment();
         Bundle args = new Bundle();
@@ -38,6 +47,10 @@ public class FollowingFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Initializes fragment with username argument
+     * @param savedInstanceState Persisted state bundle
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +59,18 @@ public class FollowingFragment extends Fragment {
         }
     }
 
+    /**
+     * Configures fragment UI components and data loading:
+     * - Inflates following list layout
+     * - Initializes RecyclerView and adapter
+     * - Sets up click listeners for dismissal
+     * - Triggers following list loading
+     *
+     * @param inflater Layout inflater service
+     * @param container Parent view container
+     * @param savedInstanceState Persisted state bundle
+     * @return Configured view hierarchy
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -62,14 +87,15 @@ public class FollowingFragment extends Fragment {
             // Consume the click event
         });
 
-//        // Get current logged-in user
-//        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-//        String currentUser = sharedPreferences.getString("username", "");
 
         loadRequests(username);
         return view;
     }
 
+    /**
+     * Loads following relationships through UserProfileManager
+     * @param username Target user identifier
+     */
     private void loadRequests(String username) {
         userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
             @Override
@@ -88,12 +114,22 @@ public class FollowingFragment extends Fragment {
                 return false;
             }
 
+            /**
+             * Handles user profile fetch failures by displaying user-friendly notifications.
+             *
+             * @param e The exception containing technical details of the failure.
+             *          While not currently logged, available for debugging enhancements.
+             */
             @Override
             public void onUserProfileFetchError(Exception e) {
                 Toast.makeText(requireContext(), "Error loading followers", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
+    /**
+     * Cleans up fragment resources and removes from back stack
+     */
     private void dismissFragment() {
         if (getParentFragmentManager() != null) {
             getParentFragmentManager().popBackStack();

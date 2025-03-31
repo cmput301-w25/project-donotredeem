@@ -50,8 +50,18 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * Fragment for editing the user's profile details such as username, email, phone number, and bio.
- * Retrieves user data from SharedPreferences and Firestore, allowing updates and saving changes.
+ * Fragment handling comprehensive user profile editing capabilities including:
+ * - Profile image management (capture/upload)
+ * - Personal detail updates (contact, bio, etc.)
+ * - Secure credential modifications
+ * - Account deletion with data cleanup
+ *
+ * <p>Integrates multiple Firebase services:
+ * <ul>
+ * <li>Firestore for profile data storage</li>
+ * <li>Storage for image assets</li>
+ * <li>Authentication for account operations</li>
+ * </ul>
  */
 public class EditProfile extends Fragment {
 
@@ -74,6 +84,12 @@ public class EditProfile extends Fragment {
     private Button delete;
     User userProfile = new User();
 
+    /**
+     * Initializes core components:
+     * - Firebase service connections
+     * - Camera/Gallery result handlers
+     * - Permission request systems
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -138,7 +154,6 @@ public class EditProfile extends Fragment {
             }
             @Override
             public void onUserProfileFetchError(Exception e) {
-                //oast.makeText(getContext(), "Failed to fetch profile", Toast.LENGTH_SHORT).show();
                 Snackbar.make(getView(), "Failed to fetch profile", Snackbar.LENGTH_SHORT).show();
             }
         });
@@ -164,7 +179,6 @@ public class EditProfile extends Fragment {
             @Override
             public void onClick(View v) {
                 if (editUsername.getText().toString().isEmpty() || editEmail.getText().toString().isEmpty()) {
-                    //Toast.makeText(getContext(), "Please enter name and email", Toast.LENGTH_SHORT).show();
                     Snackbar.make(getView(), "Please enter name and email", Snackbar.LENGTH_SHORT).show();
                 }
                 // Get input values
@@ -259,6 +273,11 @@ public class EditProfile extends Fragment {
 
     }
 
+    /**
+     * Displays image source selection dialog with:
+     * - Camera capture option
+     * - Gallery selection option
+     */
     private void showSourceDialog() {
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(requireContext());
         LayoutInflater inflater = requireActivity().getLayoutInflater();
@@ -369,6 +388,11 @@ public class EditProfile extends Fragment {
         galleryLauncher.launch(galleryOpenIntent);
     }
 
+    /**
+     * Creates temporary image file for camera capture
+     * @return Secure file reference for image storage
+     * @throws IOException On file creation failure
+     */
     private File createImageFile() throws IOException {
 
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -384,6 +408,18 @@ public class EditProfile extends Fragment {
 
         return image;
     }
+
+    /**
+     * Handles image upload lifecycle:
+     * 1. Generates unique storage filename
+     * 2. Uploads to Firebase Storage
+     * 3. Updates Firestore profile on success
+     * 4. Shows visual feedback on failures
+     *
+     * @param imageUri Local image URI to upload
+     * @param u User profile to update
+     * @param up Profile manager instance
+     */
     private void uploadImageAndSaveMood(Uri imageUri, User u, UserProfileManager up) {
         String username = u.getUsername();
 
@@ -403,6 +439,11 @@ public class EditProfile extends Fragment {
                         Snackbar.make(getView(), "Image upload failed!", Snackbar.LENGTH_SHORT).show());
     }
 
+    /**
+     * Securely transitions to login screen:
+     * - Clears activity stack
+     * - Prevents back navigation
+     */
     private void redirectToLogin() {
         Intent intent = new Intent(getActivity(), LogIn.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
