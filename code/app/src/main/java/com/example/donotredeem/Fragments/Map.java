@@ -199,6 +199,7 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
                         List<String> FollowedUsers = (List<String>) userDoc.get("following_list");
 
                         if (FollowedUsers != null && !FollowedUsers.isEmpty()) {
+                            Log.e("MAP", "FetchFollowingUsers: " + FollowedUsers.size());
                             FetchPublicEvents(FollowedUsers,limit);
                         } else {
                             updateMapMarkers(new ArrayList<>(),"Friends");
@@ -247,7 +248,7 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
                 moodsFetched[0]++;
 
                 if (moodsFetched[0] == moodRefs.size()) {
-                    Log.e("HEER", "enetring if" );
+                    Log.e("MAP", "If condition" );
 
                     if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
                             == PackageManager.PERMISSION_GRANTED) {
@@ -345,7 +346,6 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
      */
     private void FetchPublicEvents(List<String> FollowedUsers, Boolean limit) { //freinds method 2
         if (!isAdded()) return; // Stop if fragment is not attached
-        Log.e("HEER", "Friends 2 cbeing callaed" );
         ArrayList<MoodEvent> tempList = new ArrayList<>();
         final int[] fetchedCount = {0}; // track total moods fetched
 
@@ -361,8 +361,8 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
                         if (querySnapshot != null && !querySnapshot.isEmpty()) {
                             DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
                             List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
-
-                            if (moodRefsList != null && !moodRefsList.isEmpty()) {;
+                            Log.e("MAP", "LIST MOODREF" + userDoc.get("username") + moodRefsList.size() );
+                            if (moodRefsList != null && !moodRefsList.isEmpty()) {
                                 FetchMoods(moodRefsList, tempList, FollowedUsers.size(), fetchedCount, limit);
                             } else {
                                 fetchedCount[0]++;
@@ -478,6 +478,7 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
     private void updateMapMarkers(ArrayList<MoodEvent> moods_list, String display) {
         if (mMap == null || moods_list.isEmpty()) {
             Log.e("MAP", "updateMapMarkers: No mood events to display.");
+
 
 
         }
