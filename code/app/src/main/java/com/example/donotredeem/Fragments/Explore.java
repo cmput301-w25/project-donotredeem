@@ -27,6 +27,16 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment providing user discovery functionality with real-time search capabilities.
+ * Features include:
+ * <ul>
+ * <li>Full-text search across all registered users</li>
+ * <li>Case-insensitive username filtering</li>
+ * <li>Dynamic result updating during typing</li>
+ * <li>Navigation to user profile views</li>
+ * </ul>
+ */
 public class Explore extends Fragment {
 
     private List<String> displaylist = new ArrayList<>();
@@ -37,6 +47,16 @@ public class Explore extends Fragment {
     ImageView back_button;
     private String username;
 
+
+    /**
+     * Initializes exploration interface and data loading:
+     * - Configures RecyclerView with empty adapter
+     * - Sets up Firestore data connection
+     * - Implements search bar text monitoring
+     * - Handles back navigation
+     *
+     * @return Configured exploration view hierarchy
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -78,6 +98,10 @@ public class Explore extends Fragment {
         return view;
     }
 
+    /**
+     * Handles user profile selection by launching detail view
+     * @param username Selected user's identifier
+     */
     private void onItemClicked(String username) {
         SearchedUser searchedUserFragment = SearchedUser.newInstance(username);
         FragmentTransaction transaction = requireActivity().getSupportFragmentManager().beginTransaction();
@@ -86,6 +110,12 @@ public class Explore extends Fragment {
         transaction.commit();
     }
 
+    /**
+     * Loads all registered usernames from Firestore:
+     * - Excludes current user from results
+     * - Maintains separate source/filtered lists
+     * - Automatically updates UI on data load
+     */
     private void fetchUsernamesFromFirestore() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection("User").get().addOnCompleteListener(task -> {
@@ -106,6 +136,15 @@ public class Explore extends Fragment {
         });
     }
 
+    /**
+     * Filters user list based on search query:
+     * - Uses contains() match for partial matching
+     * - Maintains case insensitivity
+     * - Clears previous filters on empty query
+     * - Updates adapter with safe list copy
+     *
+     * @param query Search term entered by user
+     */
     public void filterList(String query) {
         List<String> filtered = new ArrayList<>();
         if (query.isEmpty()) {

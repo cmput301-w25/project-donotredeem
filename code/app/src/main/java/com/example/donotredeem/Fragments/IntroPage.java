@@ -1,32 +1,45 @@
 package com.example.donotredeem.Fragments;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.AppComponentFactory;
+
 import android.content.Intent;
 import android.graphics.Path;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.NoCopySpan;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.donotredeem.LogIn;
 import com.example.donotredeem.R;
-import com.example.donotredeem.Register;
 
+/**
+ * Introductory activity displaying an animated emotional spectrum visualization.
+ * Features 8 core emotions represented as emojis following a complex path animation
+ * before transitioning to the login screen.
+ *
+ * <p>Animation Details:
+ * <ul>
+ * <li>Uses quadratic Bézier curves for smooth bounce effects</li>
+ * <li>Staggered start delays create wave-like motion</li>
+ * <li>Linear interpolator maintains constant speed</li>
+ * <li>4500ms total duration matches transition timeout</li>
+ * </ul>
+ */
 public class IntroPage extends AppCompatActivity {
 
+    /**
+     * Configures introductory animation sequence and automatic transition.
+     *
+     * <p>Implementation Flow:
+     * 1. Define complex path using consecutive quadratic curves
+     * 2. Create staggered ObjectAnimators for each emoji
+     * 3. Start parallel animations with sequential delays
+     * 4. Schedule login screen transition post-animation
+     *
+     * @param savedInstanceState Persisted state bundle (unused in this splash screen)
+     */
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.intro_page);
@@ -35,10 +48,8 @@ public class IntroPage extends AppCompatActivity {
         ImageView sad = findViewById(R.id.intro_sad);
         ImageView angry = findViewById(R.id.intro_angry);
         ImageView shameful = findViewById(R.id.intro_shameful);
-        ImageView disgusted = findViewById(R.id.intro_disgusted);
         ImageView confused = findViewById(R.id.intro_confused);
         ImageView shy = findViewById(R.id.intro_shy);
-        ImageView fear = findViewById(R.id.intro_fear);
         ImageView tired = findViewById(R.id.intro_tired);
         ImageView surprised = findViewById(R.id.intro_surprised);
 
