@@ -79,6 +79,7 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -178,6 +179,13 @@ public class EditMoodEvent extends Fragment {
         // Setup camera launcher
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
+                File imageFile = new File(imageUri.getPath());
+
+                if (imageFile.length() > 65536) {
+                    Snackbar.make(getView(), "Image too large. Please capture a smaller image.", Snackbar.LENGTH_SHORT).show();
+                    imageUri = null;
+                    return;
+                }
                 image.setImageURI(imageUri);
             }
         });
@@ -186,6 +194,17 @@ public class EditMoodEvent extends Fragment {
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
                 imageUri = result.getData().getData();
+                try (InputStream inputStream = requireContext().getContentResolver().openInputStream(imageUri)) {
+                    int fileSize = inputStream.available();
+                    if (fileSize > 65536) {
+                        Snackbar.make(getView(), "Image too large. Please select a smaller image.", Snackbar.LENGTH_SHORT).show();
+                        imageUri = null;
+                        return;
+                    }
+                } catch (IOException e) {
+                    Log.e("GalleryError", "Error checking image size", e);
+                }
+
                 image.setImageURI(imageUri);
             }
         });
@@ -330,21 +349,6 @@ public class EditMoodEvent extends Fragment {
 
         }
 
-        description.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String input = s.toString().trim();
-                int wordCount = input.isEmpty() ? 0 : input.split("\\s+").length;
-                int charCount = input.length();
-                if (wordCount > 3 && charCount > 20) {
-                    description.setError("Max 3 words or less than 20 characters");
-                }
-            }
-            @Override
-            public void afterTextChanged(Editable s) { }
-        });
 
         mediaUpload.setOnClickListener(v -> showSourceDialog());
 

@@ -35,8 +35,6 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class FollowTest {
-    //follow a person button
-    //follow list me person
 
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
