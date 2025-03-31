@@ -1,47 +1,36 @@
 package com.example.donotredeem.Fragments;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.donotredeem.All_following_moods;
 import com.example.donotredeem.LogIn;
 import com.example.donotredeem.MainPageAdapter;
 import com.example.donotredeem.MoodEvent;
-import com.example.donotredeem.MoodEventAdapter;
-import com.example.donotredeem.MoodType;
+
 import com.example.donotredeem.R;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.auth.User;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -318,26 +307,6 @@ public class MainPage extends Fragment implements FilterFragment.FilterMoodListe
         updateDisplayedMoods();
     }
 
-    private ArrayList<MoodEvent> sort(ArrayList<MoodEvent> moodHistoryList){
-        ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
-        sortedList.sort((event1, event2) -> {
-            try {
-                LocalDate date1 = parseStringToDate(event1.getDate());
-                LocalDate date2 = parseStringToDate(event2.getDate());
-
-                int dateCompare = date2.compareTo(date1);
-                if (dateCompare != 0) return dateCompare;
-
-                LocalTime time1 = parseStringToTime(event1.getTime());
-                LocalTime time2 = parseStringToTime(event2.getTime());
-                return time2.compareTo(time1); // Latest time first
-            } catch (Exception e) {
-                Log.e("Sorting", "Error comparing events", e);
-                return 0; // If any error occurs, return 0 (no change)
-            }
-        });
-        return sortedList;
-    }
 
     public LocalDate parseStringToDate(String dateString) {
         try {

@@ -99,7 +99,6 @@ public class Explore extends Fragment {
                 // Update both lists
                 filteredList.clear();
                 filteredList.addAll(displaylist);
-//                adapter.updateList(new ArrayList<>(filteredList)); // Pass copy
             }
             else {
                 Log.e("Explore", "Error fetching usernames", task.getException());
@@ -110,7 +109,6 @@ public class Explore extends Fragment {
     public void filterList(String query) {
         List<String> filtered = new ArrayList<>();
         if (query.isEmpty()) {
-//            filtered.addAll(displaylist);
         } else {
             for (String username : displaylist) {
                 if (username.toLowerCase().contains(query.toLowerCase())) {

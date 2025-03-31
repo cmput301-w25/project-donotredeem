@@ -38,6 +38,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment displaying detailed profile of a searched user with social interaction capabilities.
+ *
+ * <p>Key functionalities include:
+ * <ul>
+ * <li>Displaying user profile information (username, bio, follower counts)</li>
+ * <li>Showing recent mood history in chronological order</li>
+ * <li>Handling follow/unfollow operations with request management</li>
+ * <li>Real-time profile updates using Firestore listeners</li>
+ * <li>Navigation to follower/following lists</li>
+ * </ul>
+ */
 public class SearchedUser extends Fragment {
 
     private static final String ARG_USERNAME = "username";
@@ -54,6 +66,12 @@ public class SearchedUser extends Fragment {
     private ListenerRegistration userDataListener; // Add this line
 
 
+    /**
+     * Factory method to create new SearchedUser fragment instances
+     *
+     * @param username The username of the profile to display
+     * @return Configured SearchedUser fragment with username argument
+     */
     public static SearchedUser newInstance(String username) {
         SearchedUser fragment = new SearchedUser();
         Bundle args = new Bundle();
@@ -70,6 +88,9 @@ public class SearchedUser extends Fragment {
         }
     }
 
+    /**
+     * Inflates and configures the fragment's user interface
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -239,105 +260,113 @@ public class SearchedUser extends Fragment {
         return view;
     }
 
-
-private void fetchUserData(String username) {
-    if (db == null) {
-        db = FirebaseFirestore.getInstance(); // Reinitialize if null
-    }
-    DocumentReference userRef = db.collection("User").document(username);
-
-    // Add metadata listener for offline support
-    userDataListener = userRef.addSnapshotListener(MetadataChanges.INCLUDE, (documentSnapshot, error) -> {
-        if (!isAdded()) return; // Critical check here
-        if (error != null) {
-            Log.e("ProfilePage", "Listen error", error);
-            return;
+    /**
+     * Maintains real-time profile data connection with Firestore
+     *
+     * @param username Target user's identifier
+     */
+    private void fetchUserData(String username) {
+        if (db == null) {
+            db = FirebaseFirestore.getInstance(); // Reinitialize if null
         }
+        DocumentReference userRef = db.collection("User").document(username);
 
-        if (documentSnapshot != null && documentSnapshot.exists()) {
-            boolean isFromCache = documentSnapshot.getMetadata().isFromCache();
-
-            // Parse with new constructor
-            int moods = documentSnapshot.getLong("moods") != null ?
-                    documentSnapshot.getLong("moods").intValue() : 0;
-
-            List<DocumentReference> moodRefs = (List<DocumentReference>)
-                    documentSnapshot.get("MoodRef");
-
-            User user = new User(
-                    documentSnapshot.getId(),
-                    documentSnapshot.getString("bio"),
-                    documentSnapshot.getString("pfp"),
-                    (List<String>) documentSnapshot.get("follower_list"),
-                    (List<String>) documentSnapshot.get("following_list"),
-                    (List<String>) documentSnapshot.get("requests"),
-                    (List<DocumentReference>) documentSnapshot.get("MoodRef"),
-                    moods
-
-            );
-
-            // Update UI
-            usernameTextView.setText(user.getUsername());
-            bioTextView.setText(user.getBio());
-            // Inside onUserProfileFetched in fetchUserData:
-            followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
-            Log.d("MyTag", "User following count: " + user.getFollowing());
-            followingTextView.setText(String.valueOf(user.getFollowing()));
-
-            String profilePicUrl = user.getProfilePictureUrl();
-            Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
-
-            moodTextView.setText(String.valueOf(user.getMoods()));
-            if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
-                Log.d("pls", "onUserProfileFetched: bro this is not null");
-                Context context = getContext();
-                if (context != null) {
-                    Glide.with(requireContext())
-                            .load(user.getProfilePictureUrl())
-                            //                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .apply(new RequestOptions().circleCrop())
-                            .into(profileImage);}
-            } else {
-                profileImage.setImageResource(R.drawable.user);
+        // Add metadata listener for offline support
+        userDataListener = userRef.addSnapshotListener(MetadataChanges.INCLUDE, (documentSnapshot, error) -> {
+            if (!isAdded()) return; // Critical check here
+            if (error != null) {
+                Log.e("ProfilePage", "Listen error", error);
+                return;
             }
-            if (isAdded()) {
-                SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-                String loggedInUsername = sharedPreferences.getString("username", null);
-                Log.d("SearchedUser", "Logged-in username: " + loggedInUsername);
+
+            if (documentSnapshot != null && documentSnapshot.exists()) {
+                boolean isFromCache = documentSnapshot.getMetadata().isFromCache();
+
+                // Parse with new constructor
+                int moods = documentSnapshot.getLong("moods") != null ?
+                        documentSnapshot.getLong("moods").intValue() : 0;
+
+                List<DocumentReference> moodRefs = (List<DocumentReference>)
+                        documentSnapshot.get("MoodRef");
+
+                User user = new User(
+                        documentSnapshot.getId(),
+                        documentSnapshot.getString("bio"),
+                        documentSnapshot.getString("pfp"),
+                        (List<String>) documentSnapshot.get("follower_list"),
+                        (List<String>) documentSnapshot.get("following_list"),
+                        (List<String>) documentSnapshot.get("requests"),
+                        (List<DocumentReference>) documentSnapshot.get("MoodRef"),
+                        moods
+
+                );
+
+                // Update UI
+                usernameTextView.setText(user.getUsername());
+                bioTextView.setText(user.getBio());
+                // Inside onUserProfileFetched in fetchUserData:
+                followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
+                Log.d("MyTag", "User following count: " + user.getFollowing());
+                followingTextView.setText(String.valueOf(user.getFollowing()));
+
+                String profilePicUrl = user.getProfilePictureUrl();
+                Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
+
+                moodTextView.setText(String.valueOf(user.getMoods()));
+                if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
+                    Log.d("pls", "onUserProfileFetched: bro this is not null");
+                    Context context = getContext();
+                    if (context != null) {
+                        Glide.with(requireContext())
+                                .load(user.getProfilePictureUrl())
+                                //                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .apply(new RequestOptions().circleCrop())
+                                .into(profileImage);}
+                } else {
+                    profileImage.setImageResource(R.drawable.user);
+                }
+                if (isAdded()) {
+                    SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+                    String loggedInUsername = sharedPreferences.getString("username", null);
+                    Log.d("SearchedUser", "Logged-in username: " + loggedInUsername);
 
 
-                if (loggedInUsername != null) {
-                    // Check follow status
-                    List<String> followerList = user.getFollowerList() != null ? user.getFollowerList() : new ArrayList<>();
-                    List<String> requestsList = user.getRequests() != null ? user.getRequests() : new ArrayList<>();
-                    Log.d("SearchedUser", "Follower List: " + followerList.toString());
+                    if (loggedInUsername != null) {
+                        // Check follow status
+                        List<String> followerList = user.getFollowerList() != null ? user.getFollowerList() : new ArrayList<>();
+                        List<String> requestsList = user.getRequests() != null ? user.getRequests() : new ArrayList<>();
+                        Log.d("SearchedUser", "Follower List: " + followerList.toString());
 
-                    requireActivity().runOnUiThread(() -> {
-                        if (followerList.contains(loggedInUsername)) {
-                            Log.d("MyTag", "This is a debug message77777777777777777.");
-                            // Already following
-                            Follow.setText("Following");
-                            fetchUserMoodEvents(username, 1);
-                            Follow.setEnabled(true);
-                        } else if (requestsList.contains(loggedInUsername)) {
-                            // Request pending
-                            Follow.setText("Requested");
-                            Follow.setEnabled(true);
-                        } else {
-                            // Not following
-                            Follow.setText("Follow");
-                            Follow.setEnabled(true);
-                            fetchUserMoodEvents(username, 0);
-                        }
-                    });
+                        requireActivity().runOnUiThread(() -> {
+                            if (followerList.contains(loggedInUsername)) {
+                                Log.d("MyTag", "This is a debug message77777777777777777.");
+                                // Already following
+                                Follow.setText("Following");
+                                fetchUserMoodEvents(username, 1);
+                                Follow.setEnabled(true);
+                            } else if (requestsList.contains(loggedInUsername)) {
+                                // Request pending
+                                Follow.setText("Requested");
+                                Follow.setEnabled(true);
+                            } else {
+                                // Not following
+                                Follow.setText("Follow");
+                                Follow.setEnabled(true);
+                                fetchUserMoodEvents(username, 0);
+                            }
+                        });
+                    }
                 }
             }
-        }
-    });
-}
+        });
+    }
 
 
-    // Helper method to update UI after unfollow
+    /**
+     * Updates UI elements after successful unfollow operation
+     * - Resets follow button state
+     * - Decrements displayed follower count
+     */
     private void updateUIAfterUnfollow() {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> {
@@ -350,7 +379,11 @@ private void fetchUserData(String username) {
         }
     }
 
-    // Generic error handler
+    /**
+     * Handles errors during follow operations
+     * @param message Error description
+     * @param e Exception object
+     */
     private void handleError(String message, Exception e) {
         Log.e("SearchedUser", message, e);
         if (getActivity() != null) {
@@ -361,7 +394,12 @@ private void fetchUserData(String username) {
         }
     }
 
-
+    /**
+     * Retrieves and processes mood events for display
+     *
+     * @param username Target user's identifier
+     * @param display 0=limited preview, 1=full history
+     */
     private void fetchUserMoodEvents(String username, int display) {
         if (username == null) {
             Log.e("MoodHistory", "No username found in SharedPreferences");
@@ -386,6 +424,11 @@ private void fetchUserData(String username) {
                 });
     }
 
+    /**
+     * Fetches mood events from Firestore references and processes them for display
+     * @param moodRefs List of Firestore document references to mood events
+     * @param display Display mode (0=limited, 1=full)
+     */
     private void fetchMoodEvents(List<DocumentReference> moodRefs, int display) {
         ArrayList<MoodEvent> tempList = new ArrayList<>();
         final int[] fetchedCount = {0};
@@ -451,8 +494,8 @@ private void fetchUserData(String username) {
     }
 
     /**
-     * Displays the mood events in the list view, either by creating a new adapter
-     * or updating the existing one.
+     * Updates ListView with sorted mood events
+     * @param moodHistoryList List of mood events to display
      */
     private void Display(ArrayList<MoodEvent> moodHistoryList) {
         if (!isAdded() || getContext() == null) {
@@ -485,10 +528,9 @@ private void fetchUserData(String username) {
     }
 
     /**
-     * Parses a string representing a date in "dd/MM/yyyy" format into a LocalDate object.
-     *
-     * @param dateString The date string to be parsed
-     * @return The LocalDate representation of the string, or LocalDate.MIN if parsing fails
+     * Converts date string to LocalDate object
+     * @param dateString Date in "dd/MM/yyyy" format
+     * @return Parsed date or MIN_DATE on failure
      */
     public LocalDate parseStringToDate(String dateString) {
         try {
@@ -501,10 +543,9 @@ private void fetchUserData(String username) {
     }
 
     /**
-     * Parses a string representing a time in "HH:mm[:ss]" format into a LocalTime object.
-     *
-     * @param timeString The time string to be parsed
-     * @return The LocalTime representation of the string, or LocalTime.MIN if parsing fails
+     * Converts time string to LocalTime object
+     * @param timeString Time in "HH:mm" or "HH:mm:ss" format
+     * @return Parsed time or MIN_TIME on failure
      */
     public LocalTime parseStringToTime(String timeString) {
         try {
@@ -518,7 +559,7 @@ private void fetchUserData(String username) {
 
 
     /**
-     * Callback to handle follow check result.
+     * Callback interface for follow status verification results
      */
     public interface OnFollowCheckListener {
         void onFollowCheck(boolean isFollowing);
@@ -569,6 +610,9 @@ private void fetchUserData(String username) {
         });
     }
 
+    /**
+     * Cleans up Firestore listeners when view is destroyed
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();

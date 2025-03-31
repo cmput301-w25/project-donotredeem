@@ -22,6 +22,17 @@ import com.google.firebase.firestore.MetadataChanges;
 
 import java.util.List;
 
+/**
+ * Fragment displaying incoming follow requests with real-time updates.
+ *
+ * <p>Features:
+ * <ul>
+ * <li>Shows list of users who requested to follow the current user</li>
+ * <li>Maintains real-time sync with Firestore database</li>
+ * <li>Handles offline data persistence</li>
+ * <li>Automatically updates UI when requests change</li>
+ * </ul>
+ */
 public class RequestsFragment extends Fragment {
     private ListView requestsListView;
     private List<String> requestsList;
@@ -30,6 +41,11 @@ public class RequestsFragment extends Fragment {
     private FirebaseFirestore db;
     private ListenerRegistration userDataListener;
 
+    /**
+     * Creates and configures the fragment's view hierarchy
+     *
+     * @return Root view for the requests interface
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.requests, container, false);
@@ -44,6 +60,11 @@ public class RequestsFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Initializes real-time request listener for the specified user
+     *
+     * @param username Current logged-in user's username
+     */
     private void loadRequests(String username) {
         if (db == null) {
             db = FirebaseFirestore.getInstance(); // Reinitialize if null
@@ -58,7 +79,6 @@ public class RequestsFragment extends Fragment {
             }
 
             if (documentSnapshot != null && documentSnapshot.exists()) {
-                boolean isFromCache = documentSnapshot.getMetadata().isFromCache();
 
                 // Parse with new constructor
                 int moods = documentSnapshot.getLong("moods") != null ?

@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
@@ -21,16 +20,32 @@ import com.example.donotredeem.R;
 import com.example.donotredeem.SocialSituation;
 
 
-
+/**
+ * Dialog fragment displaying detailed view of a mood event.
+ *
+ * Shows comprehensive information including:
+ * - Emotional state with color-coded background
+ * - Date/time and location details
+ * - Social situation context
+ * - Mood triggers and explanations
+ * - Associated images and privacy status
+ *
+ * Handles dynamic UI element visibility based on data availability
+ */
 public class ViewMood extends DialogFragment {
 
+    /**
+     * Creates and configures the dialog view with mood event details
+     *
+     * @param inflater LayoutInflater to inflate XML layout
+     * @param container Parent view group for fragment's UI
+     * @param savedInstanceState Saved state bundle
+     * @return Configured view displaying mood event details
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.view_mood, container, false);
-
-        CardView MoodCard = view.findViewById(R.id.rounded_bg);
-
 
         // Retrieve arguments
         Bundle arguments = getArguments();
@@ -75,9 +90,9 @@ public class ViewMood extends DialogFragment {
             else
             {privacyImage.setVisibility(View.INVISIBLE);
             privacyText.setVisibility(View.INVISIBLE);}
+
             // Set text values
             moodText.setText(emotionalState);
-
             dateText.setText(date);
             timeText.setText(time);
             placeText.setText(place);
@@ -163,6 +178,12 @@ public class ViewMood extends DialogFragment {
         return view;
     }
 
+    /**
+     * Configures dialog window dimensions on startup
+     *
+     * Ensures proper sizing to accommodate dynamic content
+     *
+     */
     @Override
     public void onStart() {
         super.onStart();

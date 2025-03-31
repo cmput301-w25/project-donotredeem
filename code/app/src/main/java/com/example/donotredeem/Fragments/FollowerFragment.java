@@ -62,10 +62,6 @@ public class FollowerFragment extends Fragment {
             // Consume the click event
         });
 
-//        // Get current logged-in user
-//        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-//        String currentUser = sharedPreferences.getString("username", "");
-
         loadRequests(username);
         return view;
     }

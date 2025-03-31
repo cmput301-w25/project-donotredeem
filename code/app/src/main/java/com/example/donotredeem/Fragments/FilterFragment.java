@@ -3,13 +3,9 @@ package com.example.donotredeem.Fragments;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -19,20 +15,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.donotredeem.MoodEvent;
-import com.example.donotredeem.MoodEventAdapter;
 import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.WeekFields;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Locale;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class FilterFragment extends DialogFragment {
@@ -265,16 +254,6 @@ public class FilterFragment extends DialogFragment {
      * @param event The mood event to check.
      * @return {@code true} if the event occurred this week, {@code false} otherwise.
      */
-//    private boolean week(MoodEvent event){
-//        LocalDate currentDate = LocalDate.now();
-//        LocalDate eventDate = parseStringToDate(event.getDate());
-//
-//        // Get week of year using system's week definition
-//        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-//
-//        return currentDate.getYear() == eventDate.getYear() &&
-//                currentDate.get(weekFields.weekOfYear()) == eventDate.get(weekFields.weekOfYear());
-//    }
     public boolean week(MoodEvent event) {
         LocalDate currentDate = LocalDate.now();
         LocalDate eventDate = parseStringToDate(event.getDate());
@@ -356,7 +335,6 @@ public class FilterFragment extends DialogFragment {
 
         for (int i = 0; i < emojiButtonIds.length; i++) {
             if (emojiButtonIds[i] == buttonId) {
-                //Log.d("SelectedMood", "Mood for buttonId " + buttonId + ": " + selectedMood.getMood());
                 return MoodType.values()[i];
             }
         }
@@ -377,14 +355,6 @@ public class FilterFragment extends DialogFragment {
             return LocalDate.now(); // Default to current date if parsing fails
         }
     }
-    private void clearSavedFilters() {
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear(); // Clears all key-value pairs stored in FilterPrefs
-        editor.apply(); // Apply the changes asynchronously
-    }
-
-
 }
 
 

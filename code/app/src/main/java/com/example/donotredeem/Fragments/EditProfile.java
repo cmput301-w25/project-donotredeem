@@ -25,7 +25,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
@@ -56,17 +55,12 @@ import java.util.UUID;
  */
 public class EditProfile extends Fragment {
 
-    String username;
-
     private EditText editUsername;
     private EditText editPassword;
-    private EditText editPhoneNumber;
     private EditText editEmail;
     private EditText bio;
     private Button done;
     private ImageButton cancel;
-    private static final int CAMERA_REQUEST = 100;
-    private static final int GALLERY_REQUEST = 200;
     private ActivityResultLauncher<Intent> cameraLauncher;
     private ActivityResultLauncher<Intent> galleryLauncher;
     private FirebaseFirestore db;

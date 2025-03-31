@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -47,20 +46,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Fragment that represents the user's profile page. It displays the user's recent mood history
- * and provides navigation to other sections of the app, such as editing the profile and viewing mood history.
- * This fragment interacts with Firebase Firestore to fetch user mood events and displays them in a ListView.
+ * Fragment displaying user profile with mood history and social connections.
+ *
+ * <p>Key features:
+ * <ul>
+ * <li>Displays profile information including bio, followers, and mood count</li>
+ * <li>Shows chronological mood history with offline support</li>
+ * <li>Handles navigation to follower/following lists</li>
+ * <li>Provides side panel menu with animations</li>
+ * <li>Maintains real-time Firestore synchronization</li>
+ * </ul>
  */
 public class ProfilePage extends Fragment {
     private ListView recent_list;
     private MoodEventAdapter adapter;
-    float originalX, originalY;
     private ArrayList<MoodEvent> moodHistoryList;
     private FirebaseFirestore db;
     private String loggedInUsername;
     private ImageView profileImage;
     private String username;
-    private Button Follow;
     private TextView usernameTextView, bioTextView, followersTextView, followingTextView, moodTextView;
     private LinearLayout follower, following, mood;
 
@@ -90,7 +94,6 @@ public class ProfilePage extends Fragment {
         following = view.findViewById(R.id.followingLayout);
         mood = view.findViewById(R.id.moodLayout);
         profileImage = view.findViewById(R.id.user_icon);
-//        Follow = view.findViewById(R.id.button6);
 
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         username = sharedPreferences.getString("username", null);
@@ -184,6 +187,10 @@ public class ProfilePage extends Fragment {
         return view;
     }
 
+    /**
+     * Fetches and maintains real-time user profile data
+     * @param username Target user's ID
+     */
     private void fetchUserData(String username) {
         if (db == null) {
             db = FirebaseFirestore.getInstance(); // Reinitialize if null
@@ -255,86 +262,6 @@ public class ProfilePage extends Fragment {
         });
     }
 
-    /**
-     * Fetches mood events for the logged-in user from Firebase Firestore.
-     *
-     * @param username The username of the logged-in user
-     */
-//    private void fetchUserMoodEvents(String username) {
-//        if (username == null) {
-//            Log.e("MoodHistory", "No username found in SharedPreferences");
-//            return;
-//        }
-//
-//        db.collection("User")
-//                .whereEqualTo("username", username)
-//                .addSnapshotListener((querySnapshot, error) -> {
-//                    if (!querySnapshot.isEmpty()) {
-//                        DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
-//                        Log.d("MoodHistory", "User found: " + userDoc.getData());
-//                        List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
-//                        if (moodRefsList != null && !moodRefsList.isEmpty()) {
-//
-//                            fetchMoodEvents(moodRefsList); // Fetch the referenced mood events
-//                        }
-//                        else {
-//                            Log.d("MoodHistory", "No mood events found.");
-//                        }
-//                    }
-//
-//                    else {
-//                        Log.e("MoodHistory", "No user found with username: " + username);
-//                    }
-//                });
-//
-//    }
-
-    /**
-     * Fetches mood events from the provided list of document references.
-     * The events are then added to the moodHistoryList and displayed.
-     *
-     * @param moodRefs The list of document references for mood events
-     */
-//    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
-//        ArrayList<MoodEvent> tempList = new ArrayList<>();
-//        final int[] fetchedCount = {0}; // Counter to track fetched events
-//
-//        for (DocumentReference moodRef : moodRefs) {
-//            moodRef.get().addOnSuccessListener(documentSnapshot -> {
-//                if (documentSnapshot.exists()) {
-//                    try {
-//                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
-//                        if (moodEvent != null) {
-//                            tempList.add(moodEvent);
-//                        }
-//                    } catch (Exception e) {
-//                        Log.e("MoodHistory", "Error converting document", e);
-//                    }
-//                }
-//
-//                fetchedCount[0]++;
-//                if (fetchedCount[0] == moodRefs.size()) {
-//                    // All events fetched, now sort and display
-//                    moodHistoryList.clear();
-//                    moodHistoryList.addAll(tempList);
-//
-//                    // Sort first
-//                    sortMoodEvents();
-//
-//                    // Keep only the 2 most recent
-//                    if (moodHistoryList.size() >2) {
-//                        moodHistoryList = new ArrayList<>(moodHistoryList.subList(0, 2));
-//                    }
-//
-//
-//                    Display( moodHistoryList);
-//                }
-//            }).addOnFailureListener(e -> {
-//                Log.e("MoodHistory", "Error fetching document", e);
-//                fetchedCount[0]++;
-//            });
-//        }
-//    }
 
     /**
      * Sorts the mood events list by date and time in reverse chronological order.
@@ -397,6 +324,10 @@ public class ProfilePage extends Fragment {
         }
     }
 
+    /**
+     * Fetches mood event references from Firestore for the specified user.
+     * @param username User identifier to query mood events for
+     */
     private void fetchUserMoodEvents(String username) {
         if (username == null) {
             Log.e("MoodHistory", "No username found in SharedPreferences");
@@ -421,89 +352,11 @@ public class ProfilePage extends Fragment {
                 });
     }
 
-//    private void fetchMoodEvents(List<DocumentReference> moodRefs) {
-//        ArrayList<MoodEvent> tempList = new ArrayList<>();
-//        final int[] fetchedCount = {0};
-//
-//        for (DocumentReference moodRef : moodRefs) {
-//            moodRef.get().addOnSuccessListener(documentSnapshot -> {
-//                if (documentSnapshot.exists()) {
-//                    try {
-//                        MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
-//                        if (moodEvent != null) {
-//                            tempList.add(moodEvent);
-//                        }
-//                    } catch (Exception e) {
-//                        Log.e("MoodHistory", "Error converting document", e);
-//                    }
-//                }
-//
-//                fetchedCount[0]++;
-//                // Inside fetchMoodEvents
-//                if (fetchedCount[0] == moodRefs.size()) {
-//                    moodHistoryList.clear();
-//                    moodHistoryList.addAll(tempList);
-//                    sortMoodEvents();
-//
-//                    if (isAdded() && getContext() != null) { // Check fragment attachment
-//                        if (moodHistoryList.size() > 3) {
-//                            ArrayList<MoodEvent> RecentHistoryList = new ArrayList<>(moodHistoryList.subList(0, 3));
-//                            Display(RecentHistoryList);
-//                        } else {
-//                            Display(moodHistoryList);
-//                        }
-//                    }
-//                }
-//            }).addOnFailureListener(e -> {
-//                Log.e("MoodHistory", "Error fetching document", e);
-//                fetchedCount[0]++;
-//            });
-//        }
-//    }
-//private void fetchMoodEvents(List<DocumentReference> moodRefs) {
-//    ArrayList<MoodEvent> tempList = new ArrayList<>();
-//    final int[] fetchedCount = {0};
-//    final boolean isOnline = isNetworkAvailable();
-//
-//    for (DocumentReference moodRef : moodRefs) {
-//        Source source = isOnline ? Source.SERVER : Source.CACHE;
-//
-//        moodRef.get(source).addOnCompleteListener(task -> {
-//            if (task.isSuccessful() && task.getResult() != null) {
-//                DocumentSnapshot document = task.getResult();
-//                try {
-//                    MoodEvent moodEvent = document.toObject(MoodEvent.class);
-//                    if (moodEvent != null) {
-//                        tempList.add(moodEvent);
-//                    }
-//                } catch (Exception e) {
-//                    Log.e("ProfilePage", "Error converting document", e);
-//                }
-//            }
-//
-//            fetchedCount[0]++;
-//            if (fetchedCount[0] == moodRefs.size()) {
-//                moodHistoryList.clear();
-//                moodHistoryList.addAll(tempList);
-//                sortMoodEvents();
-//
-//                if (isAdded() && getContext() != null) {
-//                    if (!isOnline) {
-//                        Toast.makeText(getContext(),
-//                                "Offline - showing cached data",
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-//
-//                    if (moodHistoryList.size() > 3) {
-//                        Display(new ArrayList<>(moodHistoryList.subList(0, 3)));
-//                    } else {
-//                        Display(moodHistoryList);
-//                    }
-//                }
-//            }
-//        });
-//    }
-//}
+    /**
+     * Fetches mood event documents from Firestore references. Handles both online
+     * and offline modes with cache support.
+     * @param moodRefs List of Firestore document references for mood events
+     */
     private void fetchMoodEvents(List<DocumentReference> moodRefs) {
         ArrayList<MoodEvent> tempList = new ArrayList<>();
         final int[] fetchedCount = {0};
@@ -549,16 +402,10 @@ public class ProfilePage extends Fragment {
         }
     }
 
-//    private boolean isNetworkAvailable() {
-//        ConnectivityManager cm = (ConnectivityManager) getActivity()
-//                .getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-//        return activeNetwork != null && activeNetwork.isConnected();
-//    }
-//    private boolean isNetworkAvailable() {
-//        Context context = getContext();
-//        return context != null && NetworkUtils.isNetworkAvailable(context);
-//    }
+    /**
+     * Checks network availability status.
+     * @return true if device has active network connection, false otherwise
+     */
     private boolean isNetworkAvailable() {
         Context context = getContext();
         if (context == null) return false;
@@ -568,18 +415,7 @@ public class ProfilePage extends Fragment {
         return activeNetwork != null && activeNetwork.isConnected();
     }
 
-//    private void Display(ArrayList<MoodEvent> moodHistoryList) {
-//        // Update the adapter with sorted list
-//        if (adapter == null) {
-//            adapter = new MoodEventAdapter(requireContext(), moodHistoryList);
-//            recent_list.setAdapter(adapter);
-//        } else {
-//            // Just update the existing adapter if it already exists
-//            adapter.clear();
-//            adapter.addAll(moodHistoryList);
-//            adapter.notifyDataSetChanged();
-//        }
-//    }
+
 
 
     /**
@@ -618,28 +454,12 @@ public class ProfilePage extends Fragment {
      * Redirects the user to the login page if the username is not found in SharedPreferences.
      */
     private void redirectToLogin() {
-//        Intent intent = new Intent(getActivity(), LogIn.class);
-//        startActivity(intent);
-//        requireActivity().finish();
         if (isAdded()) {  // Ensure fragment is attached
             Intent intent = new Intent(requireActivity(), LogIn.class);
             startActivity(intent);
             requireActivity().finish();
         } else {
             Log.w("ProfilePage", "Redirect attempted when fragment detached");
-        }
-    }
-    private void navigateToFragment(Fragment fragment, String tag) {
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        Fragment existingFragment = fragmentManager.findFragmentByTag(tag);
-
-        if (existingFragment == null) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, fragment, tag)
-                    .addToBackStack(null)
-                    .commit();
-        } else {
-            fragmentManager.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 }

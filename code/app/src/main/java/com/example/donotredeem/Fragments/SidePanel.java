@@ -22,10 +22,36 @@ import com.example.donotredeem.QRCodeFragment;
 import com.example.donotredeem.R;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * Fragment representing the application's navigation side panel.
+ *
+ * Handles:
+ * - Navigation between major app sections
+ * - User authentication state management
+ * - Fragment transaction management
+ * - Session termination functionality
+ *
+ * Contains menu options for:
+ * - Mood History
+ * - User Profile
+ * - Analytics
+ * - About Us
+ * - QR Code
+ * - Mood Jar
+ * - Sign Out
+ */
 public class SidePanel extends Fragment {
     TextView history, profile, analytics, about_us, qr_code,mood_jar, sign_out;
     ImageButton close;
 
+    /**
+     * Creates and configures the side panel navigation view
+     *
+     * @param inflater LayoutInflater to inflate XML layout
+     * @param container Parent view group for fragment's UI
+     * @param savedInstanceState Saved state bundle
+     * @return Configured view for the side panel
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.side_panel, container, false);
@@ -149,6 +175,10 @@ public class SidePanel extends Fragment {
 
         return view;
     };
+
+    /**
+     * Terminates user session and clears authentication data
+     */
     private void logout() {
         FirebaseAuth.getInstance().signOut();
 
@@ -161,7 +191,12 @@ public class SidePanel extends Fragment {
     }
 
     /**
-     * Redirects the user to the login screen and clears the activity stack.
+     * Redirects to login screen with clean activity stack
+     *
+     * Uses Intent flags to prevent back navigation:
+     * - NEW_TASK: Creates new activity stack
+     * - CLEAR_TASK: Clears any existing activities
+     *
      */
     private void redirectToLogin() {
         Intent intent = new Intent(getActivity(), LogIn.class);
