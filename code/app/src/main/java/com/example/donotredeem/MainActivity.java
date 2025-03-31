@@ -14,8 +14,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
-//import com.example.donotredeem.Fragments.AddMoodEvent;
-import com.bumptech.glide.Glide;
 import com.example.donotredeem.Fragments.AddMoodEvent;
 import com.example.donotredeem.Fragments.MainPage;
 import com.example.donotredeem.Fragments.Map;
@@ -23,58 +21,39 @@ import com.example.donotredeem.Fragments.RequestsFragment;
 import com.example.donotredeem.Fragments.ProfilePage;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.fragment.app.Fragment;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-
 /**
- * MainActivity serves as the primary activity for the application and provides
- * navigation between various fragments using button interactions.
- *
- * The activity initializes with the MainPage fragment and supports transitions to:
- *
- *     AddMoodEvent: Opens a fragment for adding a new mood event with slide animations.
- *     Map: Displays a map fragment.
- *     MainPage: Returns to the main page fragment.
- *     Requests: Displays a fragment for viewing requests (e.g., mood-related requests).
- *     ProfilePage: Displays the user's profile page fragment.
- *
- *
+ * Main activity handling core navigation and fragment management for the application.
+        * Manages transitions between key app sections with animated fragment transactions
+ * and backstack management. Supported features include:
+        *
+        * - Mood event creation with slide animations
+ * - Map visualization of mood events
+ * - Main feed navigation
+ * - Friend requests management
+ * - User profile editing
+ * - Fragment cleanup and state management
  */
 public class MainActivity extends AppCompatActivity {
 
     public static String past_location;
     private ImageButton addEvent, mapButton, homeButton, heartButton, profilePage;
-    FirebaseAuth auth;
-    Button button;
-    TextView textView;
-    FirebaseUser user;
 
     /**
-     * Called when the activity is starting.
+     * Initializes activity layout and fragment container. Handles:
+     * - Initial fragment setup (MainPage)
+     * - Navigation button configuration
+     * - Intent-based mood selection handling
+     * - SharedPreferences cleanup for filters
      *
-     * This method sets up the initial fragment (MainPage) and initializes the UI components.
-     * It also sets click listeners for various navigation buttons to transition between fragments.
-     *
-     *
-     * @param savedInstanceState If the activity is being re-initialized after previously being shut down,then this Bundle contains the data it most recently supplied. Otherwise, it is null.
+     * @param savedInstanceState Persisted state bundle or null
      */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
-
-//        FirebaseFirestore db = FirebaseFirestore.getInstance();
-//
-//        // Set cache settings (memory or disk-based)
-//        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-//                .setLocalCacheSettings(MemoryCacheSettings.newBuilder().build()) // Enable memory cache
-//                .build();
-//
-//        // Apply settings to Firestore
-//        db.setFirestoreSettings(settings);
 
         // Log to confirm Firestore is initialized
         System.out.println("Firestore initialized with offline support!");
@@ -93,10 +72,6 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.fragment_container, new MainPage())
                     .commit();
         }
-//        getSupportFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container, new MainPage())
-//                .addToBackStack(null)
-//                .commit();
 
         addEvent = findViewById(R.id.add_button);
         mapButton = findViewById(R.id.map_button);
@@ -173,16 +148,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        heartButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                removeAddMoodEventIfExists();
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.fragment_container, new Requests())
-//                        .addToBackStack(null)
-//                        .commit();
-//            }
-//        });
 
         // In MainActivity.java
         heartButton.setOnClickListener(v -> {
@@ -213,6 +178,9 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Cleans up AddMoodEvent fragment from backstack
+     */
     private void removeAddMoodEventIfExists() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment addMoodEvent = fragmentManager.findFragmentByTag("AddMoodEvent");
@@ -222,6 +190,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Cleans up mood history fragment from backstack
+     */
     private void removeHistoryIfExists() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment moodHistory = fragmentManager.findFragmentByTag("moodhistory");
@@ -231,6 +202,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Cleans up profile editing fragment from backstack
+     */
     private void removeProfileIfExists() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment editProfile = fragmentManager.findFragmentByTag("EditProfile");
@@ -239,6 +213,11 @@ public class MainActivity extends AppCompatActivity {
             fragmentManager.popBackStack("EditProfile", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
+
+    /**
+     * Presents AddMoodEvent fragment with preselected mood
+     * @param mood Preselected emotional state value
+     */
     private void showAddMoodFragmentWithMood(String mood) {
         // Create fragment instance
         AddMoodEvent fragment = new AddMoodEvent();
@@ -256,6 +235,10 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+    /**
+     * Resets filter preferences in SharedPreferences
+     * Clears: search terms, time filters, emoji selections
+     */
     private void clearSavedFilters() {
         SharedPreferences sharedPreferences = getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

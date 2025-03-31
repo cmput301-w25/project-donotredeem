@@ -1,8 +1,5 @@
 package com.example.donotredeem.Fragments;
 
-import static androidx.browser.customtabs.CustomTabsClient.getPackageName;
-
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

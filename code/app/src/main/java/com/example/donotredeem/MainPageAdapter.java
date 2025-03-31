@@ -23,17 +23,37 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
+/**
+ * Adapter for displaying MoodEvents in a main feed/list view.
+ * Features include:
+ * - Displaying public mood events with user details
+ * - Profile picture loading from Firestore
+ * - Clickable elements for detailed views and comments
+ * - Visual representation of mood states with colors and icons
+ */
 public class MainPageAdapter extends ArrayAdapter<MoodEvent> {
     private Context context;
     private ArrayList<MoodEvent> Events;
     private FirebaseFirestore db;
 
+    /**
+     * Constructs a MainPageAdapter for displaying mood events
+     * @param context The host activity context
+     * @param Events List of MoodEvent objects to display
+     */
     public MainPageAdapter(Context context, ArrayList<MoodEvent> Events){
         super(context,0,Events);
         this.context = context;
         this.Events = Events;
     }
 
+    /**
+     * Creates and configures views for each mood event in the list
+     * @param position Item position in dataset
+     * @param convertView Recycled view if available
+     * @param parent Parent view group
+     * @return Configured view for mood event display
+     */
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -156,6 +176,11 @@ public class MainPageAdapter extends ArrayAdapter<MoodEvent> {
         return MainView;
     }
 
+    /**
+     * Loads user profile picture from Firestore
+     * @param username User to load picture for
+     * @param imageView Target view to display the picture
+     */
     private void loadProfilePicture(String username, CircleImageView imageView) {
         db.collection("User")
                 .document(username)

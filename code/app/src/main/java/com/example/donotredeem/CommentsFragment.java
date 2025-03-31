@@ -20,7 +20,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -29,7 +28,14 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 
-
+/**
+ * Bottom sheet dialog fragment for displaying and managing comments on mood events.
+ * Features:
+ * - Real-time comment loading from Firestore
+ * - Comment input with validation
+ * - Auto-expanding bottom sheet behavior
+ * - RecyclerView with comment threading
+ */
 public class CommentsFragment extends BottomSheetDialogFragment {
 
     private RecyclerView commentsRecyclerView;
@@ -40,12 +46,19 @@ public class CommentsFragment extends BottomSheetDialogFragment {
     private FirebaseFirestore db;
     private String postId;
 
+    /**
+     * Initializes fragment styling for bottom sheet appearance
+     */
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(BottomSheetDialogFragment.STYLE_NORMAL, R.style.BottomSheetDialogTheme);
     }
 
+    /**
+     * Creates and configures the fragment's view hierarchy
+     * @return Root view for the fragment's UI
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -81,6 +94,9 @@ public class CommentsFragment extends BottomSheetDialogFragment {
         return view;
     }
 
+    /**
+     * Configures bottom sheet behavior to expand fully and disable collapsing
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -95,71 +111,39 @@ public class CommentsFragment extends BottomSheetDialogFragment {
         }
     }
 
-//    private void loadComments() {
-//        CollectionReference commentsRef = db.collection("MoodEvents").document(postId).collection("Comments");
-//        commentsRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-//            @Override
-//            public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
-//                if (e != null) return;
-//
-//                commentList.clear();
-//                if (snapshots != null && !snapshots.isEmpty()) {
-//                    for (DocumentChange dc : snapshots.getDocumentChanges()) {
-//                        if (dc.getType() == DocumentChange.Type.ADDED) {
-//                            Comment comment = dc.getDocument().toObject(Comment.class);
-//                            commentList.add(comment);
-//                        }
-//                    }
-//                }
-//                commentsAdapter.notifyDataSetChanged();
-//            }
-//        });
-//    }
-//private void loadComments() {
-//    CollectionReference commentsRef = db.collection("MoodEvents").document(postId).collection("Comments");
-//    commentsRef.orderBy("timestamp", Query.Direction.DESCENDING)  // Add sorting
-//            .addSnapshotListener(new EventListener<QuerySnapshot>() {
-//                @Override
-//                public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
-//                    if (e != null) return;
-//
-//                    commentList.clear();
-//                    if (snapshots != null && !snapshots.isEmpty()) {
-//                        for (DocumentChange dc : snapshots.getDocumentChanges()) {
-//                            if (dc.getType() == DocumentChange.Type.ADDED) {
-//                                Comment comment = dc.getDocument().toObject(Comment.class);
-//                                commentList.add(comment);
-//                            }
-//                        }
-//                    }
-//                    commentsAdapter.notifyDataSetChanged();
-//                }
-//            });
-//}
-private void loadComments() {
-    CollectionReference commentsRef = db.collection("MoodEvents").document(postId).collection("Comments");
-    commentsRef.orderBy("timestamp", Query.Direction.DESCENDING)
-            .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
-                    if (e != null) return;
 
-                    ArrayList<Comment> newComments = new ArrayList<>();
-                    if (snapshots != null) {
-                        for (QueryDocumentSnapshot document : snapshots) {
-                            Comment comment = document.toObject(Comment.class);
-                            newComments.add(comment);
+    /**
+     * Loads comments from Firestore with real-time updates
+     * Uses snapshot listener to automatically refresh UI when changes occur
+     */
+    private void loadComments() {
+        CollectionReference commentsRef = db.collection("MoodEvents").document(postId).collection("Comments");
+        commentsRef.orderBy("timestamp", Query.Direction.DESCENDING)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
+                    @Override
+                    public void onEvent(@Nullable QuerySnapshot snapshots, @Nullable FirebaseFirestoreException e) {
+                        if (e != null) return;
+
+                        ArrayList<Comment> newComments = new ArrayList<>();
+                        if (snapshots != null) {
+                            for (QueryDocumentSnapshot document : snapshots) {
+                                Comment comment = document.toObject(Comment.class);
+                                newComments.add(comment);
+                            }
                         }
+
+                        // Update the list and preserve reference
+                        commentList.clear();
+                        commentList.addAll(newComments);
+                        commentsAdapter.notifyDataSetChanged();
                     }
+                });
+    }
 
-                    // Update the list and preserve reference
-                    commentList.clear();
-                    commentList.addAll(newComments);
-                    commentsAdapter.notifyDataSetChanged();
-                }
-            });
-}
-
+    /**
+     * Adds a new comment to Firestore database
+     * @param text The comment text content from input field
+     */
     private void addComment(String text) {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         String loggedInUsername = sharedPreferences.getString("username", null);

@@ -27,40 +27,54 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import github.com.st235.swipetoactionlayout.SwipeAction;
 import github.com.st235.swipetoactionlayout.SwipeMenuListener;
 import github.com.st235.swipetoactionlayout.SwipeToActionLayout;
+
 /**
- * Adapter class for displaying MoodEvent objects in a ListView.
- * Supports swipe actions for editing and deleting events.
+ * Adapter class for displaying MoodEvent objects in a ListView with swipe actions.
+ * Features include:
+ * - Displaying mood events with emotional state, time, date, and additional details
+ * - Swipe-to-edit and swipe-to-delete functionality
+ * - Integration with Firestore for data persistence
+ * - Mood Jar integration for saving important events
+ * - Visual feedback with Snackbars and error handling
  */
 public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
 
     private Context context;
     private ArrayList<MoodEvent> Events;
     private FirebaseFirestore db;
-    private SwipeToActionLayout swipeToActionLayout;
+
     /**
-     * Constructor for MoodEventAdapter.
-     * @param context The context of the activity or fragment.
-     * @param Events The list of MoodEvent objects to display.
+     * Constructs a MoodEventAdapter with null-safe initialization
+     * @param context The context of the calling activity/fragment
+     * @param Events List of MoodEvent objects to display (uses empty list if null)
      */
     public MoodEventAdapter(Context context, ArrayList<MoodEvent> Events){
         super(context != null ? context : getFallbackContext(), 0, Events);
         this.context = context;
         this.Events = Events != null ? Events : new ArrayList<>();
-//        this.Events = Events;
     }
 
+    /**
+     * Provides fallback context for adapter initialization
+     * @return Application context if activity context is unavailable
+     */
     private static Context getFallbackContext() {
         // Provide a fallback context if needed
         return MyApplication.getInstance();
     }
 
+    /**
+     * Constructs and configures list item views with swipe actions
+     * @param position Item position in the dataset
+     * @param convertView Recycled view if available
+     * @param parent Parent view group
+     * @return Fully configured list item view
+     */
     @NonNull
     @Override
     public View getView(int position, View convertView, @NonNull ViewGroup parent) {
@@ -86,9 +100,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         TextView ThisTextDescription = MainView.findViewById(R.id.Additional_details);
         ImageView ThisPictureDescription = MainView.findViewById(R.id.timelineImage);
         ImageView ThisPrivacyImage = MainView.findViewById(R.id.PrivacyImage);
-//        TextView ThisSituationText = MainView.findViewById(R.id.Situation_text);
-//        TextView ThisTrigger = MainView.findViewById(R.id.Specific_Trigger);
-//        TextView ThisLocation = MainView.findViewById(R.id.Specific_Location);
 
 
         if (Current_Mood_Event != null) {
@@ -97,9 +108,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             ThisDate.setText(Current_Mood_Event.getDate().toString());
             ThisTextDescription.setText(Current_Mood_Event.getExplainText());
 
-//            ThisTrigger.setText(Current_Mood_Event.getTrigger());
-//            ThisSituationText.setText(Current_Mood_Event.getSituation());
-//            ThisLocation.setText(Current_Mood_Event.getPlace());
         }
 
         String imageUri = Current_Mood_Event.getExplainPicture();
@@ -131,7 +139,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             Log.d("MoodAdapter", "Image set.");
         } else {
             ThisSituation.setVisibility(View.GONE);
-//            ThisSituationText.setVisibility(View.GONE);// Use a fallback
         }
 
         int imageId = MoodType.getImageIdByMood(mood);
@@ -235,12 +242,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
         });
         //Store in moodJar
         ImageView jarButton = MainView.findViewById(R.id.jar_button);
-//        jarButton.setOnClickListener(v -> {
-//            MoodEvent currentEvent = getItem(position);
-//            if (currentEvent != null) {
-//                addToMoodJar(currentEvent, MainView);
-//            }
-//        });
         jarButton.setOnClickListener(v -> {
             MoodEvent currentEvent = getItem(position);
             if (currentEvent != null) {
@@ -263,15 +264,6 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                     .delete()
                     .addOnSuccessListener(aVoid -> {
                         Log.d("MoodEventAdapter", "Deleted MoodEvent with ID: " + moodEventId);
-//                            db.collection("User")
-//                                .whereEqualTo("username", username)
-//                                .get()
-//                                    .addOnSuccessListener(queryDocumentSnapshots -> {
-//                                                DocumentSnapshot userDoc = queryDocumentSnapshots.getDocuments().get(0);
-//
-//                                                DocumentReference userDocRef = userDoc.getReference();
-//                                                userDocRef.update("moods", FieldValue.increment(-1));
-//                                            })
                         // Optionally, remove the reference from the user's document
                         removeMoodRefFromUser(moodEventId);
                         removeFromAllMoodJars(moodEventId);
@@ -352,87 +344,10 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                 .commit();
     }
 
-//    private void addToMoodJar(MoodEvent moodEvent, View view) {
-//        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-//        String username = sharedPreferences.getString("username", null);
-//
-//        if (username == null) {
-////            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
-//            Snackbar.make(view, "User not logged in", Snackbar.LENGTH_SHORT).show();
-//
-//            return;
-//        }
-//
-//        if (moodEvent.getMoodEventId() == null) {
-////            Toast.makeText(context, "Mood event has no ID", Toast.LENGTH_SHORT).show();
-//            Snackbar.make(view, "Mood event has no ID", Snackbar.LENGTH_SHORT).show();
-//
-//            return;
-//        }
-//
-//        DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEvent.getMoodEventId());
-//
-////        db.collection("User").document(username)
-////                .get()
-////                .addOnSuccessListener(documentSnapshot -> {
-////                    if (documentSnapshot.exists()) {
-////                        List<DocumentReference> moodJar = (List<DocumentReference>) documentSnapshot.get("moodJar");
-////
-////                        if (moodJar != null && moodJar.contains(moodEventRef)) {
-////                            Snackbar.make(view,"Mood event already exists in Mood Jar!", Snackbar.LENGTH_SHORT).show();
-////                        } else {
-////                            // Add the mood event if it doesn't already exist
-////                            db.collection("User").document(username)
-////                                    .update("moodJar", FieldValue.arrayUnion(moodEventRef))
-////                                    .addOnSuccessListener(aVoid ->
-////                                            Snackbar.make(view, "Added to Mood Jar!", Snackbar.LENGTH_SHORT).show()
-////                                    )
-////                                    .addOnFailureListener(e ->
-////                                            Snackbar.make(view, "Failed to add: " + e.getMessage(), Snackbar.LENGTH_SHORT).show()
-////
-////                                    );
-////                        }
-////                    } else {
-////                        Snackbar.make(view, "User document does not exist!", Snackbar.LENGTH_SHORT).show();
-////                    }
-////                })
-////                .addOnFailureListener(e ->
-////                        Snackbar.make(view,"Failed to retrieve user data: " + e.getMessage(), Snackbar.LENGTH_SHORT).show()
-////                );
-//        db.collection("User").document(username)
-//                .get()
-//                .addOnSuccessListener(documentSnapshot -> {
-//                    if (documentSnapshot.exists()) {
-//                        List<DocumentReference> moodJar = (List<DocumentReference>) documentSnapshot.get("moodJar");
-//
-//                        // Get valid view for Snackbar
-//                        View rootView;
-//                        if (context instanceof AppCompatActivity) {
-//                            rootView = ((AppCompatActivity) context).getWindow().getDecorView().findViewById(android.R.id.content);
-//                        } else {
-//                            rootView = null;
-//                        }
-//
-//                        if (moodJar != null && moodJar.contains(moodEventRef)) {
-//                            showSnackbar(rootView, "Already in Mood Jar!");
-//                        } else {
-//                            db.collection("User").document(username)
-//                                    .update("moodJar", FieldValue.arrayUnion(moodEventRef))
-//                                    .addOnSuccessListener(aVoid ->
-//                                            showSnackbar(rootView, "Added to Mood Jar!")
-//                                    )
-//                                    .addOnFailureListener(e ->
-//                                            showSnackbar(rootView, "Failed: " + e.getMessage())
-//                                    );
-//                        }
-//                    }
-//                })
-//                .addOnFailureListener(e ->
-//                        showSnackbar(view, "Failed: " + e.getMessage())
-//                );
-//
-//    }
-
+    /**
+     * Removes mood event reference from all users' moodJar arrays.
+     * @param moodEventId ID of the mood event to remove
+     */
     private void removeFromAllMoodJars(String moodEventId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
@@ -455,95 +370,77 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
                         Log.e("MoodEventAdapter", "Failed to query users for moodJar cleanup", e)
                 );
     }
-//    private void showSnackbar(View anchorView, String message) {
-//        if (anchorView == null || !(context instanceof AppCompatActivity)) return;
-//
-//        try {
-//            Snackbar.make(((AppCompatActivity) context).findViewById(android.R.id.content),
-//                            message, Snackbar.LENGTH_SHORT)
-//                    .setAnchorView(anchorView)
-//                    .show();
-//        } catch (Exception e) {
-//            Log.e("SnackbarError", "Failed to show snackbar", e);
-//        }
-//    }
-private void addToMoodJar(MoodEvent moodEvent, View view) {
-    if (context == null || moodEvent == null) return;
 
-    SharedPreferences sharedPreferences = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-    String username = sharedPreferences != null ?
-            sharedPreferences.getString("username", null) : null;
+    /**
+     * Adds mood event to user's Mood Jar collection.
+     * @param moodEvent Event to add
+     * @param view Anchor view for snackbar positioning
+     */
+    private void addToMoodJar(MoodEvent moodEvent, View view) {
+        if (context == null || moodEvent == null) return;
 
-    if (username == null) {
-        showSnackbar(null, "User not logged in");
-        return;
-    }
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        String username = sharedPreferences != null ?
+                sharedPreferences.getString("username", null) : null;
 
-    String moodEventId = moodEvent.getMoodEventId();
-    if (moodEventId == null) {
-        showSnackbar(null, "Mood event has no ID");
-        return;
-    }
+        if (username == null) {
+            showSnackbar(null, "User not logged in");
+            return;
+        }
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
+        String moodEventId = moodEvent.getMoodEventId();
+        if (moodEventId == null) {
+            showSnackbar(null, "Mood event has no ID");
+            return;
+        }
 
-    db.collection("User").document(username)
-            .get()
-            .addOnSuccessListener(documentSnapshot -> {
-                if (documentSnapshot != null && documentSnapshot.exists()) {
-                    List<DocumentReference> moodJar = null;
-                    try {
-                        moodJar = (List<DocumentReference>) documentSnapshot.get("moodJar");
-                    } catch (RuntimeException e) {
-                        Log.e("MoodEventAdapter", "Error getting moodJar", e);
-                    }
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference moodEventRef = db.collection("MoodEvents").document(moodEventId);
 
-                    View rootView;
-                    if (context instanceof AppCompatActivity) {
-                        AppCompatActivity activity = (AppCompatActivity) context;
-                        if (activity.getWindow() != null && activity.getWindow().getDecorView() != null) {
-                            rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+        db.collection("User").document(username)
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                        List<DocumentReference> moodJar = null;
+                        try {
+                            moodJar = (List<DocumentReference>) documentSnapshot.get("moodJar");
+                        } catch (RuntimeException e) {
+                            Log.e("MoodEventAdapter", "Error getting moodJar", e);
+                        }
+
+                        View rootView;
+                        if (context instanceof AppCompatActivity) {
+                            AppCompatActivity activity = (AppCompatActivity) context;
+                            if (activity.getWindow() != null && activity.getWindow().getDecorView() != null) {
+                                rootView = activity.getWindow().getDecorView().findViewById(android.R.id.content);
+                            } else {
+                                rootView = null;
+                            }
                         } else {
                             rootView = null;
                         }
-                    } else {
-                        rootView = null;
-                    }
 
-                    if (moodJar != null && moodJar.contains(moodEventRef)) {
-                        showSnackbar(null, "Already in Mood Jar!");
-                    } else {
-                        db.collection("User").document(username)
-                                .update("moodJar", FieldValue.arrayUnion(moodEventRef))
-                                .addOnSuccessListener(aVoid ->
-                                        showSnackbar(null, "Added to Mood Jar!"))
-                                .addOnFailureListener(e ->
-                                        showSnackbar(null, "Failed: " + e.getMessage()));
+                        if (moodJar != null && moodJar.contains(moodEventRef)) {
+                            showSnackbar(null, "Already in Mood Jar!");
+                        } else {
+                            db.collection("User").document(username)
+                                    .update("moodJar", FieldValue.arrayUnion(moodEventRef))
+                                    .addOnSuccessListener(aVoid ->
+                                            showSnackbar(null, "Added to Mood Jar!"))
+                                    .addOnFailureListener(e ->
+                                            showSnackbar(null, "Failed: " + e.getMessage()));
+                        }
                     }
-                }
-            })
-            .addOnFailureListener(e ->
-                    showSnackbar(null, "Failed: " + e.getMessage()));
-}
+                })
+                .addOnFailureListener(e ->
+                        showSnackbar(null, "Failed: " + e.getMessage()));
+    }
 
-//    private void showSnackbar(View anchorView, String message) {
-//        if (context == null || !(context instanceof AppCompatActivity)) return;
-//
-//        AppCompatActivity activity = (AppCompatActivity) context;
-//        View rootView = activity.findViewById(android.R.id.content);
-//        if (rootView == null) return;
-//
-//        try {
-//            Snackbar snackbar = Snackbar.make(rootView, message, Snackbar.LENGTH_SHORT);
-//            if (anchorView != null) {
-//                snackbar.setAnchorView(anchorView);
-//            }
-//            snackbar.show();
-//        } catch (Exception e) {
-//            Log.e("SnackbarError", "Failed to show snackbar", e);
-//        }
-//    }
+    /**
+     * Displays snackbar message with fallback to Toast.
+     * @param anchorView View for snackbar positioning
+     * @param message Message to display
+     */
 private void showSnackbar(View anchorView, String message) {
     if (context == null || !(context instanceof AppCompatActivity)) {
         return;

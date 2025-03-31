@@ -1,10 +1,8 @@
 package com.example.donotredeem.Fragments;
 
-import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -49,10 +47,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
         db = FirebaseFirestore.getInstance();
 
         loadProfilePicture(username, holder.profilePic);
-
-
-        // You can set up the icon here if needed
-        // holder.iconView.setImageResource(R.drawable.ic_default_item);
 
         holder.itemView.setOnClickListener(v -> {
             if (clickListener != null) {

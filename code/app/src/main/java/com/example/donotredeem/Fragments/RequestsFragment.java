@@ -28,7 +28,7 @@ public class RequestsFragment extends Fragment {
     private RequestAdapter adapter;
     private UserProfileManager userProfileManager;
     private FirebaseFirestore db;
-    private ListenerRegistration userDataListener; // Add this line
+    private ListenerRegistration userDataListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,30 +44,12 @@ public class RequestsFragment extends Fragment {
         return view;
     }
 
-//    private void loadRequests(String username) {
-//        userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
-//            @Override
-//            public boolean onUserProfileFetched(Users user) {
-//                requestsList = user.getRequests();
-//                adapter = new RequestAdapter(requireContext(), requestsList);
-//                requestsListView.setAdapter(adapter);
-//                return false;
-//            }
-//
-//            @Override
-//            public void onUserProfileFetchError(Exception e) {
-//                Toast.makeText(requireContext(), "Error loading requests", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//    }
     private void loadRequests(String username) {
         if (db == null) {
             db = FirebaseFirestore.getInstance(); // Reinitialize if null
         }
         DocumentReference userRef = db.collection("User").document(username);
-
         // Add metadata listener for offline support
-//    userRef.addSnapshotListener(MetadataChanges.INCLUDE, (documentSnapshot, error) -> {
         userDataListener = userRef.addSnapshotListener(MetadataChanges.INCLUDE, (documentSnapshot, error) -> {
             if (!isAdded()) return; // Critical check here
             if (error != null) {

@@ -1,24 +1,33 @@
     package com.example.donotredeem;
     import android.content.Context;
     import android.graphics.Canvas;
-    import android.graphics.Color;
-    import android.graphics.Paint;
     import android.graphics.drawable.Drawable;
 
     import androidx.core.content.ContextCompat;
 
     import com.github.mikephil.charting.components.XAxis;
     import com.github.mikephil.charting.renderer.XAxisRenderer;
-    import com.github.mikephil.charting.utils.MPPointF;
     import com.github.mikephil.charting.utils.Transformer;
     import com.github.mikephil.charting.utils.ViewPortHandler;
 
+    /**
+     * Custom XAxisRenderer that replaces traditional axis labels with emoji drawables.
+     * Enables visualization of emotional states or categories using emoji icons in MPAndroidChart.
+     */
     public class EmojiAxisRenderer extends XAxisRenderer {
         private final int[] emojiResources;
         private final Context context;
         private final float emojiSize;
         private final float emojiMargin;
 
+        /**
+         * Constructs a custom emoji axis renderer
+         * @param viewPortHandler Chart's viewport handler
+         * @param xAxis XAxis configuration object
+         * @param trans Transformer for coordinate conversions
+         * @param context Context for resource access
+         * @param emojiResources Array of drawable resources for emojis
+         */
         public EmojiAxisRenderer(ViewPortHandler viewPortHandler, XAxis xAxis, Transformer trans, Context context, int[] emojiResources) {
             super(viewPortHandler, xAxis, trans);
             this.context = context;
@@ -27,6 +36,10 @@
             this.emojiMargin = context.getResources().getDimension(R.dimen.emoji_chart_margin);
         }
 
+        /**
+         * Overrides default label rendering to draw emoji icons instead of text
+         * @param c Canvas to draw on
+         */
         @Override
         public void renderAxisLabels(Canvas c) {
             if (!mXAxis.isEnabled() || !mXAxis.isDrawLabelsEnabled()) return;
@@ -45,6 +58,12 @@
             super.renderAxisLabels(c);
         }
 
+        /**
+         * Draws individual emoji at specified chart position
+         * @param c Canvas to draw on
+         * @param position Index in emojiResources array
+         * @param xPos Calculated x-position in chart coordinates
+         */
         private void drawEmoji(Canvas c, int position, float xPos) {
             if (position < 0 || position >= emojiResources.length) return;
 

@@ -1,8 +1,5 @@
 package com.example.donotredeem;
 
-import static android.app.PendingIntent.getActivity;
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,9 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -21,11 +16,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
-import com.example.donotredeem.Fragments.Explore;
 import com.example.donotredeem.Fragments.FilterFragment;
-import com.example.donotredeem.Fragments.MainPage;
-import com.example.donotredeem.Fragments.moodhistory;
-import com.google.firebase.auth.FirebaseAuth;
+
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -37,6 +29,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Fragment displaying mood events from followed users with filtering capabilities.
+ * Features:
+ * - Shows public mood events from followed accounts
+ * - Real-time updates using Firestore listeners
+ * - Chronological sorting by date/time
+ * - Filtering functionality
+ * - User authentication checks
+ */
 public class All_following_moods extends Fragment implements FilterFragment.FilterMoodListener, Serializable {
     private FirebaseFirestore db;
     private ListView Mood_list;
@@ -44,12 +45,20 @@ public class All_following_moods extends Fragment implements FilterFragment.Filt
     private String loggedInUsername;
     private ArrayList<MoodEvent> MainMoodList;
 
+    /**
+     * Applies filtered mood list to the display
+     * @param filteredList Filtered list of mood events
+     */
     @Override
     public void filterMood(ArrayList<MoodEvent> filteredList) {
         Display(filteredList);
 
     }
 
+    /**
+     * Creates and configures the fragment's view hierarchy
+     * @return Root view for the fragment's UI
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -107,6 +116,10 @@ public class All_following_moods extends Fragment implements FilterFragment.Filt
         return view;
     }
 
+    /**
+     * Fetches list of users being followed from Firestore
+     * @param username Current logged-in username
+     */
     private void FetchFollowingUsers(String username) {
         if (username == null) {
             Log.e("Main Page", "No username found in SharedPreferences");
@@ -132,7 +145,10 @@ public class All_following_moods extends Fragment implements FilterFragment.Filt
                 });
     }
 
-
+    /**
+     * Fetches public mood events from followed users
+     * @param FollowedUsers List of usernames being followed
+     */
     private void FetchPublicEvents(List<String> FollowedUsers) {
         if (!isAdded()) return; // Stop if fragment is not attached
 
@@ -165,6 +181,13 @@ public class All_following_moods extends Fragment implements FilterFragment.Filt
         }
     }
 
+    /**
+     * Fetches individual mood events from document references
+     * @param moodRefs List of Firestore document references
+     * @param tempList Temporary list to collect mood events
+     * @param totalUsers Total number of followed users
+     * @param fetchedCount Counter for completed fetches
+     */
     private void FetchMoods(List<DocumentReference> moodRefs, ArrayList<MoodEvent> tempList, int totalUsers, int[] fetchedCount) {
         ArrayList<MoodEvent> userMoodEvents = new ArrayList<>();
         final int[] moodsFetched = {0}; // Moods of this user
@@ -206,14 +229,17 @@ public class All_following_moods extends Fragment implements FilterFragment.Filt
         }
     }
 
-
+    /**
+     * Displays sorted mood events in ListView
+     * @param moodHistoryList List of mood events to display
+     */
     private void Display(ArrayList<MoodEvent> moodHistoryList) {
         if (!isAdded()) return; //stop if fragment is not attached
 
         Log.e("BEFORE SORT", "UNSORTED "+moodHistoryList.size() );
 
         Context context = getContext();
-        if (context == null) return; //no null pointer crash
+        if (context == null) return;
 
         ArrayList<MoodEvent> sortedList = new ArrayList<>(moodHistoryList);
         sortedList.sort((event1, event2) -> {
@@ -240,6 +266,12 @@ public class All_following_moods extends Fragment implements FilterFragment.Filt
         main_page_adapter.notifyDataSetChanged();
     }
 
+    /**
+     * Converts date string to LocalDate object.
+     *
+     * @param dateString Date string in "dd/MM/yyyy" format
+     * @return Parsed LocalDate or LocalDate.MIN for invalid input
+     */
     private LocalDate parseStringToDate(String dateString) {
         try {
             // Use pattern matching for "DD-MM-YYYY" format
@@ -269,23 +301,6 @@ public class All_following_moods extends Fragment implements FilterFragment.Filt
     }
 
     /**
-     * Logs out the user by signing out from Firebase and clearing login data.
-     * Redirects the user to the login screen.
-     */
-    private void logout() {
-        FirebaseAuth.getInstance().signOut();
-
-        // Clear stored login data
-        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.clear();
-        editor.apply();
-
-        // Redirect to login screen
-        redirectToLogin();
-    }
-
-    /**
      * Redirects the user to the login screen and clears the activity stack.
      */
     private void redirectToLogin() {
@@ -297,7 +312,15 @@ public class All_following_moods extends Fragment implements FilterFragment.Filt
         }
     }
 
-
+    /**
+     * Resets filter preferences to default state.
+     *
+     * Clears stored values for:
+     * - Search keywords
+     * - Time range filters
+     * - Selected emoji filters
+     *
+     */
     private void clearSavedFilters() {
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences("FilterPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

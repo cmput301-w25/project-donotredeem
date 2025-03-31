@@ -163,18 +163,6 @@ public class ProfilePage extends Fragment {
 
         ImageView side_panel = view.findViewById(R.id.side_panel_button);
 
-//        side_panel.setOnClickListener(v -> {
-//             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//                FragmentTransaction transaction = fragmentManager.beginTransaction();
-//
-//                transaction.setCustomAnimations(R.anim.panel_slide_in, 0);
-//
-//                SidePanel sidePanelFragment = new SidePanel();
-//                transaction.replace(R.id.profile_container, sidePanelFragment, "SidePanel");
-//                transaction.addToBackStack(null);
-//                transaction.commit();
-//
-//        });
         side_panel.setOnClickListener(v -> {
             FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
             FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -193,181 +181,9 @@ public class ProfilePage extends Fragment {
             transaction.commit();
         });
 
-//        sidePanel.findViewById(R.id.nav_analytics).setOnClickListener(v -> {
-//            drawerLayout.closeDrawer(sidePanel);
-//            navigateToFragment(new AnalyticsFragment(), "Analytics");
-//        });
-
-
-//        DrawerLayout drawerLayout = view.findViewById(R.id.drawer_layout);
-//        LinearLayout sidePanel = view.findViewById(R.id.side_panel);
-//
-//        view.findViewById(R.id.side_panel_button).setOnClickListener(v -> {
-//            // Open the drawer (side panel)
-//            drawerLayout.openDrawer(sidePanel); //side panel box
-//        });
-//
-//        sidePanel.findViewById(R.id.panel_close).setOnClickListener(v -> {
-//            drawerLayout.closeDrawer(sidePanel); //side panel closing
-//        });
-//
-//        sidePanel.findViewById(R.id.nav_history).setOnClickListener(v -> {
-//            drawerLayout.closeDrawer(sidePanel);
-//
-//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//            Fragment existingFragment = fragmentManager.findFragmentByTag("moodhistory");
-//
-//            if (existingFragment == null) {
-//
-//                moodhistory historyFragment = new moodhistory();
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container, historyFragment, "moodhistory")
-//                        .addToBackStack(null)
-//                        .commit();
-//            } else {
-//                fragmentManager.popBackStack("moodhistory", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//            }
-//        });
-//
-//        sidePanel.findViewById(R.id.nav_profile).setOnClickListener(v -> {
-//            drawerLayout.closeDrawer(sidePanel); //edit profile in panel
-//
-//            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//            Fragment existingFragment = fragmentManager.findFragmentByTag("EditProfile");
-//
-//            if (existingFragment == null) {
-//                EditProfile profileFragment = new EditProfile();
-//                fragmentManager.beginTransaction()
-//                        .replace(R.id.fragment_container, profileFragment, "EditProfile")
-//                        .addToBackStack(null)
-//                        .commit();
-//            } else {
-//                fragmentManager.popBackStack("EditProfile", FragmentManager.POP_BACK_STACK_INCLUSIVE);
-//            }
-//        });
-//
-//        // Add QR Code Navigation
-//        sidePanel.findViewById(R.id.nav_qr_code).setOnClickListener(v -> {
-//            drawerLayout.closeDrawer(sidePanel);
-//            navigateToFragment(new QRCodeFragment(), "QRCode");
-//        });
-//
-//        sidePanel.findViewById(R.id.nav_mood_jar).setOnClickListener(v -> {
-//            drawerLayout.closeDrawer(sidePanel);
-//            navigateToFragment(new MoodJarFragment(), "MoodJar");
-//        });
-//
-//
         return view;
     }
 
-//    private void fetchUserData(String username) {
-//        if (username == null || username.isEmpty()) {
-//            Log.e("SearchedUser", "Username is null/empty");
-//            return;
-//        }
-//        Log.d("MyTag", "This is a debug message 333333333333.");
-//
-//
-//        UserProfileManager userProfileManager = new UserProfileManager();
-//        Log.d("MyTag", "This is a debug message44444444444444444.");
-//        userProfileManager.getUserProfileWithFollowers(username, new UserProfileManager.OnUserProfileFetchListener() {
-//            @Override
-//            public boolean onUserProfileFetched(Users user) {
-//                if (user != null) {
-//                    Log.d("MyTag", "This is a debug message5555555555555.");
-//                    // Set user details to TextViews
-//                    usernameTextView.setText(user.getUsername());
-//                    bioTextView.setText(user.getBio());
-//                    // Inside onUserProfileFetched in fetchUserData:
-//                    followersTextView.setText(String.valueOf(user.getFollowers())); // Convert int to String
-//                    Log.d("MyTag", "User following count: " + user.getFollowing());
-//                    followingTextView.setText(String.valueOf(user.getFollowing()));
-//                    moodTextView.setText(String.valueOf(user.getMoods()));
-//
-//                    String profilePicUrl = user.getProfilePictureUrl();
-//                    Log.d("ProfilePicUrl", "URL: " + profilePicUrl);
-//
-//
-//                    if (profilePicUrl != null  && !profilePicUrl.isEmpty()) {
-//                        Log.d("pls", "onUserProfileFetched: bro this is not null");
-//                        Context context = getContext();
-//                        if (context != null) {
-//                        Glide.with(requireContext())
-//                                .load(user.getProfilePictureUrl())
-////                                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                                .apply(new RequestOptions().circleCrop())
-//                                .into(profileImage);}
-//                    } else {
-//                        profileImage.setImageResource(R.drawable.user);
-//                    }
-//
-////                    final boolean[] isExpanded = {false};
-////
-////                    profileImage.setOnClickListener(v -> {
-////                        if (!isExpanded[0]) {
-////                            // Bring the profileImage to the front
-////                            profileImage.bringToFront();
-////
-////                            // Get the center of the screen
-////                            int screenWidth = requireActivity().getWindow().getDecorView().getWidth();
-////                            int screenHeight = requireActivity().getWindow().getDecorView().getHeight();
-////                            int centerX = (screenWidth - profileImage.getWidth()) / 2;
-////                            int centerY = (screenHeight - profileImage.getHeight()) / 2;
-////
-////                            // Move the imageView to the center
-////                            profileImage.animate()
-////                                    .x(centerX)
-////                                    .y(centerY)
-////                                    .setDuration(300)
-////                                    .start();
-////
-////                            Animation zoomIn = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_in);
-////                            profileImage.startAnimation(zoomIn);
-////
-////                            isExpanded[0] = true;
-////                        }
-////                    });
-////
-////                    View rootView = requireActivity().findViewById(R.id.rootView);
-////
-////                    rootView.setOnClickListener(v -> {
-////                        if (isExpanded[0]) {
-////                            // Move the image back to its original position
-////                            profileImage.animate()
-////                                    .x(originalX)
-////                                    .y(originalY)
-////                                    .setDuration(300)
-////                                    .start();
-////
-////
-////                            Animation zoomOut = AnimationUtils.loadAnimation(requireContext(), R.anim.zoom_out);
-////                            profileImage.startAnimation(zoomOut);
-////
-////                            // Reset state
-////                            isExpanded[0] = false;
-////                        }
-////                    });
-//
-//
-//
-//                    Log.d("MyTag", "This is a debug message666666666666666.");
-//
-////                    // Display follower and following lists
-////                    updateListView(followerListView, user.getFollowerList(), "No followers");
-////                    updateListView(followingListView, user.getFollowingList(), "Not following anyone");
-//                } else {
-//                    Log.e("SearchedUser", "User not found.");
-//                }
-//                return false;
-//            }
-//
-//            @Override
-//            public void onUserProfileFetchError(Exception e) {
-//                Log.e("SearchedUser", "Error fetching user data", e);
-//            }
-//        });
-//    }
     private void fetchUserData(String username) {
         if (db == null) {
             db = FirebaseFirestore.getInstance(); // Reinitialize if null
@@ -428,11 +244,6 @@ public class ProfilePage extends Fragment {
                             profileImage.setImageResource(R.drawable.user);
                         }
 
-    //            if (isFromCache) {
-    //                Toast.makeText(getContext(),
-    //                        "Offline - showing cached data",
-    //                        Toast.LENGTH_SHORT).show();
-    //            }
                 if (isAdded() && getContext() != null) {
                     if (isFromCache) {
                         Toast.makeText(requireContext(),

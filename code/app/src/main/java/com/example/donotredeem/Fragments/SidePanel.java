@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -31,7 +29,6 @@ public class SidePanel extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.side_panel, container, false);
-        View fragmentRoot = view.findViewById(R.id.side_container);
 
         history = view.findViewById(R.id.nav_history);
         profile = view.findViewById(R.id.nav_profile);
@@ -144,30 +141,6 @@ public class SidePanel extends Fragment {
 
         close = view.findViewById(R.id.imageButton);
 
-//        close.setOnClickListener(v -> {
-//            if (fragmentRoot != null) {
-//                Animation slideOut = AnimationUtils.loadAnimation(getContext(), R.anim.panel_slide_out);
-//                fragmentRoot.startAnimation(slideOut);
-//
-//                slideOut.setAnimationListener(new Animation.AnimationListener() {
-//                    @Override
-//                    public void onAnimationStart(Animation animation) {
-//                    }
-//
-//                    @Override
-//                    public void onAnimationEnd(Animation animation) {
-//                        Log.d("MUYYYY", "ANIMATION WORKS");
-//                        getParentFragmentManager().popBackStack(); //go to previous fragment
-//                    }
-//
-//                    @Override
-//                    public void onAnimationRepeat(Animation animation) {
-//                    }
-//                });
-//            } else {
-//                getParentFragmentManager().popBackStack();
-//            }
-//        });
         close.setOnClickListener(v -> {
             // Simply pop the back stack - animation will be handled automatically
             getParentFragmentManager().popBackStack();

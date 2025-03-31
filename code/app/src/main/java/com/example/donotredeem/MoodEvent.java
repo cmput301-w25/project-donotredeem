@@ -1,16 +1,9 @@
 package com.example.donotredeem;
 
-import android.graphics.Bitmap;
-import android.location.Location;
-import android.net.Uri;
-
 import androidx.annotation.Nullable;
 
 import com.google.firebase.firestore.GeoPoint;
 
-import java.net.URI;
-import java.time.LocalDate;
-import java.time.LocalTime;
 /**
  * Represents a mood event with details such as emotional state, time, place, and additional information.
  */

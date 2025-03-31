@@ -47,21 +47,42 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+/**
+ * Fragment handling the Mood Jar functionality, including:
+ * - Countdown timer to target date
+ * - Adding positive notes to a virtual jar
+ * - Visual representation of notes collected
+ * - Celebration animation when target date is reached
+ * - Displaying collected notes/mood events when unlocked
+ */
 public class MoodJarFragment extends Fragment {
+    // UI Components
     private ImageView jarImage, back_button;
     private Button addNoteButton, unlockButton;
     private TextView countdownText;
     private LottieAnimationView fireworksAnimation;
+
+    // Firestore and data management
     private FirebaseFirestore db;
     private SharedPreferences sharedPreferences;
     private String currentUsername;
+
+    // State tracking
     private int noteCount = 0;
     private long targetDateMillis = new GregorianCalendar(2026, Calendar.JANUARY, 1, 0, 0, 0).getTimeInMillis();
-
     private boolean celebrationTriggered = false;
+
+    // Countdown handler
     private Handler countdownHandler = new Handler();
     private Runnable countdownRunnable;
 
+    /**
+     * Inflates the fragment layout and initializes UI components
+     * @param inflater Layout inflater
+     * @param container Parent view group
+     * @param savedInstanceState Saved instance state
+     * @return Inflated view hierarchy
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mood_jar, container, false);
@@ -90,10 +111,16 @@ public class MoodJarFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Sets up the add note button click listener
+     */
     private void setupButton() {
         addNoteButton.setOnClickListener(v -> showAddNoteDialog());
     }
 
+    /**
+     * Displays dialog for entering a new positive note
+     */
     private void showAddNoteDialog() {
         if (getContext() == null) return;
 
@@ -115,6 +142,10 @@ public class MoodJarFragment extends Fragment {
         builder.show();
     }
 
+    /**
+     * Saves a new note to Firestore and updates the jar visualization
+     * @param note The text content of the note to save
+     */
     private void saveNoteToFirestore(String note) {
         if (currentUsername == null) return;
 
@@ -136,6 +167,11 @@ public class MoodJarFragment extends Fragment {
                 })
                 .addOnFailureListener(e -> showToast("Error saving note"));
     }
+
+    /**
+     * Adds a note reference to the user's moodJar array in Firestore
+     * @param noteRef Reference to the newly created note document
+     */
     private void addNoteReferenceToMoodJar(DocumentReference noteRef) {
         db.collection("User")
                 .document(currentUsername)
@@ -144,6 +180,9 @@ public class MoodJarFragment extends Fragment {
                 .addOnFailureListener(e -> Log.e("MoodJar", "Error adding note reference to moodJar", e));
     }
 
+    /**
+     * Loads notes from Firestore and updates jar visualization
+     */
     private void loadNotes() {
         if (currentUsername == null) return;
 
@@ -158,6 +197,9 @@ public class MoodJarFragment extends Fragment {
                 .addOnFailureListener(e -> Log.e("MoodJar", "Error loading moodJar items", e));
     }
 
+    /**
+     * Updates the jar image based on the current note count
+     */
     private void updateJarImage() {
         if (getContext() == null) return;
 
@@ -169,6 +211,9 @@ public class MoodJarFragment extends Fragment {
         jarImage.setImageResource(drawableId);
     }
 
+    /**
+     * Initializes and starts the countdown timer
+     */
     private void setupCountdown() {
         countdownHandler.removeCallbacks(countdownRunnable);
         countdownRunnable = new Runnable() {
@@ -196,6 +241,10 @@ public class MoodJarFragment extends Fragment {
         }
     }
 
+    /**
+     * Updates countdown display with formatted time
+     * @param millisUntilFinished Remaining time in milliseconds
+     */
     private void updateCountdownText(long millisUntilFinished) {
         long seconds = millisUntilFinished / 1000;
         long minutes = seconds / 60;
@@ -210,50 +259,55 @@ public class MoodJarFragment extends Fragment {
 
         countdownText.setText(countdown);
     }
+    /**
+     * Triggers celebration animation and unlocks jar access
+     */
+    private void showCelebration() {
+        if (!celebrationTriggered && isVisible() && getContext() != null) {
+            celebrationTriggered = true;
 
-private void showCelebration() {
-    if (!celebrationTriggered && isVisible() && getContext() != null) {
-        celebrationTriggered = true;
+            // Ensure animation is properly configured
+            fireworksAnimation.setAnimation(R.raw.fireworks_anim);
+            fireworksAnimation.setRepeatCount(LottieDrawable.INFINITE);
+            fireworksAnimation.setSpeed(1f);
 
-        // Ensure animation is properly configured
-        fireworksAnimation.setAnimation(R.raw.fireworks_anim);
-        fireworksAnimation.setRepeatCount(LottieDrawable.INFINITE);
-        fireworksAnimation.setSpeed(1f);
+            // Bring animation to front
+            fireworksAnimation.bringToFront();
 
-        // Bring animation to front
-        fireworksAnimation.bringToFront();
+            fireworksAnimation.setVisibility(View.VISIBLE);
+            fireworksAnimation.playAnimation();
 
-        fireworksAnimation.setVisibility(View.VISIBLE);
-        fireworksAnimation.playAnimation();
+            // Add animation listener to detect errors
+            fireworksAnimation.addAnimatorListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                    Log.d("Animation", "Fireworks started");
+                }
 
-        // Add animation listener to detect errors
-        fireworksAnimation.addAnimatorListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                Log.d("Animation", "Fireworks started");
-            }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    Log.d("Animation", "Fireworks ended");
+                }
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                Log.d("Animation", "Fireworks ended");
-            }
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                    Log.d("Animation", "Fireworks cancelled");
+                }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
-                Log.d("Animation", "Fireworks cancelled");
-            }
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                    Log.d("Animation", "Fireworks repeat");
+                }
+            });
 
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-                Log.d("Animation", "Fireworks repeat");
-            }
-        });
-
-        unlockButton.setVisibility(View.VISIBLE);
-        countdownText.setText("Ready to unlock!");
+            unlockButton.setVisibility(View.VISIBLE);
+            countdownText.setText("Ready to unlock!");
+        }
     }
-}
 
+    /**
+     * Configures unlock button behavior
+     */
     private void setupUnlockButton() {
         unlockButton.setOnClickListener(v -> {
             unlockButton.setEnabled(false);
@@ -261,13 +315,19 @@ private void showCelebration() {
         });
     }
 
-
+    /**
+     * Displays short toast messages
+     * @param message Text to display in toast
+     */
     private void showToast(String message) {
         if (getContext() != null) {
             Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
         }
     }
 
+    /**
+     * Cleans up resources when the fragment's view is destroyed
+     */
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -277,6 +337,11 @@ private void showCelebration() {
         }
     }
 
+    /**
+     * Called immediately after onCreateView() has returned
+     * @param view The View returned by onCreateView()
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     */
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -285,6 +350,9 @@ private void showCelebration() {
         }
     }
 
+    /**
+     * Restarts countdown timer when fragment becomes visible
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -292,13 +360,18 @@ private void showCelebration() {
         setupCountdown();
     }
 
+    /**
+     * Pauses countdown timer when fragment loses visibility
+     */
     @Override
     public void onPause() {
         super.onPause();
         // Clean up handlers when fragment is not visible
         countdownHandler.removeCallbacks(countdownRunnable);
     }
-
+    /**
+     * Retrieves and displays jar contents from Firestore
+     */
     private void unlockJarContents() {
         if (currentUsername == null) return;
 
@@ -324,6 +397,10 @@ private void showCelebration() {
                     unlockButton.setEnabled(true);
                 });
     }
+    /**
+     * Fetches complete mood jar items from Firestore references
+     * @param itemRefs List of Firestore document references
+     */
     private void fetchMoodJarItems(List<DocumentReference> itemRefs) {
         List<DocumentSnapshot> items = new ArrayList<>();
 
@@ -361,53 +438,65 @@ private void showCelebration() {
         }
     }
 
-private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-    View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_layout, null);
+    /**
+     * Displays mood jar items in a dialog with ViewPager2
+     * @param items List of documents to display
+     */
+    private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View dialogView = LayoutInflater.from(requireContext()).inflate(R.layout.popup_layout, null);
 
-    // Set the view first before creating dialog
-    builder.setView(dialogView);
+        // Set the view first before creating dialog
+        builder.setView(dialogView);
 
-    // Create dialog before accessing its window
-    AlertDialog dialog = builder.create();
+        // Create dialog before accessing its window
+        AlertDialog dialog = builder.create();
 
-    // Configure window after creation but before show()
-    Window window = dialog.getWindow();
-    if (window != null) {
-        // Set dialog dimensions
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, (int) (displayMetrics.heightPixels * 0.9));
-        window.setGravity(Gravity.CENTER);
-        window.setBackgroundDrawableResource(android.R.color.transparent);
+        // Configure window after creation but before show()
+        Window window = dialog.getWindow();
+        if (window != null) {
+            // Set dialog dimensions
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            requireActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, (int) (displayMetrics.heightPixels * 0.9));
+            window.setGravity(Gravity.CENTER);
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        // Initialize views
+        ViewPager2 viewPager = dialogView.findViewById(R.id.view_pager);
+        Button closeButton = dialogView.findViewById(R.id.closeButton);
+
+        // Configure ViewPager2
+        MoodJarPagerAdapter adapter = new MoodJarPagerAdapter(items);
+        viewPager.setAdapter(adapter);
+
+        // Set click listener
+        closeButton.setOnClickListener(v -> dialog.dismiss());
+
+        // Show dialog last
+        dialog.show();
     }
 
-    // Initialize views
-    ViewPager2 viewPager = dialogView.findViewById(R.id.view_pager);
-    Button closeButton = dialogView.findViewById(R.id.closeButton);
-
-    // Configure ViewPager2
-    MoodJarPagerAdapter adapter = new MoodJarPagerAdapter(items);
-    viewPager.setAdapter(adapter);
-
-    // Set click listener
-    closeButton.setOnClickListener(v -> dialog.dismiss());
-
-    // Show dialog last
-    dialog.show();
-}
-
-    // Create MoodJarPagerAdapter class
+    /**
+     * Adapter for displaying mood jar items in a ViewPager2
+     */
     private class MoodJarPagerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         private static final int TYPE_MOOD = 0;
         private static final int TYPE_NOTE = 1;
         private final List<DocumentSnapshot> items;
 
+        /**
+         * @param items List of Firestore documents containing mood events and notes
+         */
         public MoodJarPagerAdapter(List<DocumentSnapshot> items) {
             this.items = items;
         }
 
+        /**
+         * Determines item type based on document collection path
+         */
         @Override
         public int getItemViewType(int position) {
             DocumentSnapshot item = items.get(position);
@@ -415,6 +504,12 @@ private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
             return path.contains("MoodEvents") ? TYPE_MOOD : TYPE_NOTE;
         }
 
+        /**
+         * Creates appropriate ViewHolder based on item type
+         * @param parent The ViewGroup into which the new View will be added
+         * @param viewType The view type of the new View
+         * @return A new ViewHolder that holds a View of the given view type
+         */
         @NonNull
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -428,6 +523,11 @@ private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
             }
         }
 
+        /**
+         * Binds data to the ViewHolder and configures item dimensions
+         * @param holder The ViewHolder which should be updated
+         * @param position The position of the item within the adapter's data set
+         */
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
             DocumentSnapshot item = items.get(position);
@@ -445,6 +545,11 @@ private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
             itemView.setLayoutParams(params);
         }
 
+        /**
+         * Binds mood event data to ViewHolder
+         * @param holder Mood ViewHolder instance
+         * @param document Firestore document containing mood data
+         */
         private void bindMoodViewHolder(MoodViewHolder holder, DocumentSnapshot document) {
 
             MoodEvent moodEvent = document.toObject(MoodEvent.class);
@@ -500,6 +605,12 @@ private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
 
         }
 
+        /**
+         * Controls visibility of text fields and their associated icons
+         * @param textView TextView to show/hide
+         * @param iconView Icon to show/hide
+         * @param content Content to display (if not empty)
+         */
         private void setFieldVisibility(TextView textView, ImageView iconView, String content) {
             if (!TextUtils.isEmpty(content)) {
                 textView.setText(content);
@@ -511,6 +622,11 @@ private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
             }
         }
 
+        /**
+         * Populates note ViewHolder with data from Firestore document
+         * @param holder Note ViewHolder instance
+         * @param document Firestore document containing note data
+         */
         private void bindNoteViewHolder(NoteViewHolder holder, DocumentSnapshot document) {
             // Add null safety checks
             String noteText = document.getString("text");
@@ -527,14 +643,19 @@ private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
             }
         }
 
+        /**
+         * Returns total number of items in the adapter
+         * @return Total count of mood jar items
+         */
         @Override
         public int getItemCount() {
             return items.size();
         }
 
+        /**
+         * ViewHolder for mood event items
+         */
         class MoodViewHolder extends RecyclerView.ViewHolder {
-//            ImageView timelineImage, emojiIcon;
-//            TextView emotionalState, date, time;
             CardView cardView;
             ImageView timelineImage, emojiIcon, situationImage, privacyImage;
             ImageView descIcon, locationIcon, reasonIcon;
@@ -564,9 +685,16 @@ private void showMoodJarItemsDialog(List<DocumentSnapshot> items) {
             }
         }
 
+    /**
+     * ViewHolder for note items
+     */
         class NoteViewHolder extends RecyclerView.ViewHolder {
             TextView noteText, timestamp;
 
+        /**
+         * Initializes all note view components
+         * @param itemView Root view of note layout
+         */
             NoteViewHolder(View itemView) {
                 super(itemView);
                 noteText = itemView.findViewById(R.id.note_text);
