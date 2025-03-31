@@ -9,7 +9,6 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
 
 import android.util.Log;
@@ -44,14 +43,22 @@ import java.util.UUID;
 import static androidx.test.espresso.Espresso.onData;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
-
+/**
+ * This class contains UI tests for the user registration process using Espresso.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class RegisterUserTest {
 
+    /**
+     * Launches the {@link MainActivity} before each test.
+     */
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
+    /**
+     * This class contains UI tests for the user registration process using Espresso.
+     */
     @BeforeClass
     public static void setup() {
         String androidLocalhost = "10.0.2.2";
@@ -59,6 +66,9 @@ public class RegisterUserTest {
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
 
     }
+    /**
+     * Disables system animations before executing UI tests to improve stability.
+     */
     @BeforeClass
     public static void disableAnimations() {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
@@ -68,7 +78,10 @@ public class RegisterUserTest {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
                 "settings put global animator_duration_scale 0");
     }
-
+    /**
+     * Seeds the Firestore database with test users and mood events before each test.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     @Before
     public void seedDatabase() throws InterruptedException {
 
@@ -115,7 +128,9 @@ public class RegisterUserTest {
 
     }
 
-
+    /**
+     * Cleans up Firestore database after each test by deleting all test data.
+     */
     @After
     public void tearDown() {
         String projectId = "login-register-de540";
@@ -140,8 +155,10 @@ public class RegisterUserTest {
         }
     }
 
-
-
+    /**
+     * Tests the entire registration flow, verifying UI elements and interactions.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     @Test
     public void RegisterSuccessful() throws InterruptedException {
         onView(withId(R.id.button4)).perform(click());
@@ -161,7 +178,6 @@ public class RegisterUserTest {
         onView(withId(R.id.editTextDate)).perform(ViewActions.typeText("26/02/2005")).perform(closeSoftKeyboard());
         onView(withId(R.id.next_button_bday)).perform(click());
 
-//
         onView(withId(R.id.activities)).check(matches(isDisplayed()));
         onView(isRoot()).perform(closeSoftKeyboard());
         onView(withId(R.id.music_button))

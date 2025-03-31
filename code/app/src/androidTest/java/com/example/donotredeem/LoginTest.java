@@ -41,15 +41,22 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
-
+/**
+ * Instrumented test class for testing login and sign-up functionality.
+ * Uses Firebase Firestore emulator for database interactions.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class LoginTest {
-
+    /**
+     * Launches the LogIn activity before each test.
+     */
     @Rule
     public ActivityScenarioRule<LogIn> scenario = new ActivityScenarioRule<>(LogIn.class);
 
-
+    /**
+     * Sets up Firebase Firestore emulator for testing.
+     */
     @BeforeClass
     public static void setup() {
         String androidLocalhost = "10.0.2.2";
@@ -57,8 +64,12 @@ public class LoginTest {
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
 
     }
+
+    /**
+     * Disables system animations to ensure UI tests run consistently.
+     */
     @BeforeClass
-    public static void disableAnimations() throws IOException {
+    public static void disableAnimations(){
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
                 "settings put global window_animation_scale 0"
         );
@@ -69,7 +80,9 @@ public class LoginTest {
                 "settings put global animator_duration_scale 0"
         );
     }
-
+    /**
+     * Seeds the Firestore database with test users before each test case.
+     */
     @Before
     public void seedDatabase() throws InterruptedException {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -83,10 +96,12 @@ public class LoginTest {
         }
         Thread.sleep(2000);
     }
-
+    /**
+     * Cleans up Firestore database after each test case.
+     */
     @After
     public void tearDown() {
-//        Espresso.unregisterIdlingResources(LogIn.firebaseIdlingResource);
+
         String projectId = "login-register-de540";
         URL url = null;
         try {
@@ -107,9 +122,10 @@ public class LoginTest {
                 urlConnection.disconnect();
             }
         }}
-
-
-
+    /**
+     * Tests successful login when the user exists.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Test
     public void SuccessfulLoginBecauseUserExists() throws InterruptedException {
         // Enter username and password
@@ -123,7 +139,10 @@ public class LoginTest {
                 .check(matches(isDisplayed()));
         Thread.sleep(2000);
     }
-
+    /**
+     * Tests login failure when the user does not exist.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Test
     public void UserDoesNotExist() throws InterruptedException {
         Thread.sleep(2000);
@@ -136,7 +155,10 @@ public class LoginTest {
         Thread.sleep(2000);
     }
 
-
+    /**
+     * Tests sign-up failure when the username is already in use.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Test
     public void SignUpWithAUsernameAlreadyInUse() throws InterruptedException {
         Thread.sleep(2000);
@@ -157,7 +179,6 @@ public class LoginTest {
         onView(withId(R.id.editTextDate)).perform(ViewActions.typeText("26/02/2005")).perform(closeSoftKeyboard());
         onView(withId(R.id.next_button_bday)).perform(click());
 
-//
         onView(withId(R.id.activities)).check(matches(isDisplayed()));
         onView(isRoot()).perform(closeSoftKeyboard());
         onView(withId(R.id.music_button))
@@ -177,13 +198,16 @@ public class LoginTest {
                 Matchers.is("Daily")
         )).perform(click());
         onView(withId(R.id.next_button)).perform(click());
-//
+
         onView(withId(com.google.android.material.R.id.snackbar_text))
                 .check(matches(withText("Username already taken!")))
                 .check(matches(isDisplayed()));
         Thread.sleep(2000);
     }
-
+    /**
+     * Tests sign-up failure when the email is already in use.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Test
     public void SignUpWithAnEmailAlreadyInUse() throws InterruptedException {
         Thread.sleep(2000);

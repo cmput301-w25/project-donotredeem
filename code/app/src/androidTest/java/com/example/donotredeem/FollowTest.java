@@ -33,12 +33,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
-
+/**
+ * Test class for verifying user following functionality in the application.
+ */
 public class FollowTest {
 
+    /**
+     * Launches the {@link MainActivity} before each test.
+     */
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
+    /**
+     * Sets up Firebase Firestore to use the local emulator before any tests are run.
+     */
     @BeforeClass
     public static void setup() {
         String androidLocalhost = "10.0.2.2";
@@ -46,6 +54,9 @@ public class FollowTest {
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
 
     }
+    /**
+     * Disables system animations before running tests to ensure UI consistency.
+     */
     @BeforeClass
     public static void disableAnimations() {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
@@ -56,6 +67,10 @@ public class FollowTest {
                 "settings put global animator_duration_scale 0");
     }
 
+    /**
+     * Seeds the Firestore database with test users and mood events before each test.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     @Before
     public void seedDatabase() throws InterruptedException {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -107,8 +122,9 @@ public class FollowTest {
         Thread.sleep(2000);
     }
 
-
-
+    /**
+     * Cleans up the Firestore database after each test.
+     */
     @After
     public void tearDown() {
         String projectId = "login-register-de540";
@@ -133,6 +149,10 @@ public class FollowTest {
         }
     }
 
+    /**
+     * Simulates a manual login for User2.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User2"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password2"));
@@ -144,7 +164,10 @@ public class FollowTest {
         Thread.sleep(2000);
 
     }
-
+    /**
+     * Verifies that User2 can see User1 in the following list from the profile fragment.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     @Test
     public void User2FollowingUser1FragmentCheck() throws InterruptedException {
         ManualLoginCauseIDKMocking();
@@ -158,7 +181,10 @@ public class FollowTest {
         onView(withId(R.id.follower)).check(matches(withText("User1")));
         LogoutFromUser();
     }
-
+    /**
+     * Verifies that User2 can find User1 using the search button.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     @Test
     public void User2FollowingUser1SearchButtonCheck() throws InterruptedException {
         ManualLoginCauseIDKMocking();
@@ -174,7 +200,10 @@ public class FollowTest {
         LogoutFromUser();
 
     }
-
+    /**
+     * Verifies that User1 sees User2 as a follower in the profile fragment.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     @Test
     public void User1FollowedByUser2FragmentCheck() throws InterruptedException {
         LogInUser1();
@@ -189,7 +218,10 @@ public class FollowTest {
         LogoutFromUser();
 
     }
-
+    /**
+     * Verifies that User1 can find User2 using the search button.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     @Test
     public void User1FollowedByUser2SearchButtonCheck() throws InterruptedException {
         LogInUser1();
@@ -208,6 +240,10 @@ public class FollowTest {
 
     }
 
+    /**
+     * Checks if User1's follower count is displayed correctly.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     @Test
     public void FollowerCount() throws InterruptedException {
         LogInUser1();
@@ -218,6 +254,10 @@ public class FollowTest {
         LogoutFromUser();
 
     }
+    /**
+     * Checks if User2's following count is displayed correctly.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     @Test
     public void FollowingCount() throws InterruptedException {
         ManualLoginCauseIDKMocking();
@@ -229,6 +269,10 @@ public class FollowTest {
 
     }
 
+    /**
+     * Simulates searching for a user.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     public void SearchingUser() throws InterruptedException {
 
         onView(withId(R.id.imageView4)).perform(click());
@@ -237,7 +281,10 @@ public class FollowTest {
         onView(withId(R.id.search_bar)).perform(click());
 
     }
-
+    /**
+     * Logs out the currently logged-in user.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     public void LogoutFromUser() throws InterruptedException {
 
         onView(withId(R.id.profilepage)).perform(click());
@@ -250,7 +297,10 @@ public class FollowTest {
         Thread.sleep(1000);
         onView(withId(R.id.Sign_out)).perform(click());
     }
-
+    /**
+     * Logs in as User1.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     public void LogInUser1() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
@@ -262,6 +312,5 @@ public class FollowTest {
         Thread.sleep(2000);
 
     }
-
 
 }

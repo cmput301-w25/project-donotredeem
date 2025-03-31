@@ -5,7 +5,6 @@ import static android.content.ContentValues.TAG;
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
@@ -15,7 +14,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.CoreMatchers.anything;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.allOf;
 
 import android.util.Log;
@@ -50,13 +48,23 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * UI test for verifying the functionality of deleting a mood event.
+ * This test uses Firebase's emulator for testing and disables animations for consistent results.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class DeleteMoodTest {
 
+    /**
+     * Launches the {@link MainActivity} before each test.
+     */
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
+    /**
+     * Configures Firebase to use the local emulator before all tests.
+     */
     @BeforeClass
     public static void setup() {
         String androidLocalhost = "10.0.2.2";
@@ -64,6 +72,10 @@ public class DeleteMoodTest {
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
 
     }
+
+    /**
+     * Disables system animations for more reliable UI testing.
+     */
     @BeforeClass
     public static void disableAnimations() {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
@@ -74,6 +86,12 @@ public class DeleteMoodTest {
                 "settings put global animator_duration_scale 0");
     }
 
+    /**
+     * Seeds the Firebase Firestore database with test user data and a sample mood event.
+     * This ensures there is a mood event available to delete during the test.
+     *
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Before
     public void seedDatabase() throws InterruptedException {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -110,7 +128,11 @@ public class DeleteMoodTest {
         ManualLoginCauseIDKMocking();
     }
 
-
+    /**
+     * Simulates manual login using Espresso UI interactions.
+     *
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
@@ -125,6 +147,13 @@ public class DeleteMoodTest {
 
     }
 
+    /**
+     * Test for deleting a mood event.
+     * The test navigates to the mood history page, swipes left to reveal the delete button,
+     * deletes a mood event, and verifies the confirmation message.
+     *
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Test
     public void DeletingAMood() throws InterruptedException {
 
@@ -151,7 +180,10 @@ public class DeleteMoodTest {
 
     }
 
-
+    /**
+     * Cleans up the test database by deleting all documents.
+     * This ensures a fresh state for subsequent tests.
+     */
     @After
     public void tearDown() {
         String projectId = "login-register-de540";

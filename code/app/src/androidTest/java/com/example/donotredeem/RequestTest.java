@@ -39,14 +39,23 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * UI and database interaction tests for user requests in the app.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RequestTest {
 
+    /**
+     * Launches the {@link MainActivity} before each test.
+     */
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
+    /**
+     * Configures Firebase Firestore to use the emulator before any tests run.
+     */
     @BeforeClass
     public static void setup() {
         String androidLocalhost = "10.0.2.2";
@@ -54,6 +63,10 @@ public class RequestTest {
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
 
     }
+
+    /**
+     * Disables UI animations to improve test performance.
+     */
     @BeforeClass
     public static void disableAnimations() {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
@@ -64,6 +77,10 @@ public class RequestTest {
                 "settings put global animator_duration_scale 0");
     }
 
+    /**
+     * Seeds the Firestore database with test users and mood events before each test.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     @Before
     public void seedDatabase() throws InterruptedException {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -108,7 +125,9 @@ public class RequestTest {
 
     }
 
-
+    /**
+     * Clears the Firestore database after each test.
+     */
     @After
     public void tearDown() {
         String projectId = "login-register-de540";
@@ -133,6 +152,10 @@ public class RequestTest {
         }
     }
 
+    /**
+     * Manually logs in a user due to difficulties mocking authentication.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
@@ -144,6 +167,11 @@ public class RequestTest {
         Thread.sleep(5000);
 
     }
+
+    /**
+     * Tests sending a follow request from User1 to User2.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     @Test
     public void RequestingFromUser1() throws InterruptedException {
         ManualLoginCauseIDKMocking();
@@ -168,7 +196,10 @@ public class RequestTest {
 
     }
 
-
+    /**
+     * Logs out User1 and logs in User2 to test UI transitions.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     public void log_in_log_out_transitions() throws InterruptedException {
         LogoutFromUser1();
         Thread.sleep(3000);
@@ -180,7 +211,10 @@ public class RequestTest {
 
     }
 
-
+    /**
+     * Searches for a user in the app.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     public void SearchingUser() throws InterruptedException {
         onView(withId(R.id.imageView4)).perform(click());
         Thread.sleep(1000);
@@ -194,6 +228,11 @@ public class RequestTest {
         onView(withId(R.id.textView2)).check(matches(withText("User2")));
 
     }
+
+    /**
+     * Logs out User1 from the app.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     public void LogoutFromUser1() throws InterruptedException {
 
         onView(withId(R.id.profilepage)).perform(click());
@@ -207,7 +246,10 @@ public class RequestTest {
         onView(withId(R.id.Sign_out)).perform(click());
     }
 
-
+    /**
+     * Logs in User2.
+     * @throws InterruptedException if thread sleep is interrupted
+     */
     public void LogInToUser2() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User2"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password2"));

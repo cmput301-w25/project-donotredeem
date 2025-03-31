@@ -4,15 +4,12 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.hasErrorText;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.lessThanOrEqualTo;
-import static org.mockito.Mockito.mock;
 
 import android.util.Log;
 
@@ -41,16 +38,24 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
-
+/**
+ * Instrumented test class for adding a mood event in the application.
+ * Tests various functionalities related to adding mood events, including validation and user interaction.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AddMoodEventTest {
 
-
+    /**
+     * Launches the {@link MainActivity} before each test.
+     */
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
+    /**
+     * Configures Firebase to use the local emulator before all tests.
+     */
     @BeforeClass
     public static void setup() {
         String androidLocalhost = "10.0.2.2";
@@ -59,6 +64,10 @@ public class AddMoodEventTest {
 
     }
 
+    /**
+     * Seeds the Firestore database with test user data before each test runs.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Before
     public void seedDatabase() throws InterruptedException {
 
@@ -75,9 +84,10 @@ public class AddMoodEventTest {
 
     }
 
-
-
-
+    /**
+     * Performs manual login due to lack of mocking for authentication.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
@@ -92,6 +102,10 @@ public class AddMoodEventTest {
 
     }
 
+    /**
+     * Tests the correct submission of a mood event with valid inputs.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Test
     public void CorrectSubmissionOfAddMoodEvent() throws InterruptedException {
         ManualLoginCauseIDKMocking();
@@ -113,6 +127,10 @@ public class AddMoodEventTest {
 
     }
 
+    /**
+     * Tests that a mood event is not added when the user cancels the input.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Test
     public void MoodNotAdded() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
@@ -129,6 +147,10 @@ public class AddMoodEventTest {
 
     }
 
+    /**
+     * Tests that a mood cannot be added without selecting a mood.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Test
     public void MoodRequired() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
@@ -140,6 +162,10 @@ public class AddMoodEventTest {
 
     }
 
+    /**
+     * Tests that a description or an image is required before submission.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Test
     public void DescriptionRequired() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
@@ -152,6 +178,10 @@ public class AddMoodEventTest {
                 .check(matches(withEffectiveVisibility(ViewMatchers.Visibility.VISIBLE)));
     }
 
+    /**
+     * Tests that the description does not exceed the character limit of 200.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Test
     public void DescriptionConstraints() throws InterruptedException {
         onView(withId(R.id.add_button)).perform(click());
@@ -163,6 +193,9 @@ public class AddMoodEventTest {
         onView(withId(R.id.desc)).check(matches(CustomMatchers.withTextLength(lessThanOrEqualTo(200))));
     }
 
+    /**
+     * Cleans up the Firestore emulator database after each test.
+     */
     @After
     public void tearDown() {
         String projectId = "login-register-de540";

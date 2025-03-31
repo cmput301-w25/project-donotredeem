@@ -34,11 +34,19 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * UI test class for searching a user in the application.
+ */
 public class SearchUserTest {
-
+    /**
+     * Launches the {@link MainActivity} before each test.
+     */
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
+    /**
+     * Sets up Firebase emulator for Firestore before all tests.
+     */
     @BeforeClass
     public static void setup() {
         String androidLocalhost = "10.0.2.2";
@@ -46,6 +54,10 @@ public class SearchUserTest {
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
 
     }
+
+    /**
+     * Disables UI animations before all tests to improve test stability.
+     */
     @BeforeClass
     public static void disableAnimations() {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
@@ -56,6 +68,11 @@ public class SearchUserTest {
                 "settings put global animator_duration_scale 0");
     }
 
+    /**
+     * Seeds Firestore with test user data and mood events before each test.
+     *
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     @Before
     public void seedDatabase() throws InterruptedException {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -101,7 +118,9 @@ public class SearchUserTest {
         ManualLoginCauseIDKMocking();
     }
 
-
+    /**
+     * Cleans up Firestore data by deleting all test documents after each test.
+     */
     @After
     public void tearDown() {
         String projectId = "login-register-de540";
@@ -126,6 +145,11 @@ public class SearchUserTest {
         }
     }
 
+    /**
+     * Performs manual login as a workaround due to lack of mocking.
+     *
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
@@ -138,6 +162,11 @@ public class SearchUserTest {
 
     }
 
+    /**
+     * Tests searching for a user and verifying that the correct profile is displayed.
+     *
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     @Test
     public void SearchingUser() throws InterruptedException {
         onView(withId(R.id.imageView4)).perform(click());

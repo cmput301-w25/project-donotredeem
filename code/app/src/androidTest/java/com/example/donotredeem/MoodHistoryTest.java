@@ -7,9 +7,6 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
-import static androidx.test.espresso.matcher.ViewMatchers.withText;
-
-import static org.hamcrest.Matchers.allOf;
 
 import android.util.Log;
 
@@ -39,14 +36,22 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
-
+/**
+ * Instrumentation test class for testing the Mood History feature in the application.
+ * This class sets up an AndroidJUnit4 test environment, seeds Firestore with test data,
+ * and verifies that mood history functionality is displayed correctly.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class MoodHistoryTest {
-
+    /**
+     * Launches the {@link MainActivity} before each test.
+     */
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
-
+    /**
+     * Configures Firebase Firestore to use an emulator for testing purposes.
+     */
     @BeforeClass
     public static void setup() {
         String androidLocalhost = "10.0.2.2";
@@ -54,6 +59,9 @@ public class MoodHistoryTest {
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
 
     }
+    /**
+     * Disables UI animations to ensure consistent test execution.
+     */
     @BeforeClass
     public static void disableAnimations() {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
@@ -64,6 +72,11 @@ public class MoodHistoryTest {
                 "settings put global animator_duration_scale 0");
     }
 
+    /**
+     * Seeds the Firestore database with test users and mood events before each test.
+     * This ensures that the Mood History feature has data to work with.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Before
     public void seedDatabase() throws InterruptedException {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -109,8 +122,9 @@ public class MoodHistoryTest {
         ManualLoginCauseIDKMocking();
     }
 
-
-
+    /**
+     * Cleans up the Firestore database after each test.
+     */
     @After
     public void tearDown() {
         String projectId = "login-register-de540";
@@ -135,7 +149,11 @@ public class MoodHistoryTest {
         }
     }
 
-
+    /**
+     * Simulates a manual login for testing purposes.
+     * This method bypasses authentication mocking by interacting with the UI.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
@@ -147,7 +165,10 @@ public class MoodHistoryTest {
         Thread.sleep(5000);
 
     }
-
+    /**
+     * Verifies that the mood history section exists and is displayed correctly.
+     * @throws InterruptedException if the thread sleep is interrupted.
+     */
     @Test
     public void checkMoodHistoryExists() throws InterruptedException {
         onView(withId(R.id.profilepage)).perform(click());

@@ -45,14 +45,22 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
-
+/**
+ * This class contains instrumented tests for editing a mood event in the application.
+ * It uses Espresso for UI testing and Firestore Emulator for database interactions.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class EditMoodTest {
-
+    /**
+     * Launches the {@link MainActivity} before each test.
+     */
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
+    /**
+     * Sets up the Firebase Firestore emulator for testing.
+     */
     @BeforeClass
     public static void setup() {
         String androidLocalhost = "10.0.2.2";
@@ -60,6 +68,9 @@ public class EditMoodTest {
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
 
     }
+    /**
+     * Disables UI animations to ensure smooth Espresso tests.
+     */
     @BeforeClass
     public static void disableAnimations() {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
@@ -70,6 +81,11 @@ public class EditMoodTest {
                 "settings put global animator_duration_scale 0");
     }
 
+    /**
+     * Seeds the Firestore database with test users and mood events before each test.
+     *
+     * @throws InterruptedException If thread sleep is interrupted.
+     */
     @Before
     public void seedDatabase() throws InterruptedException {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -105,7 +121,11 @@ public class EditMoodTest {
 
         ManualLoginCauseIDKMocking();
     }
-
+    /**
+     * Performs manual login since mocking is not used.
+     *
+     * @throws InterruptedException If thread sleep is interrupted.
+     */
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
         Thread.sleep(5000);
@@ -119,7 +139,11 @@ public class EditMoodTest {
         Thread.sleep(5000);
 
     }
-
+    /**
+     * Tests the ability to edit a mood event.
+     *
+     * @throws InterruptedException If thread sleep is interrupted.
+     */
     @Test
     public void EditingAMood() throws InterruptedException {
 
@@ -163,7 +187,9 @@ public class EditMoodTest {
 
     }
 
-
+    /**
+     * Cleans up the Firestore database after each test.
+     */
     @After
     public void tearDown() {
         String projectId = "login-register-de540";

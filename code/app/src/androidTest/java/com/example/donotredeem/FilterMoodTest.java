@@ -11,7 +11,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 import static org.hamcrest.CoreMatchers.allOf;
-import static org.hamcrest.CoreMatchers.not;
 
 import android.util.Log;
 
@@ -41,14 +40,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
-
+/**
+ * Instrumented test class for filtering mood events in the application.
+ * Uses Espresso for UI testing and Firebase Firestore emulator for database interactions.
+ */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class FilterMoodTest {
 
+    /**
+     * Launches the {@link MainActivity} before each test.
+     */
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
+    /**
+     * Sets up Firebase Firestore to use the emulator before running tests.
+     */
     @BeforeClass
     public static void setup() {
         String androidLocalhost = "10.0.2.2";
@@ -56,6 +64,9 @@ public class FilterMoodTest {
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
 
     }
+    /**
+     * Disables UI animations before running tests to improve stability.
+     */
     @BeforeClass
     public static void disableAnimations() {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
@@ -65,7 +76,10 @@ public class FilterMoodTest {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
                 "settings put global animator_duration_scale 0");
     }
-
+    /**
+     * Seeds the Firestore database with test users and mood events before each test.
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     @Before
     public void seedDatabase() throws InterruptedException {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -111,6 +125,9 @@ public class FilterMoodTest {
         ManualLoginCauseIDKMocking();
     }
 
+    /**
+     * Cleans up the Firestore database after each test.
+     */
 
     @After
     public void tearDown() {
@@ -135,8 +152,10 @@ public class FilterMoodTest {
             }
         }
     }
-
-
+    /**
+     * Simulates logging in a test user before filtering tests.
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User1"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password1"));
@@ -151,7 +170,10 @@ public class FilterMoodTest {
 
     }
 
-
+    /**
+     * Tests filtering mood events by emoji (Happy mood).
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     @Test
     public void FilterTestEmojiOnly() throws InterruptedException {
         onView(withId(R.id.profilepage)).perform(click());
@@ -198,7 +220,10 @@ public class FilterMoodTest {
 
 
     }
-
+    /**
+     * Tests filtering mood events that occurred in the last week.
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     @Test
     public void FilterTestLastWeekOnly() throws InterruptedException {
         onView(withId(R.id.profilepage)).perform(click());
@@ -244,7 +269,10 @@ public class FilterMoodTest {
         onView(withId(R.id.Sign_out)).perform(click());
 
     }
-
+    /**
+     * Tests filtering mood events by searching for a specific word in the description.
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     @Test
     public void FilterTestWordSearchOnly() throws InterruptedException {
         onView(withId(R.id.profilepage)).perform(click());
@@ -288,6 +316,10 @@ public class FilterMoodTest {
 
     }
 
+    /**
+     * Tests filtering mood events by searching for different fields that is moods, keyword and time.
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     @Test
     public void FilterTestMultipleNoDisplay() throws InterruptedException {
         onView(withId(R.id.profilepage)).perform(click());

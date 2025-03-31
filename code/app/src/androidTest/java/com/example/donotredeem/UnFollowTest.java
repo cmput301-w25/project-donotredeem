@@ -37,13 +37,22 @@ import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
 
+/**
+ * This class contains UI tests for the unfollow functionality in the application.
+ * It sets up the Firestore emulator, seeds the database with test data, and verifies
+ * that a user can successfully unfollow another user.
+ */
 public class UnFollowTest {
-    //follow a person button
-    //follow list me person
 
+    /**
+     * Launches the {@link MainActivity} before each test.
+     */
     @Rule
     public ActivityScenarioRule<MainActivity> scenario = new ActivityScenarioRule<>(MainActivity.class);
 
+    /**
+     * Configures Firestore to use the emulator before running tests.
+     */
     @BeforeClass
     public static void setup() {
         String androidLocalhost = "10.0.2.2";
@@ -51,6 +60,10 @@ public class UnFollowTest {
         FirebaseFirestore.getInstance().useEmulator(androidLocalhost, portNumber);
 
     }
+
+    /**
+     * Disables animations to ensure UI tests run consistently.
+     */
     @BeforeClass
     public static void disableAnimations() {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().executeShellCommand(
@@ -61,6 +74,11 @@ public class UnFollowTest {
                 "settings put global animator_duration_scale 0");
     }
 
+    /**
+     * Seeds the Firestore database with test users and mood events before each test.
+     * This ensures that test data is available for interactions.
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     @Before
     public void seedDatabase() throws InterruptedException {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -113,7 +131,9 @@ public class UnFollowTest {
     }
 
 
-
+    /**
+     * Cleans up the Firestore database after each test by deleting all documents.
+     */
     @After
     public void tearDown() {
         String projectId = "login-register-de540";
@@ -138,6 +158,10 @@ public class UnFollowTest {
         }
     }
 
+    /**
+     * Performs manual login for a test user.
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     public void ManualLoginCauseIDKMocking() throws InterruptedException {
         onView(withId(R.id.etUsername)).perform(ViewActions.typeText("User2"));
         onView(withId(R.id.etPassword)).perform(ViewActions.typeText("Password2"));
@@ -150,6 +174,10 @@ public class UnFollowTest {
 
     }
 
+    /**
+     * Tests the process of unfollowing a user and verifying UI updates accordingly.
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     @Test
     public void UnfollowUser() throws InterruptedException {
         ManualLoginCauseIDKMocking();
@@ -176,8 +204,10 @@ public class UnFollowTest {
 
     }
 
-
-
+    /**
+     * Searches for a user and navigates to their profile.
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     public void SearchingUser() throws InterruptedException {
 
         onView(withId(R.id.imageView4)).perform(click());
@@ -193,6 +223,10 @@ public class UnFollowTest {
 
     }
 
+    /**
+     * Logs out the currently logged-in user.
+     * @throws InterruptedException if thread sleep is interrupted.
+     */
     public void LogoutFromUser() throws InterruptedException {
 
         onView(withId(R.id.profilepage)).perform(click());
