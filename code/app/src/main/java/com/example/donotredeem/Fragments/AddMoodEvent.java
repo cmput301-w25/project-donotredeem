@@ -177,6 +177,7 @@ public class AddMoodEvent extends Fragment {
 
                 if (imageFile.length() > 65536) {
                     Snackbar.make(getView(), "Image too large. Please capture a smaller image.", Snackbar.LENGTH_SHORT).show();
+                    imageUri = null;
                     return;
                 }
 
@@ -191,6 +192,7 @@ public class AddMoodEvent extends Fragment {
                     int fileSize = inputStream.available();
                     if (fileSize > 65536) {
                         Snackbar.make(getView(), "Image too large. Please select a smaller image.", Snackbar.LENGTH_SHORT).show();
+                        imageUri = null;
                         return;
                     }
                 } catch (IOException e) {
