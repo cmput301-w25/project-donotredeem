@@ -290,36 +290,89 @@ public class EditProfile extends Fragment {
         dialog.show();
     }
 
+    /**
+     * Checks if the camera permission is granted.
+     * If granted, it launches the camera to capture an image.
+     * If not granted, it requests the necessary camera permission.
+     */
     private void checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            try {
-
-                File imageFile = createImageFile();
-                imageUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider", imageFile);
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                cameraLauncher.launch(takePictureIntent);
-
-            } catch (IOException e) {
-                Log.e("CameraError", "Error creating image file", e);
-            }
+            launchCamera();
 
         } else {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
         }
 
     }
 
+    /**
+     * Handles the result of the camera permission request.
+     * If permission is granted, the camera is launched immediately.
+     * If permission is denied, a Snack bar message is displayed to inform the user.
+     */
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    launchCamera();
+                } else {
+                    Snackbar.make(requireView(), "Camera permission denied", Snackbar.LENGTH_SHORT).show();
+                }
+            });
+
+    /**
+     * Launches the device's camera to capture an image.
+     * Creates a temporary file to store the captured image and provides a URI for it.
+     * If an error occurs while creating the file, an error message is logged.
+     */
+    private void launchCamera() {
+        try {
+
+            File imageFile = createImageFile();
+            imageUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider", imageFile);
+
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+            cameraLauncher.launch(takePictureIntent);
+
+        } catch (IOException e) {
+            Log.e("CameraError", "Error creating image file", e);
+        }
+    }
+    /**
+     * Checks if the gallery permission is granted.
+     * If granted, it launches the gallery to allow the user to pick an image.
+     * If not granted, it requests the necessary gallery permission.
+     */
     private void checkGalleryPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
-
-            Intent galleryOpenIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            galleryLauncher.launch(galleryOpenIntent);
-
+            launchGallery();
         } else {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, GALLERY_REQUEST);
-
+            requestGalleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
         }
+    }
+
+    /**
+     * Handles the result of the gallery permission request.
+     * If permission is granted, the gallery is launched immediately.
+     * If permission is denied, a Snackbar message is displayed to inform the user.
+     */
+    private final ActivityResultLauncher<String> requestGalleryPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    launchGallery();
+                } else {
+                    Snackbar.make(requireView(), "Gallery permission denied", Snackbar.LENGTH_SHORT).show();
+                }
+            });
+
+    /**
+     * Launches the device's gallery to allow the user to pick an image.
+     * Starts an intent that opens the media storage for image selection.
+     */
+    private void launchGallery() {
+        Intent galleryOpenIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryLauncher.launch(galleryOpenIntent);
     }
 
     private File createImageFile() throws IOException {

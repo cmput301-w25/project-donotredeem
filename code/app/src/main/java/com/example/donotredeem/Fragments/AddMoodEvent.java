@@ -161,11 +161,9 @@ public class AddMoodEvent extends Fragment {
         storageRef = storage.getReference().child("mood_images");
 
         // Set up location client using fused provider
-        // https://developer.android.com/develop/sensors-and-location/location/retrieve-current
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
         // Configure camera result handler
-        //the code below is taken from https://developer.android.com/media/camera/camera-deprecated/photobasics
         cameraLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == requireActivity().RESULT_OK && result.getData() != null) {
                 File imageFile = new File(imageUri.getPath());
@@ -331,7 +329,6 @@ public class AddMoodEvent extends Fragment {
         ImageButton calendar_button = view.findViewById(R.id.calendarButton);
 
 
-        // this code is taken from - https://www.geeksforgeeks.org/how-to-get-current-time-and-date-in-android/
         final boolean[] isSelected_date = {false};
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
@@ -598,62 +595,140 @@ public class AddMoodEvent extends Fragment {
 
 
     /**
-     * Checks if the camera permission is granted. If granted, attempts to capture an image using the camera.
-     * If not granted, requests camera permission.
+     * Checks if the camera permission is granted.
+     * If granted, it launches the camera to capture an image.
+     * If not granted, it requests the necessary camera permission.
      */
     private void checkCameraPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-            try {
-
-                File imageFile = createImageFile();
-                imageUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider", imageFile);
-
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-
-                cameraLauncher.launch(takePictureIntent);
-
-            } catch (IOException e) {
-                Log.e("CameraError", "Error creating image file", e);
-            }
+            launchCamera();
 
         } else {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
-            Snackbar.make(getView(), "Camera permission denied", Snackbar.LENGTH_SHORT).show();
-
+            requestPermissionLauncher.launch(Manifest.permission.CAMERA);
         }
 
     }
 
     /**
-     * Checks if the gallery permission is granted. If granted, opens the gallery to pick an image.
-     * If not granted, requests gallery permission.
+     * Handles the result of the camera permission request.
+     * If permission is granted, the camera is launched immediately.
+     * If permission is denied, a Snack bar message is displayed to inform the user.
+     */
+    private final ActivityResultLauncher<String> requestPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    launchCamera();
+                } else {
+                    Snackbar.make(requireView(), "Camera permission denied", Snackbar.LENGTH_SHORT).show();
+                }
+            });
+
+    /**
+     * Launches the device's camera to capture an image.
+     * Creates a temporary file to store the captured image and provides a URI for it.
+     * If an error occurs while creating the file, an error message is logged.
+     */
+    private void launchCamera() {
+        try {
+
+            File imageFile = createImageFile();
+            imageUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".provider", imageFile);
+
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+
+            cameraLauncher.launch(takePictureIntent);
+
+        } catch (IOException e) {
+            Log.e("CameraError", "Error creating image file", e);
+        }
+    }
+
+    /**
+     * Checks if the gallery permission is granted.
+     * If granted, it launches the gallery to allow the user to pick an image.
+     * If not granted, it requests the necessary gallery permission.
      */
     private void checkGalleryPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
-            Intent galleryOpenIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            galleryLauncher.launch(galleryOpenIntent);
+            launchGallery();
         } else {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_MEDIA_IMAGES}, GALLERY_REQUEST);
-            Snackbar.make(getView(), "Gallery permission denied", Snackbar.LENGTH_SHORT).show();
+            requestGalleryPermissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES);
         }
     }
 
     /**
-     * Checks if the location permission is granted. If granted, retrieves the user's current location and displays it.
-     * If not granted, requests location permission.
+     * Handles the result of the gallery permission request.
+     * If permission is granted, the gallery is launched immediately.
+     * If permission is denied, a Snackbar message is displayed to inform the user.
+     */
+    private final ActivityResultLauncher<String> requestGalleryPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                   launchGallery();
+                } else {
+                    Snackbar.make(requireView(), "Gallery permission denied", Snackbar.LENGTH_SHORT).show();
+                }
+            });
+
+    /**
+     * Launches the device's gallery to allow the user to pick an image.
+     * Starts an intent that opens the media storage for image selection.
+     */
+    private void launchGallery() {
+        Intent galleryOpenIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        galleryLauncher.launch(galleryOpenIntent);
+    }
+
+    /**
+     * Checks if the location permission is granted.
+     * If granted, it retrieves and displays the user's current location.
+     * If not granted, it requests the necessary location permission.
      */
     private void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            launchLocation();
 
-            // the code below is taken from https://developer.android.com/develop/sensors-and-location/location/change-location-settings
+        } else {
+
+            requestLocationPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+    }
+    /**
+     * Handles the result of the location permission request.
+     * If permission is granted, the location retrieval process is initiated.
+     * If permission is denied, a Snack bar message is displayed to inform the user.
+     */
+    private final ActivityResultLauncher<String> requestLocationPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                if (isGranted) {
+                    launchLocation();
+                } else {
+                    Snackbar.make(requireView(), "Location permission denied", Snackbar.LENGTH_SHORT).show();
+                }
+            });
+
+    /**
+     * Retrieves the user's current location and displays it.
+     * Uses FusedLocationProviderClient to request high-accuracy location updates.
+     * The retrieved latitude and longitude are converted into a human-readable address using Geocoder.
+     * The location update request is removed after obtaining the first result.
+     */
+    public void launchLocation() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
                     .setMinUpdateIntervalMillis(5000)
                     .build();
 
             locationCallback = new LocationCallback() {
 
-                //https://developer.android.com/develop/sensors-and-location/location/request-updates
+                /**
+                 * Called when a new location result is available.
+                 * Extracts latitude and longitude, converts them into an address, and updates the UI.
+                 * Once the location is retrieved, further location updates are stopped.
+                 *
+                 * @param locationResult The latest location result.
+                 */
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
 
@@ -661,8 +736,8 @@ public class AddMoodEvent extends Fragment {
                     double longitude = locationResult.getLastLocation().getLongitude();
                     selectedGeoPoint = new GeoPoint(latitude, longitude);
 
-                    Log.d("POINTS", "onLocationResult: "+ latitude+ longitude);
-                    
+                    Log.d("POINTS", "onLocationResult: " + latitude + longitude);
+
                     Geocoder geocoder = new Geocoder(requireContext(), Locale.getDefault());
 
                     List<Address> addresses = null;
@@ -682,13 +757,6 @@ public class AddMoodEvent extends Fragment {
             };
 
             fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
-
-        } else {
-            ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
-
-            //Toast.makeText(requireContext(), "Location permission denied", Toast.LENGTH_SHORT).show();
-            Snackbar.make(getView(), "Location permission denied", Snackbar.LENGTH_SHORT).show();
-
         }
     }
 
@@ -890,7 +958,6 @@ public class AddMoodEvent extends Fragment {
 
         for (int i = 0; i < emojiButtonIds.length; i++) {
             if (emojiButtonIds[i] == buttonId) {
-                //Log.d("SelectedMood", "Mood for buttonId " + buttonId + ": " + selectedMood.getMood());
                 return MoodType.values()[i];
             }
         }
