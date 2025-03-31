@@ -123,6 +123,7 @@
 
     <ImageButton
         tools:ignore="contentDescription"
+        android:contentDescription="@string/close"
         android:id="@+id/imageButton"
         android:layout_width="50dp"
         android:layout_height="51dp"

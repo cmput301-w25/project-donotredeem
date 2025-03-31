@@ -56,7 +56,7 @@
             <EditText
                 android:id="@+id/search_bar"
                 android:layout_width="309dp"
-                android:layout_height="26dp"
+                android:layout_height="48dp"
                 android:autofillHints=""
                 android:background="@null"
                 android:hint="@string/search"

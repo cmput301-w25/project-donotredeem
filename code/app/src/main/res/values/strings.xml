@@ -156,6 +156,7 @@
     <string name="analytics">Analytics</string>
     <string name="history">History</string>
     <string name="phone_number">Phone number</string>
+    <string name="calendar">calendar</string>
     <string-array name="mood_frequency_options">
         <item>Select frequency</item>
         <item>Daily</item>

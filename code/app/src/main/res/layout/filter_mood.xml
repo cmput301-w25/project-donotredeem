@@ -43,6 +43,7 @@
 
                     <ImageButton
                         tools:ignore="contentDescription"
+                        android:contentDescription="@string/happy"
                         android:id="@+id/filter_emoji_happy"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
@@ -67,6 +68,7 @@
 
                     <ImageButton
                         tools:ignore="contentDescription"
+                        android:contentDescription="@string/sad"
                         android:id="@+id/filter_emoji_sad"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
@@ -92,6 +94,7 @@
 
                     <ImageButton
                         tools:ignore="contentDescription"
+                        android:contentDescription="@string/fear"
                         android:id="@+id/filter_emoji_fear"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
@@ -116,6 +119,7 @@
 
                     <ImageButton
                         android:id="@+id/filter_emoji_angry"
+                        android:contentDescription="@string/angry"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:background="@null"
@@ -139,6 +143,7 @@
 
                     <ImageButton
                         android:id="@+id/filter_emoji_confused"
+                        android:contentDescription="@string/confused"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:background="@null"
@@ -162,6 +167,7 @@
 
                     <ImageButton
                         android:id="@+id/filter_emoji_disgusted"
+                        android:contentDescription="@string/disgusted"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:background="@null"
@@ -185,6 +191,7 @@
 
                     <ImageButton
                         android:id="@+id/filter_emoji_shameful"
+                        android:contentDescription="@string/shameful"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:background="@null"
@@ -283,12 +290,12 @@
             <Button
                 android:id="@+id/month_filter_button"
                 android:layout_width="103dp"
-                android:layout_height="47dp"
+                android:layout_height="48dp"
                 android:backgroundTint="#EEEAEA"
                 android:fontFamily="@font/inter"
                 android:text="Past Month"
                 android:textColor="#222222"
-                android:textSize="11dp"
+                android:textSize="11sp"
                 android:textStyle="bold"
                 app:cornerRadius="10dp"
                 app:layout_constraintEnd_toStartOf="@id/week_filter_button"
@@ -299,12 +306,12 @@
             <Button
                 android:id="@+id/week_filter_button"
                 android:layout_width="103dp"
-                android:layout_height="47dp"
+                android:layout_height="48dp"
                 android:backgroundTint="#EEEAEA"
                 android:fontFamily="@font/inter"
                 android:text="Past Week"
                 android:textColor="#222222"
-                android:textSize="11dp"
+                android:textSize="11sp"
                 android:textStyle="bold"
                 app:cornerRadius="10dp"
                 app:layout_constraintEnd_toStartOf="@id/All_filter_button"
@@ -315,12 +322,12 @@
             <Button
                 android:id="@+id/All_filter_button"
                 android:layout_width="103dp"
-                android:layout_height="47dp"
+                android:layout_height="48dp"
                 android:backgroundTint="#EEEAEA"
                 android:fontFamily="@font/inter"
                 android:text="All"
                 android:textColor="#222222"
-                android:textSize="11dp"
+                android:textSize="11sp"
                 android:textStyle="bold"
                 app:cornerRadius="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -417,8 +424,9 @@
 
         <ImageButton
             android:id="@+id/filer_closeButton"
+            android:contentDescription="@string/close"
             android:layout_width="wrap_content"
-            android:layout_height="43dp"
+            android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:adjustViewBounds="true"
             android:backgroundTint="#222121"

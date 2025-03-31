@@ -82,6 +82,7 @@
 
     <ImageButton
         tools:ignore="contentDescription"
+        android:contentDescription="@string/calendar"
         android:layout_width="50dp"
         android:id="@+id/calendar_bday"
         android:layout_height="50dp"

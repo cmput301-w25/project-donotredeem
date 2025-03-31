@@ -60,7 +60,7 @@
             <Button
                 android:id="@+id/acceptButton"
                 android:layout_width="wrap_content"
-                android:layout_height="38dp"
+                android:layout_height="48dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/btn_accept_stroke"
                 android:drawableStart="@drawable/ic_check"
@@ -73,7 +73,7 @@
             <Button
                 android:id="@+id/declineButton"
                 android:layout_width="wrap_content"
-                android:layout_height="38dp"
+                android:layout_height="48dp"
                 android:background="@drawable/btn_decline_solid"
                 android:drawableStart="@drawable/ic_close"
                 android:drawablePadding="4dp"

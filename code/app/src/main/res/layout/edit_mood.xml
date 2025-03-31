@@ -19,8 +19,9 @@
 
         <ImageButton
             android:id="@+id/closeButton"
+            android:contentDescription="@string/close"
             android:layout_width="wrap_content"
-            android:layout_height="43dp"
+            android:layout_height="48dp"
             android:layout_marginTop="48dp"
             android:adjustViewBounds="true"
             android:backgroundTint="#222121"
@@ -82,7 +83,7 @@
         <EditText
             android:id="@+id/desc"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="69dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="8dp"
             android:autofillHints=""
@@ -199,6 +200,7 @@
 
         <ImageButton
             tools:ignore="contentDescription"
+            android:contentDescription="@string/upload"
             android:id="@+id/upload_button"
             android:layout_width="69dp"
             android:layout_height="55dp"
@@ -217,7 +219,7 @@
         <EditText
             android:id="@+id/date"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="69dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="4dp"
             android:autofillHints=""
@@ -233,8 +235,9 @@
         <ImageButton
             tools:ignore="contentDescription"
             android:id="@+id/calendarButton"
-            android:layout_width="26dp"
-            android:layout_height="27dp"
+            android:contentDescription="@string/calendar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -263,7 +266,7 @@
         <EditText
             android:id="@+id/Time"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="69dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="4dp"
             android:autofillHints=""
@@ -277,9 +280,10 @@
 
         <ImageButton
             tools:ignore="contentDescription"
+            android:contentDescription="clockbutton"
             android:id="@+id/clockButton"
-            android:layout_width="26dp"
-            android:layout_height="27dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
             android:background="?attr/selectableItemBackgroundBorderless"
@@ -304,7 +308,7 @@
         <EditText
             android:id="@+id/loc"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="69dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="8dp"
             android:autofillHints=""
@@ -335,7 +339,7 @@
         <EditText
             android:id="@+id/reasoning"
             android:layout_width="0dp"
-            android:layout_height="48dp"
+            android:layout_height="69dp"
             android:layout_marginHorizontal="30dp"
             android:layout_marginTop="8dp"
             android:autofillHints=""
@@ -365,6 +369,7 @@
 
         <ImageButton
             tools:ignore="contentDescription"
+            android:contentDescription="alone_social"
             android:id="@+id/alone_social"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -390,6 +395,7 @@
 
         <ImageButton
             tools:ignore="contentDescription"
+            android:contentDescription="pair_social_stories"
             android:id="@+id/pair_social"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -414,6 +420,7 @@
 
         <ImageButton
             tools:ignore="contentDescription"
+            android:contentDescription="social"
             android:id="@+id/few_social"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -437,6 +444,7 @@
 
         <ImageButton
             tools:ignore="contentDescription"
+            android:contentDescription="crowd_social"
             android:id="@+id/crowd_social"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -515,6 +523,7 @@
 
                 <ImageButton
                     tools:ignore="contentDescription"
+                    android:contentDescription="@string/happy"
                     android:id="@+id/emoji_happy"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -525,6 +534,7 @@
 
                 <ImageButton
                     tools:ignore="contentDescription"
+                    android:contentDescription="@string/sad"
                     android:id="@+id/emoji_sad"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -535,6 +545,7 @@
 
                 <ImageButton
                     tools:ignore="contentDescription"
+                    android:contentDescription="@string/fear"
                     android:id="@+id/emoji_fear"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -545,6 +556,7 @@
 
                 <ImageButton
                     tools:ignore="contentDescription"
+                    android:contentDescription="@string/angry"
                     android:id="@+id/emoji_angry"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -555,6 +567,7 @@
 
                 <ImageButton
                     tools:ignore="contentDescription"
+                    android:contentDescription="@string/confused"
                     android:id="@+id/emoji_confused"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -565,6 +578,7 @@
 
                 <ImageButton
                     tools:ignore="contentDescription"
+                    android:contentDescription="@string/disgusted"
                     android:id="@+id/emoji_disgusted"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
@@ -575,6 +589,7 @@
 
                 <ImageButton
                     tools:ignore="contentDescription"
+                    android:contentDescription="@string/shameful"
                     android:id="@+id/emoji_shameful"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
