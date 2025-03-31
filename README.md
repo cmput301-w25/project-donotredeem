@@ -25,9 +25,9 @@ This Android application allows users to log, track, and share their moods. User
 
 ## Setup Instructions
 
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
+1. Clone the Repository
+2. Open the Project in Android Studio
+3. Run the Application
 
 ## Documentation
 
