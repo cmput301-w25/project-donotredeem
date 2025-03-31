@@ -227,6 +227,7 @@ public class UserProfileManager {
                 .addOnFailureListener(e -> Log.e("FirestoreUpdate", "Error updating user", e));
     }
 
+
     /**
      * Interface for handling the result of fetching a user profile.
      */

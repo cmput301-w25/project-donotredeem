@@ -780,7 +780,7 @@ private void setupMoodRecurrence() {
         user.put("bio", "");  // Initialize bio as empty
 //        user.put("followers", 0);  // No followers initially
 //        user.put("following", 0);  // Not following anyone initially
-        user.put("followers_list", new java.util.ArrayList<>());  // Empty follower list
+        user.put("follower_list", new java.util.ArrayList<>());  // Empty follower list
         user.put("following_list", new java.util.ArrayList<>());  // Empty following list
         user.put("requests", new java.util.ArrayList<>()); // Initialize requests as empty
         user.put("requested", new java.util.ArrayList<>()); //Initialize requests as empty

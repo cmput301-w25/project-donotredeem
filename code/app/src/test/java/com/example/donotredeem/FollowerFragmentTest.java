@@ -1,4 +1,4 @@
-package com.example.donotredeem.Fragments;
+package com.example.donotredeem;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -6,6 +6,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import static org.junit.Assert.assertNotNull;
+
+import com.example.donotredeem.Fragments.FollowerFragment;
 
 @RunWith(JUnit4.class)
 public class FollowerFragmentTest {
