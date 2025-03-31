@@ -108,7 +108,7 @@ public class AnalyticsFragment extends Fragment implements CalendarAdapter.OnIte
      *
      * @return An array of emoji drawable resource IDs.
      */
-    private int[] getEmojiResourcesArray() {
+    public int[] getEmojiResourcesArray() {
         return new int[]{
                 R.drawable.hapi,
                 R.drawable.sad,
@@ -297,7 +297,7 @@ public class AnalyticsFragment extends Fragment implements CalendarAdapter.OnIte
      * @param emotionalState The mood/emotional state.
      * @return The emoji drawable resource ID or 0 if no match is found.
      */
-    private int getEmojiForState(String emotionalState) {
+    public int getEmojiForState(String emotionalState) {
         if (emotionalState == null) return 0;
         switch (emotionalState) {
             case "Happy": return R.drawable.hapi;
@@ -321,7 +321,7 @@ public class AnalyticsFragment extends Fragment implements CalendarAdapter.OnIte
      * @param date The selected LocalDate representing the current month.
      * @return An ArrayList of day strings for the calendar.
      */
-    private ArrayList<String> daysInMonthArray(LocalDate date) {
+    public ArrayList<String> daysInMonthArray(LocalDate date) {
         ArrayList<String> daysInMonthArray = new ArrayList<>();
         YearMonth yearMonth = YearMonth.from(date);
         int daysInMonth = yearMonth.lengthOfMonth();
@@ -345,7 +345,7 @@ public class AnalyticsFragment extends Fragment implements CalendarAdapter.OnIte
      * @param date The LocalDate object to format.
      * @return The formatted date string.
      */
-    private String monthYearFromDate(LocalDate date) {
+    public String monthYearFromDate(LocalDate date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM yyyy");
         return date.format(formatter);
     }

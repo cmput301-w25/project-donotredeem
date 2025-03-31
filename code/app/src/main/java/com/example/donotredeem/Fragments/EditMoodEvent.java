@@ -860,7 +860,7 @@ public class EditMoodEvent extends Fragment {
      * @param buttonId The ID of the selected emoji button.
      * @return The corresponding MoodType for the button ID.
      */
-    private MoodType getMoodForButtonId(int buttonId) {
+    public MoodType getMoodForButtonId(int buttonId) {
         for (int i = 0; i < emojiButtonIds.length; i++) {
             if (emojiButtonIds[i] == buttonId) {
                 return MoodType.values()[i];
@@ -902,7 +902,7 @@ public class EditMoodEvent extends Fragment {
      * @param buttonId The ID of the selected social button.
      * @return The corresponding SocialSituation for the button ID.
      */
-    private SocialSituation getSocialSituationForButtonId(int buttonId) {
+    public SocialSituation getSocialSituationForButtonId(int buttonId) {
         for (int i = 0; i < socialButtonIds.length; i++) {
             if (socialButtonIds[i] == buttonId) {
                 return SocialSituation.values()[i];
