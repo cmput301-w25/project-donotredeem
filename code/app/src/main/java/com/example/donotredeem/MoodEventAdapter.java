@@ -249,6 +249,16 @@ public class MoodEventAdapter extends ArrayAdapter<MoodEvent> {
             }
         });
 
+        //Comments
+        ImageView commentIcon = MainView.findViewById(R.id.imageView10);
+        commentIcon.setOnClickListener(v -> {
+            Bundle bundle = new Bundle();
+            bundle.putString("postId", Current_Mood_Event.getMoodEventId());
+            CommentsFragment commentsFragment = new CommentsFragment();
+            commentsFragment.setArguments(bundle);
+            commentsFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "CommentsFragment");
+        });
+
         return MainView;
 
     }

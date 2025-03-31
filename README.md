@@ -17,15 +17,17 @@ This Android application allows users to log, track, and share their moods. User
 
 ## Key Features
 
-- [Feature 1]: Brief description
-- [Feature 2]: Brief description
-- [Feature 3]: Brief description
+- **Mood Event Tracking**: Effortlessly log and manage your moods by recording the date, time, emotional state, and optional details such as triggers and social context. This system helps users track their emotional well-being over time.
+- **Follow and Share**: Stay connected by following others with their permission. Keep up with friends' or peers' mood updates and gain insight into their emotional journeys.
+- **Location & Map Views**: Enhance mood entries by adding location data and viewing emotions on an interactive map. This feature provides a visual representation of where specific emotional states occur.
+- **Offline Mode**: Seamlessly add, edit, or delete mood entries without an internet connection. Any changes made offline will automatically sync once connectivity is restored.
+- **Mood Analytics**: Discover trends in your emotions with MoodCalendar and MoodGraph. Identify patterns, track mood fluctuations, and gain a deeper understanding of your mental well-being over time.
 
 ## Setup Instructions
 
-1. [Step 1]
-2. [Step 2]
-3. [Step 3]
+1. Clone the Repository
+2. Open the Project in Android Studio
+3. Run the Application
 
 ## Documentation
 
