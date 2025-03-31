@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -17,6 +18,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.donotredeem.MoodEvent;
 import com.example.donotredeem.MoodType;
 import com.example.donotredeem.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -109,24 +111,15 @@ public class FilterFragment extends DialogFragment {
         all = view.findViewById(R.id.All_filter_button);
 
         pastmonth.setOnClickListener(v ->{
-            pastmonth.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
-            pastweek.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
-            all.setBackgroundColor(getResources().getColor(R.color.gray_light, null));
-            pastmonth.setBackgroundResource(R.drawable.highlight_background);
+            Toast.makeText(requireContext(), "You have pressed Past Month", Toast.LENGTH_LONG).show();
             btn = "month";
         });
         pastweek.setOnClickListener(v ->{
-            pastmonth.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
-            pastweek.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
-            all.setBackgroundColor(getResources().getColor(R.color.gray_light, null));
-            pastweek.setBackgroundResource(R.drawable.highlight_background);
+            Toast.makeText(requireContext(), "You have pressed Past Week", Toast.LENGTH_LONG).show();
             btn = "week";
         });
         all.setOnClickListener( v -> {
-            pastmonth.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
-            pastweek.setBackgroundColor(getResources().getColor(R.color.gray_light, null)); // #EEEAEA
-            all.setBackgroundColor(getResources().getColor(R.color.gray_light, null));
-            all.setBackgroundResource(R.drawable.highlight_background);
+            Toast.makeText(requireContext(), "You have pressed All", Toast.LENGTH_LONG).show();
             btn = "all";
         });
         close.setOnClickListener( v -> {
@@ -199,13 +192,13 @@ public class FilterFragment extends DialogFragment {
 
         if ("month".equals(savedTimeFilter)) {
             btn = "month";
-            pastmonth.setBackgroundResource(R.drawable.highlight_background);
+            Snackbar.make(view, "You pressed Past Month previously", Snackbar.LENGTH_SHORT).show();
         } else if ("week".equals(savedTimeFilter)) {
             btn = "week";
-            pastweek.setBackgroundResource(R.drawable.highlight_background);
+            Snackbar.make(view, "You pressed Past Week previously", Snackbar.LENGTH_SHORT).show();
         } else {
             btn = "all";
-            all.setBackgroundResource(R.drawable.highlight_background);
+            Snackbar.make(view, "You pressed All previously", Snackbar.LENGTH_SHORT).show();
         }
 
         // Restore selected emojis
