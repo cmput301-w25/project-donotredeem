@@ -8,7 +8,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +54,6 @@ public class UserProfileManager {
         // 1. Add requester to current user's followers
         db.collection("User").document(currentUser)
                 .update(
-                        "followers", FieldValue.increment(1),
                         "follower_list", FieldValue.arrayUnion(requesterUsername),
                         "requests", FieldValue.arrayRemove(requesterUsername)
                 )
@@ -60,8 +61,8 @@ public class UserProfileManager {
                     // 2. Add current user to requester's following
                     db.collection("User").document(requesterUsername)
                             .update(
-                                    "following", FieldValue.increment(1),
-                                    "following_list", FieldValue.arrayUnion(currentUser)
+                                    "following_list", FieldValue.arrayUnion(currentUser),
+                                    "requested", FieldValue.arrayRemove(currentUser)
                             )
                             .addOnSuccessListener(aVoid1 -> listener.onSuccess())
                             .addOnFailureListener(e -> listener.onError(e));
@@ -80,6 +81,12 @@ public class UserProfileManager {
                 .update("requests", FieldValue.arrayRemove(requesterUsername))
                 .addOnSuccessListener(aVoid -> listener.onSuccess())
                 .addOnFailureListener(e -> listener.onError(e));
+        db.collection("User").document(requesterUsername)
+                .update(
+                        "requested", FieldValue.arrayRemove(currentUser)
+                )
+                .addOnSuccessListener(aVoid1 -> listener.onSuccess())
+                .addOnFailureListener(e -> listener.onError(e));
     }
 
     /**
@@ -95,6 +102,12 @@ public class UserProfileManager {
                 .update("requests", FieldValue.arrayUnion(loggedInUsername))
                 .addOnSuccessListener(aVoid -> {
                     Log.d("UserProfileManager", "Request added successfully.");
+                    db.collection("User").document(loggedInUsername)
+                            .update(
+                                    "requested", FieldValue.arrayUnion(targetUsername)
+                            )
+                            .addOnSuccessListener(aVoid1 -> callback.onSuccess())
+                            .addOnFailureListener(e -> callback.onError(e));
                     if (callback != null) {
                         callback.onSuccess();
                     }
@@ -278,14 +291,97 @@ public class UserProfileManager {
     }
 
 
-    /**
-     * Deletes a user profile along with all associated mood references.
-     *
-     * @param username The username of the user to be deleted.
-     * @param listener Callback to handle success or failure.
-     */
+//    /**
+//     * Deletes a user profile along with all associated mood references.
+//     *
+//     * @param username The username of the user to be deleted.
+//     * @param listener Callback to handle success or failure.
+//     */
+//    public void deleteUser(String username, OnDeleteListener listener) {
+//        // 1. Get user document to access moodRefs
+//        db.collection("User").document(username)
+//                .get()
+//                .addOnSuccessListener(documentSnapshot -> {
+//                    if (!documentSnapshot.exists()) {
+//                        listener.onError(new Exception("User not found"));
+//                        return;
+//                    }
+//
+//                    // 2. Get all mood references
+//                    List<DocumentReference> moodRefs = (List<DocumentReference>) documentSnapshot.get("MoodRef");
+//                    if (moodRefs == null || moodRefs.isEmpty()) {
+//                        // No moods to delete - proceed with user deletion
+//                        deleteUserDocument(username, listener);
+//                        return;
+//                    }
+//
+//                    // 3. Delete all mood documents first
+//                    List<Task<Void>> deleteTasks = new ArrayList<>();
+//                    for (DocumentReference moodRef : moodRefs) {
+//                        deleteTasks.add(moodRef.delete());
+//                    }
+//
+//                    String pfp = (String) documentSnapshot.get("pfp");
+//                    List<String> follower_list = (List<String>) documentSnapshot.get("follower_list");
+//                    List<String> following_list = (List<String>) documentSnapshot.get("following_list");
+//                    Log.d("MYTAGG", "follower_list: "+ follower_list.toString());
+//                    Log.d("MYTAGG", "following_list: "+ following_list.toString());
+//
+//                    if (pfp != null && !pfp.isEmpty()){
+//                        try{
+//                            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(pfp);
+//                            storageRef.delete().addOnFailureListener(e -> Log.w("DeleteUser", "Error deleting profile image", e));
+//                        }  catch (Exception e) {
+//                            Log.e("DeleteUser", "Invalid profile image URL", e);
+//                        }
+//                    }
+//
+////                    Users user = documentSnapshot.toObject(Users.class);
+////                    // Delete profile image from Firebase Storage
+////                    if (user.getProfilePictureUrl() != null && !user.getProfilePictureUrl().isEmpty()) {
+////                        try {
+////                            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(user.getProfilePictureUrl());
+////                            storageRef.delete().addOnFailureListener(e -> Log.w("DeleteUser", "Error deleting profile image", e));
+////                        } catch (Exception e) {
+////                            Log.e("DeleteUser", "Invalid profile image URL", e);
+////                        }
+////                    }
+////
+////                    // Prepare batch to update all related user documents
+//                    WriteBatch batch = db.batch();
+////                    List<String> followers = user.getFollowerList() != null ? user.getFollowerList() : new ArrayList<>();
+////                    List<String> following = user.getFollowingList() != null ? user.getFollowingList() : new ArrayList<>();
+//////                    List<String> sentRequests = user.getSentRequests() != null ? user.getSentRequests() : new ArrayList<>();
+//////                    List<String> requests = user.getRequests() != null ? user.getRequests() : new ArrayList<>();
+//
+//                    // Remove from followers' following lists
+//                    for (String follower : follower_list) {
+//                        Log.d("MYTAGG", "follower"+ follower);
+//                        DocumentReference followerRef = db.collection("User").document(follower);
+//                        batch.update(followerRef, "following_list", FieldValue.arrayRemove(username));
+//                    }
+//
+//                    // Remove from following's followers lists
+//                    for (String followedUser : following_list) {
+//                        Log.d("MYTAGG", "follower "+ followedUser.toString());
+//                        DocumentReference followedRef = db.collection("User").document(followedUser);
+//                        batch.update(followedRef, "follower_list", FieldValue.arrayRemove(username));
+//                    }
+//
+//                    // 4. Wait for all mood deletions to complete
+//                    Tasks.whenAll(deleteTasks)
+//                            .addOnSuccessListener(aVoid -> {
+//                                // 5. Delete user document after moods are deleted
+//                                deleteUserDocument(username, listener);
+//                            })
+//                            .addOnFailureListener(e -> {
+//                                listener.onError(new Exception("Failed to delete moods", e));
+//                            });
+//                })
+//                .addOnFailureListener(e -> listener.onError(e));
+//    }
     public void deleteUser(String username, OnDeleteListener listener) {
-        // 1. Get user document to access moodRefs
+        // 1. Get user document
         db.collection("User").document(username)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
@@ -294,33 +390,92 @@ public class UserProfileManager {
                         return;
                     }
 
-                    // 2. Get all mood references
+                    // 2. Prepare cleanup data
+                    List<String> followerList = (List<String>) documentSnapshot.get("follower_list");
+                    List<String> followingList = (List<String>) documentSnapshot.get("following_list");
+                    List<String> requestsList = (List<String>) documentSnapshot.get("requests");
+                    String pfp = documentSnapshot.getString("pfp");
+                    Log.d("MYTAGG", "follower_list: "+ followerList.toString());
+                    Log.d("MYTAGG", "following_list: "+ followingList.toString());
+
+                    // 3. Delete profile image
+                    if (pfp != null) {
+                        try {
+                            StorageReference storageRef = FirebaseStorage.getInstance().getReferenceFromUrl(pfp);
+                            storageRef.delete().addOnFailureListener(e ->
+                                    Log.w("DeleteUser", "Error deleting profile image", e)
+                            );
+                        } catch (Exception e) {
+                            Log.e("DeleteUser", "Invalid profile image URL", e);
+                        }
+                    }
+
+                    // 4. Delete all moods (existing code)
                     List<DocumentReference> moodRefs = (List<DocumentReference>) documentSnapshot.get("MoodRef");
-                    if (moodRefs == null || moodRefs.isEmpty()) {
-                        // No moods to delete - proceed with user deletion
-                        deleteUserDocument(username, listener);
-                        return;
+                    List<Task<Void>> deleteMoodTasks = new ArrayList<>();
+                    if (moodRefs != null) {
+                        for (DocumentReference moodRef : moodRefs) {
+                            deleteMoodTasks.add(moodRef.delete());
+                        }
                     }
 
-                    // 3. Delete all mood documents first
-                    List<Task<Void>> deleteTasks = new ArrayList<>();
-                    for (DocumentReference moodRef : moodRefs) {
-                        deleteTasks.add(moodRef.delete());
-                    }
-
-                    // 4. Wait for all mood deletions to complete
-                    Tasks.whenAll(deleteTasks)
-                            .addOnSuccessListener(aVoid -> {
-                                // 5. Delete user document after moods are deleted
-                                deleteUserDocument(username, listener);
-                            })
-                            .addOnFailureListener(e -> {
-                                listener.onError(new Exception("Failed to delete moods", e));
-                            });
+                    // 5. Remove user from all connections
+                    Tasks.whenAll(deleteMoodTasks)
+                            .continueWithTask(task -> removeUserReferences(username, followerList, followingList, requestsList))
+                            .addOnSuccessListener(__ -> deleteUserDocument(username, listener))
+                            .addOnFailureListener(e -> listener.onError(e));
                 })
-                .addOnFailureListener(e -> listener.onError(e));
+                .addOnFailureListener(listener::onError);
     }
 
+        // Helper method to clean up references
+        private Task<Void> removeUserReferences(String deletedUser,
+                                                List<String> followers,
+                                                List<String> following,
+                                                List<String> requests) {
+
+            WriteBatch batch = db.batch();
+
+            // 1. Add direct follower/following updates
+            if (followers != null) {
+                for (String follower : followers) {
+                    DocumentReference ref = db.collection("User").document(follower);
+                    batch.update(ref, "following_list", FieldValue.arrayRemove(deletedUser));
+                }
+            }
+
+            if (following != null) {
+                for (String followedUser : following) {
+                    DocumentReference ref = db.collection("User").document(followedUser);
+                    batch.update(ref, "follower_list", FieldValue.arrayRemove(deletedUser));
+                }
+            }
+
+            if (requests != null) {
+                for (String requester : requests) {
+                    DocumentReference ref = db.collection("User").document(requester);
+                    batch.update(ref, "sent_requests", FieldValue.arrayRemove(deletedUser));
+                }
+            }
+
+            // 2. Query users who have the deleted user in their requests
+            return db.collection("User")
+                    .whereArrayContains("requests", deletedUser)
+                    .get()
+                    .continueWithTask(queryTask -> {
+                        if (!queryTask.isSuccessful()) {
+                            throw queryTask.getException();
+                        }
+
+                        // Add query results to the batch
+                        for (DocumentSnapshot doc : queryTask.getResult()) {
+                            batch.update(doc.getReference(), "requests", FieldValue.arrayRemove(deletedUser));
+                        }
+
+                        // 3. Commit the batch once
+                        return batch.commit();
+                    });
+        }
     /**
      * Deletes a user document from Firestore.
      *

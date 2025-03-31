@@ -19,6 +19,7 @@ public class User {
     private  List<String> MoodREF;
     private List<String> followerList;
     private List<String> followingList;
+    private List<String> requested;
     private List<String> requests;
     private List<DocumentReference> moodRefs;
     private String bio;
@@ -152,8 +153,9 @@ public class User {
         return contact;
     }
 
-
-
+    public List<String> getRequested() {
+        return requested;
+    }
 
     //Set Methods
     public void setUsername(String username) {
@@ -198,6 +200,10 @@ public class User {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public void setRequested(List<String> requested) {
+        this.requested = requested;
     }
 }
 

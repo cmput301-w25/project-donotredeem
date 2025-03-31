@@ -227,7 +227,6 @@ public class EditProfile extends Fragment {
 
                         redirectToLogin();
                     }
-
                     @Override
                     public void onError(Exception e) {
                         // Handle error
