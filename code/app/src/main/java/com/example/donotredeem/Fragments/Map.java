@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 
 import android.os.Bundle;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
@@ -143,7 +142,6 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
         me_btn.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.e("HEER", "ME BUTTON CLIKED" );
                         fetchUserMoodEvents(loggedInUsername);
                     }
                 }
@@ -152,8 +150,6 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
         friends_btn.setOnClickListener( new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.e("HEER", "button being clicked " );
-                        // Show only freinds mood events
                         FetchFollowingUsers(loggedInUsername,false);
                     }
                 }
@@ -162,8 +158,6 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
         distance_btn.setOnClickListener( new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Show only freinds mood events
-                Log.e("disr", "button clicked" );
                 FetchFollowingUsers(loggedInUsername,true);
             }
         }
@@ -197,19 +191,16 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
             Log.e("Main Page", "No username found in SharedPreferences");
             return;
         }
-        Log.e("HEER", "FRIENDS FUNC 1 CALLED" );
         db.collection("User")
                 .whereEqualTo("username", username)
                 .addSnapshotListener((querySnapshot, error) -> {
                     if (!querySnapshot.isEmpty()) {
                         DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
-                        Log.d("HEER", "User found: " + userDoc.getData());
                         List<String> FollowedUsers = (List<String>) userDoc.get("following_list");
 
                         if (FollowedUsers != null && !FollowedUsers.isEmpty()) {
                             FetchPublicEvents(FollowedUsers,limit);
                         } else {
-                            Log.d("HEER", "No followed users.");
                             updateMapMarkers(new ArrayList<>(),"Friends");
                         }
 
@@ -248,10 +239,8 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
                         MoodEvent moodEvent = documentSnapshot.toObject(MoodEvent.class);
                         if (moodEvent != null && !moodEvent.getPrivacy() && (moodEvent.getLocation() != null)) {
                             userMoodEvents.add(moodEvent);
-                            Log.e("HEER", "IN Friends 3, mood evnt just added line 316" );
                         }
                     } catch (Exception e) {
-                        Log.e("HEER", "Error converting document", e);
                     }
                 }
 
@@ -261,7 +250,9 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
                     Log.e("HEER", "enetring if" );
 
                     if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                            == PackageManager.PERMISSION_GRANTED) {} else {
+                            == PackageManager.PERMISSION_GRANTED) {
+
+                    } else {
                         ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
                     }
 
@@ -285,10 +276,8 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
 
                                 // Now that location is fetched, proceed with adding the moods
                                 if (limit) {
-                                    Log.e("HEER", "LIMIT TRUE " );
                                     // Sort the mood events to get the most recent one
                                     ArrayList<MoodEvent> sortedMoodEvents = Sort(userMoodEvents);
-                                    Log.e("HEER", "size: " + sortedMoodEvents.size());
 
                                     if (!sortedMoodEvents.isEmpty()) {
                                         // Get the most recent mood
@@ -302,19 +291,16 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
 
                                         // Only add the recent mood if it's within 5km
                                         if (distance <= 5) {
-                                            Log.d("HEER", "most recent mood within 5km added to list ");
                                             tempList.add(recentMood);
                                         }
                                     }
                                 } else {
                                     tempList.addAll(userMoodEvents);
-                                    Log.e("HEER", "limit not true" );
                                 }
 
                                 fetchedCount[0]++;
 
                                 if (fetchedCount[0] == totalUsers) {
-                                    Log.e("HEER", "TEMP LIST SIZE IN END" + tempList.size());
                                     moodHistoryList.clear();
                                     moodHistoryList.addAll(tempList);
                                     updateMapMarkers(moodHistoryList, "Friends");
@@ -376,8 +362,7 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
                             DocumentSnapshot userDoc = querySnapshot.getDocuments().get(0);
                             List<DocumentReference> moodRefsList = (List<DocumentReference>) userDoc.get("MoodRef");
 
-                            if (moodRefsList != null && !moodRefsList.isEmpty()) {
-                                Log.e("HEER", "Friends fun 2 mood refs not null, calling next func after this line" );
+                            if (moodRefsList != null && !moodRefsList.isEmpty()) {;
                                 FetchMoods(moodRefsList, tempList, FollowedUsers.size(), fetchedCount, limit);
                             } else {
                                 fetchedCount[0]++;
@@ -545,10 +530,8 @@ public class Map extends Fragment implements OnMapReadyCallback, FilterFragment.
      * @param googleMap Initialized map instance
      */
     @Override
-    public void onMapReady(GoogleMap googleMap) { //edmonton me zooooooooooom lol not needed anyways
+    public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        Log.d("API_KEY", "AIzaSyCoAZY3RwbhOJq-Dg1S3gAIOlIcQFfusnA");
 
         LatLng edmonton = new LatLng(53.5461, -113.4938); // Edmonton's latitude & longitude
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(edmonton, 12));
