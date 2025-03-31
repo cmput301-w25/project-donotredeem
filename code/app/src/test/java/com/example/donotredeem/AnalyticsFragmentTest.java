@@ -11,17 +11,43 @@ import org.junit.runners.JUnit4;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-
+/**
+ * Unit tests for the {@link AnalyticsFragment} class.
+ * This class verifies the correctness of key functionalities related to mood analytics display,
+ * calendar date processing, and resource management.
+ *
+ * <p>Key functionalities tested include:
+ * <ul>
+ *     <li>Mapping mood states to their corresponding emoji drawable resources</li>
+ *     <li>Generating day arrays for calendar month views</li>
+ *     <li>Formatting dates into human-readable month/year strings</li>
+ *     <li>Retrieving the complete set of emoji resources</li>
+ * </ul>
+ *
+ * <p>Tests use JUnit 4 framework with specific focus on boundary cases and format validation.
+ */
 @RunWith(JUnit4.class)
 public class AnalyticsFragmentTest {
 
     private AnalyticsFragment fragment;
 
+    /**
+     * Initializes the {@link AnalyticsFragment} instance before each test method execution.
+     */
     @Before
     public void setUp() {
         fragment = new AnalyticsFragment();
     }
 
+    /**
+     * Tests the mapping of mood states to emoji drawable resources.
+     * Verifies:
+     * <ul>
+     *     <li>Correct drawable IDs for all supported mood states ("Happy" to "Tired")</li>
+     *     <li>Return of 0 (invalid resource) for unknown mood states</li>
+     *     <li>Graceful handling of null input</li>
+     * </ul>
+     */
     @Test
     public void testGetEmojiForState() {
         assertEquals(R.drawable.hapi, fragment.getEmojiForState("Happy"));
@@ -38,6 +64,15 @@ public class AnalyticsFragmentTest {
         assertEquals(0, fragment.getEmojiForState(null));
     }
 
+    /**
+     * Tests generation of day arrays for calendar month views.
+     * Validates:
+     * <ul>
+     *     <li>Fixed 42-element array size (6-week grid)</li>
+     *     <li>Correct day numbering for February 2020 (leap year with 29 days)</li>
+     *     <li>Correct positioning of July 2023 start/end dates</li>
+     * </ul>
+     */
     @Test
     public void testDaysInMonthArray() {
         // Test February 2020 (leap year)
@@ -52,6 +87,14 @@ public class AnalyticsFragmentTest {
         assertEquals("31", july2023.get(36)); // Last day position
     }
 
+    /**
+     * Tests conversion of dates to "Month Year" format strings.
+     * Checks edge cases including:
+     * <ul>
+     *     <li>Month with 28/29 days (February)</li>
+     *     <li>End-of-year month (December)</li>
+     * </ul>
+     */
     @Test
     public void testMonthYearFromDate() {
         assertEquals("February 2020",
@@ -60,6 +103,14 @@ public class AnalyticsFragmentTest {
                 fragment.monthYearFromDate(LocalDate.of(2025, 12, 15)));
     }
 
+    /**
+     * Tests retrieval of emoji resource array.
+     * Verifies:
+     * <ul>
+     *     <li>Array contains exactly 10 elements</li>
+     *     <li>Correct ordering from "Happy" to "Tired" emojis</li>
+     * </ul>
+     */
     @Test
     public void testGetEmojiResourcesArray() {
         int[] emojis = fragment.getEmojiResourcesArray();

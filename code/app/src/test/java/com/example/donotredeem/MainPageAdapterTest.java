@@ -15,6 +15,22 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+/**
+ * Unit tests for the {@link MainPageAdapter} class focusing on core adapter functionality
+ * while avoiding Android framework dependencies. Verifies proper data handling and basic
+ * adapter operations through method overrides and mock objects.
+ *
+ * <p>Key test areas include:
+ * <ul>
+ *     <li>Adapter initialization with mock context and test data</li>
+ *     <li>Data retrieval methods (getItem, getItemId)</li>
+ *     <li>Item count management</li>
+ *     <li>Simplified view handling verification</li>
+ * </ul>
+ *
+ * <p>Uses Mockito to mock Android {@link Context} and creates a custom adapter implementation
+ * that bypasses UI-related methods for isolated business logic testing.
+ */
 @RunWith(MockitoJUnitRunner.class)
 public class MainPageAdapterTest {
 
@@ -24,6 +40,19 @@ public class MainPageAdapterTest {
     private MainPageAdapter adapter;
     private ArrayList<MoodEvent> testEvents;
 
+    /**
+     * Initializes test environment before each test method:
+     * <ul>
+     *     <li>Creates mock Context using Mockito</li>
+     *     <li>Prepares test MoodEvents with varied data states</li>
+     *     <li>Configures custom adapter with overridden methods:
+     *         <ul>
+     *             <li>Simplified getView() returning null to avoid view inflation</li>
+     *             <li>Direct data access methods using test collection</li>
+     *         </ul>
+     *     </li>
+     * </ul>
+     */
     @Before
     public void setUp() {
         // Initialize mocks
@@ -85,12 +114,27 @@ public class MainPageAdapterTest {
         };
     }
 
+
+    /**
+     * Tests adapter initialization and basic configuration.
+     * Verifies:
+     * <ul>
+     *     <li>Successful adapter instance creation</li>
+     *     <li>Correct item count matching test data size</li>
+     * </ul>
+     */
     @Test
     public void testAdapterCreation() {
         assertNotNull(adapter);
         assertEquals(2, adapter.getCount());
     }
 
+    /**
+     * Tests the overridden getView() implementation.
+     * Validates that the method returns null as specified
+     * in the custom adapter configuration, indicating
+     * no view inflation is attempted during testing.
+     */
     @Test
     public void testGetView() {
         // Get the view
@@ -100,6 +144,16 @@ public class MainPageAdapterTest {
         assertNull(resultView);
     }
 
+
+    /**
+     * Tests item retrieval functionality.
+     * Verifies:
+     * <ul>
+     *     <li>Non-null return for valid positions</li>
+     *     <li>Correct data mapping for first test event</li>
+     *     <li>Proper field values in retrieved MoodEvent</li>
+     * </ul>
+     */
     @Test
     public void testGetItem() {
         // Directly use the overridden getItem method
@@ -109,17 +163,38 @@ public class MainPageAdapterTest {
         assertEquals("testUser1", firstEvent.getUsername());
     }
 
+    /**
+     * Tests item ID generation logic.
+     * Validates that position-based IDs match:
+     * <ul>
+     *     <li>0 for first position</li>
+     *     <li>1 for second position</li>
+     * </ul>
+     */
     @Test
     public void testGetItemId() {
         assertEquals(0, adapter.getItemId(0));
         assertEquals(1, adapter.getItemId(1));
     }
 
+    /**
+     * Tests context retrieval override.
+     * Verifies the adapter returns the mock Context
+     * instance provided during setup.
+     */
     @Test
     public void testGetContext() {
         assertEquals(mockContext, adapter.getContext());
     }
 
+    /**
+     * Tests item count reporting.
+     * Validates the adapter correctly reports:
+     * <ul>
+     *     <li>Initial count matching test data size (2)</li>
+     *     <li>Consistent count after setup</li>
+     * </ul>
+     */
     @Test
     public void testCount() {
         assertEquals(2, adapter.getCount());

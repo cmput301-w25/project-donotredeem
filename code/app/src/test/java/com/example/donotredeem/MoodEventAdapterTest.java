@@ -9,16 +9,38 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
+/**
+ * Unit tests for the {@link MoodEventAdapter} focusing on data management and adapter operations
+ * without Android UI components. Verifies proper handling of mood event data and list operations.
+ *
+ * <p>Key test areas include:
+ * <ul>
+ *     <li>Adapter initialization and item count management</li>
+ *     <li>Data retrieval and field validation for mood events</li>
+ *     <li>Item removal functionality and list consistency</li>
+ *     <li>Edge cases with empty adapter states</li>
+ * </ul>
+ *
+ * <p>Uses a custom {@link TestMoodEventAdapter} to bypass Android framework dependencies.
+ */
 @RunWith(JUnit4.class)
 public class MoodEventAdapterTest {
 
     private TestMoodEventAdapter adapter;
     private ArrayList<MoodEvent> testEvents;
 
-    // Custom subclass to override ArrayAdapter methods
+    /**
+     * Custom {@link MoodEventAdapter} implementation for testing.
+     * Overrides base adapter methods to operate on a local list without Android dependencies.
+     */
     private static class TestMoodEventAdapter extends MoodEventAdapter {
         private ArrayList<MoodEvent> events;
 
+        /**
+         * Creates a test adapter with specified mood events.
+         *
+         * @param events Initial list of mood events for testing
+         */
         public TestMoodEventAdapter(ArrayList<MoodEvent> events) {
             super(null, events);
             this.events = events;
@@ -40,7 +62,13 @@ public class MoodEventAdapterTest {
         }
     }
 
-    @Before
+    /**
+     * Initializes test environment before each test:
+     * <ul>
+     *     <li>Creates two test {@link MoodEvent} instances with varied data</li>
+     *     <li>Configures test adapter with these events</li>
+     * </ul>
+     */    @Before
     public void setUp() {
         // Create test mood events
         testEvents = new ArrayList<>();
@@ -78,12 +106,28 @@ public class MoodEventAdapterTest {
         adapter = new TestMoodEventAdapter(testEvents);
     }
 
+    /**
+     * Tests adapter initialization.
+     * Verifies:
+     * <ul>
+     *     <li>Successful adapter instance creation</li>
+     *     <li>Correct initial item count (2 events)</li>
+     * </ul>
+     */
     @Test
     public void testAdapterCreation() {
         assertNotNull(adapter);
         assertEquals(2, adapter.getCount());
     }
 
+    /**
+     * Tests item retrieval by position.
+     * Validates:
+     * <ul>
+     *     <li>Non-null returns for valid positions</li>
+     *     <li>Correct field values for first event (emotional state, username, time, date)</li>
+     * </ul>
+     */
     @Test
     public void testGetItem() {
         MoodEvent firstEvent = adapter.getItem(0);
@@ -94,17 +138,43 @@ public class MoodEventAdapterTest {
         assertEquals("2023-06-15", firstEvent.getDate());
     }
 
+    /**
+     * Tests item ID generation logic.
+     * Verifies position-based IDs match:
+     * <ul>
+     *     <li>0 for first position</li>
+     *     <li>1 for second position</li>
+     * </ul>
+     */
     @Test
     public void testGetItemId() {
         assertEquals(0, adapter.getItemId(0));
         assertEquals(1, adapter.getItemId(1));
     }
 
+
+    /**
+     * Tests item count reporting.
+     * Validates adapter correctly tracks:
+     * <ul>
+     *     <li>Initial count (2 items)</li>
+     *     <li>Count changes after modifications</li>
+     * </ul>
+     */
     @Test
     public void testGetCount() {
         assertEquals(2, adapter.getCount());
     }
 
+    /**
+     * Tests complete field integrity of stored mood events.
+     * Verifies all fields for both test events including:
+     * <ul>
+     *     <li>Emotional state, place, explanation text/picture</li>
+     *     <li>Situation, trigger, privacy settings</li>
+     *     <li>Null handling for optional fields</li>
+     * </ul>
+     */
     @Test
     public void testEventDetails() {
         MoodEvent event1 = adapter.getItem(0);
@@ -126,6 +196,14 @@ public class MoodEventAdapterTest {
         assertTrue(event2.getPrivacy());
     }
 
+    /**
+     * Tests item removal functionality.
+     * Validates:
+     * <ul>
+     *     <li>List size reduction after removal</li>
+     *     <li>Proper item exclusion from the list</li>
+     * </ul>
+     */
     @Test
     public void testRemoveItem() {
         int initialCount = adapter.getCount();
@@ -138,6 +216,14 @@ public class MoodEventAdapterTest {
         assertFalse(testEvents.contains(removedEvent));
     }
 
+    /**
+     * Tests empty adapter state handling.
+     * Verifies:
+     * <ul>
+     *     <li>Successful adapter creation with empty list</li>
+     *     <li>Correct reporting of zero items</li>
+     * </ul>
+     */
     @Test
     public void testEmptyAdapter() {
         TestMoodEventAdapter emptyAdapter = new TestMoodEventAdapter(new ArrayList<>());

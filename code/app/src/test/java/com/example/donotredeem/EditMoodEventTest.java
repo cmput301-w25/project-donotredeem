@@ -13,17 +13,42 @@ import org.junit.runners.JUnit4;
 
 import java.lang.reflect.Field;
 
+/**
+ * Unit tests for the {@link EditMoodEvent} fragment's button mapping functionality.
+ * This class verifies the correct association between UI button IDs and their corresponding
+ * mood types/social situations, including handling of invalid IDs.
+ *
+ * <p>Key test scenarios include:
+ * <ul>
+ *     <li>Valid button ID to {@link MoodType} mapping verification</li>
+ *     <li>Valid button ID to {@link SocialSituation} mapping verification</li>
+ *     <li>Null returns for unrecognized button IDs</li>
+ * </ul>
+ *
+ * <p>Uses reflection to modify private button ID arrays for controlled testing.
+ */
 @RunWith(JUnit4.class)
 public class EditMoodEventTest {
 
     private EditMoodEvent fragment;
 
+    /**
+     * Initializes the {@link EditMoodEvent} fragment before each test method.
+     *
+     * @throws Exception if fragment instantiation fails
+     */
     @Before
     public void setUp() throws Exception {
         fragment = new EditMoodEvent();
     }
 
-    // Test getMoodForButtonId
+
+    /**
+     * Tests valid mood button ID mappings using mock button IDs (1001-1010).
+     * Verifies all 10 {@link MoodType} values are correctly mapped in sequence.
+     *
+     * @throws Exception if reflection field modification fails
+     */
     @Test
     public void testGetMoodForButtonId_validIds() throws Exception {
         // Mock emojiButtonIds with test values
@@ -42,13 +67,24 @@ public class EditMoodEventTest {
         assertEquals(MoodType.Tired, fragment.getMoodForButtonId(1010));
     }
 
+    /**
+     * Tests handling of unrecognized mood button IDs.
+     * Verifies null return for IDs not present in configured button array.
+     *
+     * @throws Exception if reflection field modification fails
+     */
     @Test
     public void testGetMoodForButtonId_invalidId() throws Exception {
         setPrivateField("emojiButtonIds", new int[]{1001, 1002, 1003});
         assertNull(fragment.getMoodForButtonId(9999));
     }
 
-    // Test getSocialSituationForButtonId
+    /**
+     * Tests valid social situation button ID mappings using mock IDs (2001-2004).
+     * Verifies all 4 {@link SocialSituation} values are correctly mapped in sequence.
+     *
+     * @throws Exception if reflection field modification fails
+     */
     @Test
     public void testGetSocialSituationForButtonId_validIds() throws Exception {
         // Mock socialButtonIds with test values
@@ -61,13 +97,26 @@ public class EditMoodEventTest {
         assertEquals(SocialSituation.Crowd, fragment.getSocialSituationForButtonId(2004));
     }
 
+    /**
+     * Tests handling of unrecognized social situation button IDs.
+     * Verifies null return for IDs not present in configured button array.
+     *
+     * @throws Exception if reflection field modification fails
+     */
     @Test
     public void testGetSocialSituationForButtonId_invalidId() throws Exception {
         setPrivateField("socialButtonIds", new int[]{2001, 2002});
         assertNull(fragment.getSocialSituationForButtonId(9999));
     }
 
-    // Helper to set private fields using reflection
+    /**
+     * Helper method to inject test values into private fragment fields via reflection.
+     * Enables mocking of button ID arrays for controlled testing scenarios.
+     *
+     * @param fieldName the name of the private field to modify
+     * @param value the test value to inject
+     * @throws Exception if reflection access/modification fails
+     */
     private void setPrivateField(String fieldName, Object value) throws Exception {
         Field field = EditMoodEvent.class.getDeclaredField(fieldName);
         field.setAccessible(true);

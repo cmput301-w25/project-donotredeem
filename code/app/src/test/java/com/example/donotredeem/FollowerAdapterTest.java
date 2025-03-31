@@ -12,18 +12,50 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+/**
+ * Unit tests for list operations relevant to a {@code FollowerAdapter} implementation.
+ * This class verifies core list management functionality including CRUD operations and size tracking,
+ * independent of Android framework components.
+ *
+ * <p>Key test scenarios include:
+ * <ul>
+ *     <li>List initialization and integrity checks</li>
+ *     <li>Item addition/removal operations and size validation</li>
+ *     <li>Data consistency after modifications</li>
+ *     <li>Boundary cases for list manipulation</li>
+ * </ul>
+ */
 @RunWith(JUnit4.class)
 public class FollowerAdapterTest {
 
     // Test data
     private List<String> followerList;
 
+    /**
+     * Initializes test data before each test method execution.
+     * Creates a follower list with three initial entries:
+     * <ul>
+     *     <li>"user1"</li>
+     *     <li>"user2"</li>
+     *     <li>"user3"</li>
+     * </ul>
+     */
     @Before
     public void setUp() {
         // Initialize test data only - no Android dependencies
         followerList = new ArrayList<>(Arrays.asList("user1", "user2", "user3"));
     }
 
+    /**
+     * Tests fundamental list operations and validation.
+     * Verifies:
+     * <ul>
+     *     <li>Initial list non-null state and correct size (3 items)</li>
+     *     <li>Proper item order and content retrieval</li>
+     *     <li>List size changes after adding/removing items</li>
+     *     <li>Complete list clearance functionality</li>
+     * </ul>
+     */
     @Test
     public void testListOperations() {
         // Test the List operations that would affect the adapter's behavior
@@ -50,6 +82,16 @@ public class FollowerAdapterTest {
         assertEquals("After clearing, list should be empty", 0, followerList.size());
     }
 
+    /**
+     * Tests dynamic list size tracking through modifications.
+     * Validates:
+     * <ul>
+     *     <li>Initial size confirmation (3 items)</li>
+     *     <li>Size increment after adding multiple items</li>
+     *     <li>Size decrement after item removal</li>
+     *     <li>Consistent size reporting through modifications</li>
+     * </ul>
+     */
     @Test
     public void testListModification() {
         // Test how modifications to the list would affect getItemCount()
