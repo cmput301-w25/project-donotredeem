@@ -35,7 +35,6 @@ This Android application allows users to log, track, and share their moods. User
 - [Scrum Board] - https://github.com/orgs/cmput301-w25/projects/13/views/8
 - [UI Mockups] - https://github.com/cmput301-w25/project-donotredeem/wiki/User-Interface-Mockups-and-Storyboard-Sequences
 - [CRC CARDS] - https://github.com/cmput301-w25/project-donotredeem/blob/main/Project_Documents/CRC_CARDS_DoNotRedeem.pdf
-- [UML]
 
 ## Project Part 3 user stories:
 #### 1. MOODS
